@@ -22,7 +22,8 @@ emitter.on( 'generate', function() {
 
 emitter.on( 'run', function() {
 	var cwd = path.join( __dirname, 'build', 'Default' );
-	cp.spawn( 'test', [], {
+	
+	cp.spawn( './test', [], {
 		cwd: cwd, 
 		stdio: 'inherit'
 	})
@@ -30,7 +31,7 @@ emitter.on( 'run', function() {
 		if (!code) {
 			console.log( 'test passed' );
 		}
-	} ); 
+	});
 });
 
 emitter.on( 'build', function() {
