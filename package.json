@@ -14,5 +14,9 @@
     "url": "https:///github.com/mucbuc/plank.git"
   },
   "author": "mbusenitz@gmail.com",
-  "license": "GNU"
+  "license": "GNU",
+  "dependencies": {
+    "graceful-fs": "*",
+    "gyp-reader": "*"
+  }
 }

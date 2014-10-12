@@ -4,27 +4,27 @@ var assert = require( 'assert' )
   , cp = require( 'child_process' )
   , events = require( 'events' )
   , path = require( 'path' )
-  , emitter = new events.EventEmitter;
+  , fs = require( 'graceful-fs' )
+  , emitter = new events.EventEmitter
+  , util = require( 'util' )
+  , gr = require( 'gyp-reader' );
 
 assert( typeof cp !== 'undefined' );
 
-emitter.on( 'run', function() {
-	console.log( 'run' );
+emitter.on( 'run', function( defPath ) {
+	console.log( 'run: ', defPath );
 });
 
-emitter.on( 'build', function() {
-	console.log( 'build' );
+emitter.on( 'build', function( defPath ) {
+	console.log( 'build: ', defPath );
 });
 
-emitter.on( 'generate', function() {
-	console.log( 'generate' );
+emitter.on( 'generate', function(defPath) {
+	console.log( 'generate: ', defPath );
 });
 
-emitter.on( 'run', function() {
-	var cwd = path.join( __dirname, 'build', 'Default' );
-	
-	cp.spawn( './test', [], {
-		cwd: cwd, 
+emitter.on( 'run', function(target) {
+	cp.spawn( './build/Default/' + target, [], {
 		stdio: 'inherit'
 	})
 	.on( 'close', function( code ) {
@@ -37,30 +37,48 @@ emitter.on( 'run', function() {
 	});
 });
 
-emitter.on( 'build', function() {
-	cp.spawn( 'xcodebuild', [], {
-		cwd: __dirname,
-		stdio:'inherit'
+emitter.on( 'build', function( defFile ) {
+	var defName = path.basename( defFile, '.gyp' );
+	
+	cp.spawn( 'xcodebuild', [
+			"-project",
+			defName + '.xcodeproj'
+		], {
+		cwd: path.join( __dirname, 'build' )
 	} )
 	.on( 'close', function( code ) {
 		if (!code) {
-			emitter.emit( 'run' );
+			gr( defFile, function( err, data ) {
+				data.targets.forEach( function( target ) {
+					emitter.emit( 'run', target.target_name );
+				} );
+			} );
 		}
 	} );
+
 } );
 
-emitter.on( 'generate', function() {
-	cp.spawn( 'gyp', [ 
+emitter.on( 'generate', function( defFile ) {
+	cp.spawn( 'gyp', [
+		defFile,
 		'--depth==0', 
-		'test/test.gyp' 
-	], { 
-		stdio:'inherit' 
-	} )
+		'--generator-output=build'
+	] )
 	.on( 'close', function( code ) {
 		if (!code) {
-			emitter.emit( 'build' );
+			emitter.emit( 'build', defFile );
 		}
 	} );
 } );
 
-emitter.emit( 'generate' );
+emitter.on( 'traverse', function( testDir ) {
+	fs.readdir( testDir, function( err, files ) {
+		files.forEach( function( file ) {
+			if (path.extname(file) == '.gyp') {
+				emitter.emit( 'generate', file ); 
+			}
+		} );	
+	} );
+}); 
+
+emitter.emit( 'traverse', __dirname );

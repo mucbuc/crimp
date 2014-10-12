@@ -12,8 +12,9 @@
 	}, #target_defaults
 	'targets': [
 		{
-			'target_name': 'test',
+			'target_name': 'test2', 
 			'type': 'executable',
+
 			'conditions': [
 				[ 
 					'OS=="mac"', {
