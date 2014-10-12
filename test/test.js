@@ -31,6 +31,9 @@ emitter.on( 'run', function() {
 		if (!code) {
 			console.log( 'test passed' );
 		}
+		else {
+			console.log( 'failed with exit code: ', code );
+		}
 	});
 });
 

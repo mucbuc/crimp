@@ -7,10 +7,6 @@
 			'.'
 		],
 		'sources': [
-			'src/assert.h',
-			'src/assert.hxx',
-			'src/assert.cpp',
-			'src/debug.h',
 		],
 	}
 }
