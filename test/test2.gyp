@@ -4,7 +4,7 @@
 	],#inclues
 	'target_defaults': {
 		'sources': [
-			'main.cpp',
+			'other.cpp',
 		], #sources
 		'include_dirs': [
 			'../'
