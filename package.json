@@ -17,7 +17,6 @@
   "license": "GNU",
   "dependencies": {
     "graceful-fs": "*",
-    "gyp-reader": "*", 
     "ansi": "*",
     "commander": "*"
   }

@@ -1,19 +1,6 @@
 {
-	'includes':[
-		'../plank-def.gypi',
-	],#inclues
-	'target_defaults': {
-		'sources': [
-			'main.cpp',
-		], #sources
-		'include_dirs': [
-			'../'
-		], #include_dirs		
-	}, #target_defaults
 	'targets': [
 		{
-			'target_name': 'test',
-			'type': 'executable',
 			'conditions': [
 				[ 
 					'OS=="mac"', {
