@@ -161,9 +161,7 @@ function attachLogic(emitter) {
 				[
 					"-project",
 					path.join( buildDir, targetName + '.xcodeproj' )
-				], {
-					stdio: 'inherit'
-			} )
+				] )
 			.on( 'close', function( code ) {
 				cb( code, targetName, buildDir ); 
 			} );
