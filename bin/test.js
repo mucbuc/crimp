@@ -69,9 +69,9 @@ function attachLogic(emitter) {
 		
 		fs.exists(testDir, function(exists) {
 			if (exists) { 
-					traverse( testDir, function(gypFile) {
-						emitter.emit( 'generate', gypFile, testDir );
-					});
+				traverse( testDir, function(gypFile) {
+					emitter.emit( 'generate', gypFile, testDir );
+				});
 			}
 			else {
 				cursor.red();
@@ -115,25 +115,30 @@ function attachLogic(emitter) {
 	}
 
 	function generate( defFile, testDir, cb ) {
-		var cwd = path.join( testDir, '../build' );
-		makePathIfNone(cwd, function() {
-			var linkSrc = path.join( testDir, defFile )
-			  , linkDst = path.join( cwd, defFile );
+		var testDir = path.join( __dirname, '..', testDir, '..' )
+		  , buildDir = path.join( testDir, 'build' );
+
+		makePathIfNone(buildDir, function() {
 			
-			fs.symlink( linkSrc, linkDst, function() {
+			var defDir = path.join( testDir, 'def' )
+			var linkSrc = path.join( defDir, defFile )
+			  , linkDst = path.join( buildDir, defFile );
+
+			fs.symlink( linkSrc, linkDst, function(err) {
 				cp.spawn( 
 					'gyp', 
 					[
-						linkDst,
+						defFile,
 						'--depth==0'
 					], {
-						cwd: cwd, 
+						cwd: buildDir, 
 						stdio: 'inherit'
 					})
 				.on( 'close', function( code ) {
-					cb( code, cwd );
+					cb( code, buildDir );
 					fs.unlink( linkDst ); 
 				});
+
 			});
 		});
 
@@ -153,7 +158,7 @@ function attachLogic(emitter) {
 				'xcodebuild', 
 				[
 					"-project",
-					targetName + '.xcodeproj'
+					path.join( buildDir, targetName + '.xcodeproj' )
 				], {
 					cwd: buildDir
 			} )
@@ -164,8 +169,10 @@ function attachLogic(emitter) {
 	}
 
 	function run( defFile, testDir, target, cb ) {
+		var execPath = path.join( testDir, 'build/Default', target );
+
 		cp.spawn( 
-			path.join( testDir, 'build/Default', target ), 
+			execPath, 
 			[], {
 			stdio: 'pipe'
 		})
@@ -181,7 +188,8 @@ function attachLogic(emitter) {
 	}
 
 	function readTargetName(defFile, testDir, cb) {
-		fs.readFile( path.join( testDir, defFile ), function( err, data ) {
+		var defPath = path.join( testDir, defFile );
+		fs.readFile( defPath, function( err, data ) {
 			if (err) {
 				cursor.red();
 				process.stdout.write( defFile + ': ' );
