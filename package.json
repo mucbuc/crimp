@@ -17,6 +17,7 @@
   "license": "GNU",
   "dependencies": {
     "graceful-fs": "*",
+    "fs-extra": "*",
     "ansi": "*",
     "commander": "*"
   }

@@ -9,9 +9,11 @@ var assert = require( 'assert' )
   , util = require( 'util' )
   , ansi = require( 'ansi' )
   , cursor = ansi( process.stdout )
-  , program = require( 'commander' );
+  , program = require( 'commander' )
+  , copy = require( 'fs-extra' ).copy;
 
 assert( typeof cp !== 'undefined' );
+assert( typeof copy === 'function' );
 
 program
 	.version( '0.0.0' )
@@ -114,17 +116,17 @@ function attachLogic(emitter) {
 			} );
 	}
 
-	function generate( defFile, testDir, cb ) {
-		var testDir = path.join( __dirname, '..', testDir, '..' )
-		  , buildDir = path.join( testDir, 'build' );
+	function generate( defFile, defDir, cb ) {
+
+		var buildDir = path.join( defDir, '../build/' );
 
 		makePathIfNone(buildDir, function() {
 			
-			var defDir = path.join( testDir, 'def' )
 			var linkSrc = path.join( defDir, defFile )
 			  , linkDst = path.join( buildDir, defFile );
 
-			fs.symlink( linkSrc, linkDst, function(err) {
+			copy( linkSrc, linkDst, function(err) {
+
 				cp.spawn( 
 					'gyp', 
 					[
@@ -160,7 +162,7 @@ function attachLogic(emitter) {
 					"-project",
 					path.join( buildDir, targetName + '.xcodeproj' )
 				], {
-					cwd: buildDir
+					stdio: 'inherit'
 			} )
 			.on( 'close', function( code ) {
 				cb( code, targetName, buildDir ); 
