@@ -1,14 +1,13 @@
 {
 	'includes':[
-		'../fluke.gypi',
+		'../om636.gypi',
 		'../plank/def/mac-targets.gypi'
 	],#inclues
 	'target_defaults': {
 		'target_name': 'test', 
 		'type': 'executable',
 		'sources': [
-			'../test/src/main.cpp',
-			'../test/src/test.h'
+			'../test/src/components/main.cpp'
 		], #sources
 		'include_dirs': [
 			'../plank/src/',
