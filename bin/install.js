@@ -4,10 +4,8 @@ var assert = require( 'assert' )
   , events = require( 'events' )
   , path = require( 'path' )
   , cp = require( 'child_process' )
-  , m_ = require( '../../m_.json' )
-  , emitter = new events.EventEmitter();
-
-assert( m_.hasOwnProperty( 'dependencies' ) );
+  , emitter = new events.EventEmitter()
+  , Reader = require( './Reader' );
 
 emitter.on( 'addSubtree', function( dependency, name ) {
 	
@@ -25,7 +23,7 @@ emitter.on( 'addSubtree', function( dependency, name ) {
 
 });
 
-installDependencies( m_.dependencies );
+installDependencies( Reader.readDependencies() );
 
 function installDependencies( dependencies, index ) {
 	
