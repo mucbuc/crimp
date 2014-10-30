@@ -11,7 +11,7 @@
 		], #sources
 		'include_dirs': [
 			'../../plank/src/',
-			'../../'
+			'../../../'
 		], #include_dirs		
 	}, #target_defaults
 }

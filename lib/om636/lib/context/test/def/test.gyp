@@ -7,8 +7,6 @@
 		'target_name': 'test',
 		'type': 'executable',
 		'sources': [
-			'../src/context_test.h',
-			'../src/observer_test.h',
 			'../src/main.cpp',
 		], #sources
 		'include_dirs': [
