@@ -1,0 +1,17 @@
+{
+	"generate" : {
+		"cwd": "../test/",
+		"cmd": "gyp",
+		"args": [ "--depth==." ]
+	},
+	"build" : {
+		"cwd": "../test/",
+		"cmd": "xcodebuild",
+		"args": []
+	},
+	"run" : {
+		"cwd": "../test/build/Default",
+		"cmd": "./test",
+		"args": []
+	}
+}
