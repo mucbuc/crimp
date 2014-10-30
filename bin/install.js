@@ -2,7 +2,6 @@
 
 var assert = require( 'assert' )
   , events = require( 'events' )
-  , path = require( 'path' )
   , cp = require( 'child_process' )
   , emitter = new events.EventEmitter()
   , Reader = require( './Reader' );
@@ -34,7 +33,7 @@ function installDependencies( dependencies, index ) {
 	{
 		var child
 		  , dependency = dependencies[ index ]
-		  , name = libName( dependency );
+		  , name = Reader.libName( dependency );
 
 		child = cp.spawn( 'git', [ 
 				'remote',
@@ -53,9 +52,5 @@ function installDependencies( dependencies, index ) {
 				emitter.emit( 'addSubtree', dependency, name );
 			}
 		});
-
-		function libName( dependency ) {
-			return 'lib/' + path.basename( dependency, '.git' ); 
-		}
 	} 
 }
