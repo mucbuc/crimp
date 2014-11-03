@@ -1,6 +1,6 @@
 var assert = require( 'assert' )
   , path = require( 'path' )
-  , m_ = require( '../m_.json' );
+  , m_ = require( '../../m_.json' );
 
 assert( m_.hasOwnProperty( 'dependencies' ) );
 

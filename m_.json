@@ -1,7 +1,0 @@
-{
-	"dependencies": [
-		"https://github.com/mucbuc/context.git",
-		"https://github.com/mucbuc/om636.git",
-		"https://github.com/mucbuc/fluke.git"
-	]
-}
