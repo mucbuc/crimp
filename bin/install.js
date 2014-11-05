@@ -46,10 +46,13 @@ function installDependencies( dependencies, index ) {
 			} );
 
 		child.on( 'exit', function( code ) {
+			installDependencies( dependencies, index + 1 );
 			if (!code) {
-				installDependencies( dependencies, index + 1 ); 
-
+				console.log( 'installed: ', name );
 				emitter.emit( 'addSubtree', dependency, name );
+			}
+			else { 
+				console.log( 'install failed: ', name );
 			}
 		});
 	} 
