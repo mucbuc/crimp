@@ -175,8 +175,13 @@ function attachLogic(emitter) {
 
 	function run( defFile, testDir, target, cb ) {
 		var execPath = path.join( testDir, 'Default', target )
-		  , server = cp.fork( 
-			  	testDir + '../test/echo_server.js', 
+		  , serverPath = path.join( testDir, '../test/echo_server.js' )
+		  , server;
+
+		console.log( serverPath );
+
+		server = cp.fork( 
+			  	serverPath, 
 			  	[ '3000' ], 
 			  	{ silent: true } );
 
