@@ -4,7 +4,13 @@ var assert = require( 'assert' )
   , events = require( 'events' )
   , cp = require( 'child_process' )
   , emitter = new events.EventEmitter()
-  , Reader = require( './Reader' );
+  , Reader = require( './Reader' )
+  , program = require( 'commander' ); 
+
+program
+	.version( '0.0.0' )
+	.option( '-p, --prefix [path]', 'output path' )
+	.parse( process.argv )
 
 emitter.on( 'addSubtree', function( dependency, name ) {
 	
@@ -17,8 +23,12 @@ emitter.on( 'addSubtree', function( dependency, name ) {
 			'master', 
 			'--squash'
 		], {
-				stdio: 'inherit'
-			}); 
+			stdio: 'inherit'
+		});
+
+	child.on( 'exit', function(code) {
+		emitter.emit( 'next dependency');
+	} );
 
 });
 
@@ -45,15 +55,20 @@ function installDependencies( dependencies, index ) {
 				stdio: 'inherit'
 			} );
 
-		child.on( 'exit', function( code ) {
+		emitter.once( 'next dependency', function() {
 			installDependencies( dependencies, index + 1 );
+		} ); 
+
+		child.on( 'exit', function( code ) {
 			if (!code) {
-				console.log( 'installed: ', name );
+				console.log( 'remote added: ', name );
 				emitter.emit( 'addSubtree', dependency, name );
 			}
 			else { 
-				console.log( 'install failed: ', name );
+				console.log( 'remote add failed: ', name );
+				emitter.emit( 'next dependency');
 			}
 		});
 	} 
 }
+	

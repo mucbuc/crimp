@@ -18,10 +18,21 @@ assert( typeof copy === 'function' );
 program
 	.version( '0.0.0' )
 	.option( '-p, --path [path]', 'test path' )
+	.option( '-o, --output [path]', 'build output' )
 	.parse( process.argv );
 
 if (!program.path) {
-	program.path = path.join( __dirname, '../../test/def/' );
+	program.path = path.join( __dirname, '../..' );
+}
+else {
+	program.path = path.join( __dirname, '../..', program.path );
+}
+
+if (!program.output) {
+	program.output = path.join( __dirname, '../..', 'build' );
+}
+else {
+	program.output = path.join( __dirname, '../..', program.output );
 }
 
 attachLogic( emitter );
@@ -118,30 +129,23 @@ function attachLogic(emitter) {
 
 	function generate( defFile, defDir, cb ) {
 
-		var buildDir = path.join( defDir, '../build/' );
+		var buildDir = program.output;
 
 		makePathIfNone(buildDir, function() {
-			
-			var linkSrc = path.join( defDir, defFile )
-			  , linkDst = path.join( buildDir, defFile );
 
-			copy( linkSrc, linkDst, function(err) {
-
-				cp.spawn( 
-					'gyp', 
-					[
-						defFile,
-						'--depth==0'
-					], {
-						cwd: buildDir, 
-						stdio: 'inherit'
-					})
-				.on( 'close', function( code ) {
-					cb( code, buildDir );
-					fs.unlink( linkDst ); 
-				});
-
+			cp.spawn( 
+				'gyp', 
+				[
+					defFile,
+					'--depth==0',
+					'--generator-output=' + buildDir
+				], {
+					stdio: 'inherit'
+				})
+			.on( 'close', function( code ) {
+				cb( code, buildDir );
 			});
+
 		});
 
 		function makePathIfNone( path, cb ) {
@@ -155,13 +159,15 @@ function attachLogic(emitter) {
 	}
 
 	function build( defFile, buildDir, cb ) {
-		readTargetName( defFile, buildDir, function( targetName ) { 
+		readTargetName( defFile, program.path, function( targetName ) { 
 			cp.spawn( 
 				'xcodebuild', 
 				[
 					"-project",
 					path.join( buildDir, targetName + '.xcodeproj' )
-				] )
+				], {
+					stdio: 'inherit'
+				} )
 			.on( 'close', function( code ) {
 				cb( code, targetName, buildDir ); 
 			} );
@@ -169,8 +175,12 @@ function attachLogic(emitter) {
 	}
 
 	function run( defFile, testDir, target, cb ) {
-		var execPath = path.join( testDir, 'build/Default', target );
+		
 
+		var execPath = path.join( testDir, 'Default', target );
+
+		console.log( execPath );
+		
 		cp.spawn( 
 			execPath, 
 			[], {

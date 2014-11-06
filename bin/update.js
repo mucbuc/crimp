@@ -14,6 +14,7 @@ function update( dependencies, index ) {
 		cp.exec( 
 			'git subtree pull -P ' + name + ' ' + name + ' master --squash', 
 			function(error, stdout, stderr) {
+				if (error) throw error;
 				console.log( stdout );
 				update( dependencies, index + 1 );
 			} ); 
