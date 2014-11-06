@@ -175,7 +175,7 @@ function attachLogic(emitter) {
 
 	function run( defFile, testDir, target, cb ) {
 		var execPath = path.join( testDir, 'Default', target )
-		  , serverPath = path.join( testDir, '../test/echo_server.js' )
+		  , serverPath = path.join( testDir, '../echo_server.js' )
 		  , server;
 
 		console.log( serverPath );
