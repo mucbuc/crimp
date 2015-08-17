@@ -1,7 +1,12 @@
 var assert = require( 'assert' )
   , Promise = require( 'promise' ) 
   , Printer = require( './printer' )
-  , fs = require( 'graceful-fs' );
+  , fs = require( 'graceful-fs' )
+  , summary = '';
+
+process.on( 'exit', function() {
+  console.log( summary );
+});
 
 function Logic(base) {
 
@@ -14,7 +19,7 @@ function Logic(base) {
             }
             else {
               Printer.cursor.red();
-              process.stdout.write( 'invalid test definition path: ');
+              process.stdout.write( 'invalid test definition path: ' + o.testDir );
               Printer.cursor.reset();
               reject();
             }
@@ -23,6 +28,7 @@ function Logic(base) {
         catch(e)
         {
           Printer.printError( e );
+          summarize( e, o );
           throw(e);
         } 
       });
@@ -49,6 +55,7 @@ function Logic(base) {
       catch( e ) 
       {
         Printer.printError( e );
+        summarize( e, o );
         throw( e );
       }
     });
@@ -73,6 +80,7 @@ function Logic(base) {
       catch(e) 
       {
         Printer.printError( e );
+        summarize( e, o );
         throw e;
       }
     });
@@ -87,6 +95,7 @@ function Logic(base) {
           if (!exitCode) {
             Printer.finishGreen( o.defFile );
             resolve(o);
+            summarize( "passed", o );
           }
           else {
             Printer.finishRed( o.defFile ) ; 
@@ -96,10 +105,18 @@ function Logic(base) {
       }
       catch(e) {
         Printer.printError(e);
+        summarize( e, o );
         throw e;
       }
     });
   }; 
 };
+
+function summarize(e, o) {
+  if (typeof e !== 'string') {
+    e = e.toString();
+  }
+  summary += o.testDir + e + '\n';
+}
 
 module.exports = Logic;
