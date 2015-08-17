@@ -95,7 +95,7 @@ function Logic(base) {
           if (!exitCode) {
             Printer.finishGreen( o.defFile );
             resolve(o);
-            summarize( "passed", o );
+            summarize( " passed", o );
           }
           else {
             Printer.finishRed( o.defFile ) ; 
