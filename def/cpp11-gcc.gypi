@@ -1,4 +1,7 @@
 {
+	'includes':[
+		'plank.gypi'
+	],
 	'target_defaults': {
 		'cflags': [ '-std=c++11' ],
 		'ldflags': [ '-pthread' ],
