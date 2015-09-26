@@ -23,6 +23,9 @@
 			'../src/assert.h',
 			'../src/assert.hxx',
 			'../src/test.h',
-        ]
+        ],
+        'include_dirs': [
+			'plank/src/',
+		],	
     }
 }
