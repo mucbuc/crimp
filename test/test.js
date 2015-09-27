@@ -7,7 +7,7 @@ var assert = require( 'assert' )
   , controller = new Expector(); 
 
 controller.expect( 'built' ); 
-controller.expect( 'hello\n' );
+controller.expect( 'hello test\n' );
 
 cp
 .fork( path.join( __dirname, 'plank/bin/test.js' ) )

@@ -5,8 +5,11 @@
 int main(int argc, const char * argv[])
 {
 	using namespace std;
-	string var( "hello" );
-	 
+	
+
+#ifdef TARGET_TEST
+	string var( "hello test" );
+#endif	 
 //	ASSERT( var.size() )(var);
 
 	cout << var << endl;
