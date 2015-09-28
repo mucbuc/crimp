@@ -12,6 +12,8 @@ int main(int argc, const char * argv[])
 #elif 1
 #ifndef NDEBUG
 	string var( "hello debug" ); 
+#else
+	string var( "hello release" );
 #endif
 #endif	 
 //	ASSERT( var.size() )(var);

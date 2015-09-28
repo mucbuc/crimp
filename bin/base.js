@@ -40,6 +40,9 @@ function Base(program) {
       if (program.debug) {
         args.push( '--build=Debug' );  
       }
+      else if (program.release) {
+        args.push( '--build=Release' );
+      }
 
       console.log( args );
 
@@ -140,6 +143,9 @@ function Base(program) {
     }
     else if (program.debug) {
       execPath = path.join( o.output, 'Debug', o.target );
+    }
+    else if (program.release) {
+      execPath = path.join( o.output, 'Release', o.target );
     }
     else {
       execPath = path.join( o.output, 'Test', o.target );

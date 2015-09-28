@@ -27,6 +27,29 @@ test( 'test build', function(t) {
 	});
 });
 
+test( 'release build', function(t) {
+	var controller = new Expector();
+
+	t.plan( 1 ); 	
+	controller.expect( 'built' ); 
+	controller.expect( 'hello release\n' );
+
+	cp
+	.fork( 
+		  path.join( __dirname, 'plank/bin/test.js' )
+		, ['-r'] )
+	.on( 'exit', function() {
+		controller.emit( 'built' );
+		cp.execFile( path.join( __dirname, '/build/Release/test' ), function(err, stdout, stderr) {
+			if(err) throw err;
+			controller.emit( stdout );
+			controller.check();
+			t.pass();
+		} ); 
+	});
+
+});
+
 test( 'debug build', function(t) {
 	var controller = new Expector();
 
