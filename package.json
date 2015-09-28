@@ -22,6 +22,7 @@
     "commander": "*",
     "promise": "*",
     "expector": "*", 
-    "date-time-string": "*"
+    "date-time-string": "*",
+    "tape": "*"
   }
 }

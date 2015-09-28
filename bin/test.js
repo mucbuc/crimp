@@ -17,8 +17,8 @@ program
   .option( '-o, --output [path]', 'build output' )
   .option( '-g, --gcc', 'use gcc compiler' )
   .option( '-s, --suite [path]', 'suite json' )
+  .option( '-d, --debug', 'target debug' )
   .parse( process.argv );
-
 
 program.path = program.path ? path.join( process.cwd(), program.path ) : process.cwd();
 

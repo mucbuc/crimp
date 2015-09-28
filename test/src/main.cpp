@@ -9,6 +9,10 @@ int main(int argc, const char * argv[])
 
 #ifdef TARGET_TEST
 	string var( "hello test" );
+#elif 1
+#ifndef NDEBUG
+	string var( "hello debug" ); 
+#endif
 #endif	 
 //	ASSERT( var.size() )(var);
 

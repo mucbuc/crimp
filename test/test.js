@@ -4,21 +4,48 @@ var assert = require( 'assert' )
   , cp = require( 'child_process' )
   , path = require( 'path' )
   , Expector = require( 'expector' ).Expector
-  , controller = new Expector(); 
+  , test = require( 'tape' );
 
-controller.expect( 'built' ); 
-controller.expect( 'hello test\n' );
+test( 'test build', function(t) {
+	var controller = new Expector();
 
-cp
-.fork( path.join( __dirname, 'plank/bin/test.js' ) )
-.on( 'exit', function() {
-	controller.emit( 'built' );
-	cp.execFile( path.join( __dirname, '/build/Test/test' ), function(err, stdout, stderr) {
-		if(err) throw err;
-		controller.emit( stdout );
-	} ); 
+	t.plan( 1 ); 	
+
+	controller.expect( 'built' ); 
+	controller.expect( 'hello test\n' );
+
+	cp
+	.fork( path.join( __dirname, 'plank/bin/test.js' ) )
+	.on( 'exit', function() {
+		controller.emit( 'built' );
+		cp.execFile( path.join( __dirname, '/build/Test/test' ), function(err, stdout, stderr) {
+			if(err) throw err;
+			controller.emit( stdout );
+			controller.check();
+			t.pass();
+		} ); 
+	});
 });
 
-process.on( 'exit', function() {
-	controller.check();
+test( 'debug build', function(t) {
+	var controller = new Expector();
+
+	t.plan( 1 ); 	
+	controller.expect( 'built' ); 
+	controller.expect( 'hello debug\n' );
+
+	cp
+	.fork( 
+		  path.join( __dirname, 'plank/bin/test.js' )
+		, ['-d'] )
+	.on( 'exit', function() {
+		controller.emit( 'built' );
+		cp.execFile( path.join( __dirname, '/build/Debug/test' ), function(err, stdout, stderr) {
+			if(err) throw err;
+			controller.emit( stdout );
+			controller.check();
+			t.pass();
+		} ); 
+	});
+
 });

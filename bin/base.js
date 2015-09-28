@@ -30,11 +30,15 @@ function Base(program) {
           o.defFile,
           '--depth=' + (program.gcc ? './' : '.'),
           '--generator-output=' + o.output,
-          '--include=' + path.join( __dirname, '../def', include ) 
+          '--include=' + path.join( __dirname, '../def', include )
         ];
 
       if (program.gcc) {
         args.push( '--format=make' );
+      }
+
+      if (program.debug) {
+        args.push( '--build=Debug' );  
       }
 
       console.log( args );
@@ -134,8 +138,12 @@ function Base(program) {
       o.testDir = path.join( o.testDir, 'out' );
       execPath = path.join( o.output, 'out/Test', o.target );
     }
-    else 
+    else if (program.debug) {
+      execPath = path.join( o.output, 'Debug', o.target );
+    }
+    else {
       execPath = path.join( o.output, 'Test', o.target );
+    }
 
     cp.spawn( 
       execPath, 
