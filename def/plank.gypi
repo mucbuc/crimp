@@ -11,6 +11,9 @@
 	        	],
 	       	},
 	       	'Debug': {
+	       		'defines': [
+	       			'TARGET_DEBUG=1'
+	       		],
 	       	},
 	       	'Test': {
 	       		'defines': [
