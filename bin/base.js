@@ -10,6 +10,11 @@ assert( typeof copy === 'function' );
 
 function Base(program) {
 
+  this.clean = function(o, cb) {
+    console.log( 'clean', o.output );
+    fs.rmdir( o.output, cb ); 
+  };
+
   this.readSuites = function(suite, cb) {
     fs.readFile( suite, function(err, data) {
       if (err) throw err; 

@@ -19,6 +19,7 @@ program
   .option( '-s, --suite [path]', 'suite json' )
   .option( '-d, --debug', 'target debug' )
   .option( '-r, --release', 'target release' )
+  .option( '-c, --clean', 'clean build' )
   .parse( process.argv );
 
 program.path = program.path ? path.join( process.cwd(), program.path ) : process.cwd();
@@ -51,17 +52,29 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
   });
 
   emitter.on( 'generate', function( o ) {
-    logic.generate( o )
-    .then( function( o ) {
-      emitter.emit( 'build', o );
-    })
-    .catch( function() {
-      log('failed (generate)');
-    });
+    if (program.clean) {
+      base.clean( o, generate );
+    }
+    else {
+      generate();
+    }
+
+    function generate() {
+      logic.generate( o )
+      .then( function( o ) {
+        emitter.emit( 'build', o );
+      })
+      .catch( function() {
+        log('failed (generate)');
+      });
+    }
   });
 
   emitter.on( 'traverse', function( o ) {
-    logic.traverse( o ).then( function( o ) {
+    
+    logic
+    .traverse( o )
+    .then( function( o ) {
       base.traverse( o, function(defFile) {
         o['defFile'] = defFile;
         emitter.emit( 'generate', o );
