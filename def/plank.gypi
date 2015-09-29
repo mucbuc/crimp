@@ -4,6 +4,7 @@
 	],
     'target_defaults': {
     	'default_configuration': 'Test',
+		'type': 'executable',
 		'configurations':{
 	       	'Release': {
 	         	'defines': [

@@ -4,7 +4,8 @@ var assert = require( 'assert' )
   , cp = require( 'child_process' )
   , copy = require( 'fs-extra' ).copy
   , fs = require( 'graceful-fs' )
-  , Printer = require( './printer' );
+  , Printer = require( './printer' )
+  , rmrf = require( 'rmrf' );
 
 assert( typeof copy === 'function' );
 
@@ -12,7 +13,8 @@ function Base(program) {
 
   this.clean = function(o, cb) {
     console.log( 'clean', o.output );
-    fs.rmdir( o.output, cb ); 
+    rmrf( o.output );
+    cb(); 
   };
 
   this.readSuites = function(suite, cb) {

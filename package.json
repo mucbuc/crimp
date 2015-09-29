@@ -23,6 +23,7 @@
     "promise": "*",
     "expector": "*", 
     "date-time-string": "*",
-    "tape": "*"
+    "tape": "*",
+    "rmrf": "*"
   }
 }
