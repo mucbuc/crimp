@@ -22,6 +22,7 @@ program
   .option( '-c, --clean', 'clean build' )
   .option( '-g, --generate', 'skip generate' )
   .option( '-l, --launch', 'skip launch' )
+  .option( '-i, --IDE', 'open IDE' )
   .parse( process.argv );
 
 program.path = program.path ? path.join( process.cwd(), program.path ) : process.cwd();
@@ -46,6 +47,10 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
   }); 
 
   emitter.on( 'build', function( o ) {
+    if (program.ide) {
+      logic.open( o );
+    }
+
     logic.build( o )
     .then( function( o ) {
       emitter.emit( 'run', o );
@@ -59,7 +64,7 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
     if (program.clean) {
       base.clean( o, generate );
     }
-    else if (!program.generate) {
+    else if (program.generate) {
       emitter.emit( 'build', o );
     }
     else {

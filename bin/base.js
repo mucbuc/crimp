@@ -98,11 +98,17 @@ function Base(program) {
       }
       else {
 
-        var args = [
-          "-project",
-          path.join( o.output, targetName + '.xcodeproj' )
-        ];
+        var projectPath = path.join( o.output, targetName + '.xcodeproj' )
+          , args = [
+            "-project",
+            projectPath
+          ];  
 
+        if (program.IDE) {
+          console.log( 'open', projectPath );
+          cp.spawn( 'open', [ projectPath ] );
+        }
+        
         console.log( args ); 
 
         child = cp.spawn( 
