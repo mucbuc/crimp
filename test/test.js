@@ -15,7 +15,7 @@ test( 'test build', function(t) {
 	controller.expect( 'hello test\n' );
 
 	cp
-	.fork( path.join( __dirname, 'plank/bin/test.js' ) )
+	.fork( getPlankTestScript() )
 	.on( 'exit', function() {
 		controller.emit( 'built' );
 		cp.execFile( path.join( __dirname, '/build/Test/test' ), function(err, stdout, stderr) {
@@ -36,7 +36,7 @@ test( 'release build', function(t) {
 
 	cp
 	.fork( 
-		  path.join( __dirname, 'plank/bin/test.js' )
+		  getPlankTestScript()
 		, ['-r'] )
 	.on( 'exit', function() {
 		controller.emit( 'built' );
@@ -59,7 +59,7 @@ test( 'debug build', function(t) {
 
 	cp
 	.fork( 
-		  path.join( __dirname, 'plank/bin/test.js' )
+		  getPlankTestScript()
 		, ['-d'] )
 	.on( 'exit', function() {
 		controller.emit( 'built' );
@@ -72,3 +72,7 @@ test( 'debug build', function(t) {
 	});
 
 });
+
+function getPlankTestScript() {
+	return path.join( __dirname, '../bin/test.js' );
+}
