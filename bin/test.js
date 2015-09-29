@@ -20,6 +20,8 @@ program
   .option( '-d, --debug', 'target debug' )
   .option( '-r, --release', 'target release' )
   .option( '-c, --clean', 'clean build' )
+  .option( '-g, --generate', 'skip generate' )
+  .option( '-l, --launch', 'skip launch' )
   .parse( process.argv );
 
 program.path = program.path ? path.join( process.cwd(), program.path ) : process.cwd();
@@ -30,15 +32,17 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
     , emitter = new events.EventEmitter;
   
   emitter.on( 'run', function( o ) {
-    logic.run( o )
-    .then( function() { 
-      log('passed');
-      emitter.emit('done');
-    })
-    .catch( function() {
-      log('failed (test)');
-      emitter.emit('done');
-    });
+    if (!program.launch) {
+      logic.run( o )
+      .then( function() { 
+        log('passed');
+        emitter.emit('done');
+      })
+      .catch( function() {
+        log('failed (test)');
+        emitter.emit('done');
+      });
+    }
   }); 
 
   emitter.on( 'build', function( o ) {
@@ -54,6 +58,9 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
   emitter.on( 'generate', function( o ) {
     if (program.clean) {
       base.clean( o, generate );
+    }
+    else if (!program.generate) {
+      emitter.emit( 'build', o );
     }
     else {
       generate();
