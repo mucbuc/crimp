@@ -83,13 +83,19 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
   });
 
   emitter.on( 'traverse', function( o ) {
-    
     logic
     .traverse( o )
-    .then( function( o ) {
+    .then( function( o ) { 
       base.traverse( o, function(defFile) {
-        o['defFile'] = defFile;
-        emitter.emit( 'generate', o );
+        console.log( 'define', defFile ); 
+        logic.define( 
+          '/Users/mbusenitz/work/plank/test/test.json', // defFile,
+          '/Users/mbusenitz/work/plank/test/test.gyp'
+        )
+        .then( function() {
+            o['defFile'] = 'test.gyp';
+            emitter.emit( 'generate', o );
+        });
       });
     });
   });

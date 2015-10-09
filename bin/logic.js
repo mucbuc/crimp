@@ -10,6 +10,19 @@ process.on( 'exit', function() {
 
 function Logic(base) {
 
+  this.define = function(jsdef, output) {
+    return new Promise(function(resolve, reject) {
+      try {
+        base.define(jsdef, output, function() {
+          resolve(); 
+        });
+      }
+      catch(e) {
+        trow(e); 
+      }
+    });
+  };
+  
   this.traverse = function(o) {
     return new Promise(function(resolve, reject) {
         try {

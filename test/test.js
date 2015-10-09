@@ -17,8 +17,10 @@ test( 'test build', function(t) {
 	cp
 	.fork( getPlankTestScript() )
 	.on( 'exit', function() {
+		var p = path.join( __dirname, '/build/Test/test' );
+		console.log( p );
 		controller.emit( 'built' );
-		cp.execFile( path.join( __dirname, '/build/Test/test' ), function(err, stdout, stderr) {
+		cp.execFile( p, function(err, stdout, stderr) {
 			if(err) throw err;
 			controller.emit( stdout );
 			controller.check();
