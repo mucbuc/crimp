@@ -5,7 +5,8 @@ var assert = require( 'assert' )
   , copy = require( 'fs-extra' ).copy
   , fs = require( 'graceful-fs' )
   , Printer = require( './printer' )
-  , rmrf = require( 'rmrf' );
+  , rmrf = require( 'rmrf' )
+  , gff = require( './ggf.js' );
 
 assert( typeof copy === 'function' );
 
@@ -23,6 +24,13 @@ function Base(program) {
       cb( JSON.parse( data.toString() ).tests );
     });
   }; 
+
+  this.define = function(def, out, cb) {
+    console.log( 'define', path.dirname(out) );
+    makePathIfNone(path.dirname(out), function() {
+      gff(def, out, cb);
+    }); 
+  };
 
   this.generate = function( o, cb ) {
 
@@ -63,22 +71,28 @@ function Base(program) {
         cb( code, o.output );
       });
     });
-
-    function makePathIfNone( path, cb ) {
-      fs.exists(path, function(exists) {
-        if (exists) 
-          cb();
-        else 
-          fs.mkdir( path, [], cb ); 
-      });
-    }
   };
+
+  function makePathIfNone( path, cb ) {
+    fs.exists(path, function(exists) {
+      if (exists) 
+        cb();
+      else 
+        fs.mkdir( path, [], cb ); 
+    });
+  }
 
   this.traverse = function( o, cb ) {
     fs.readdir( o.testDir, function( err, files ) {
-      files.forEach( function( file ) {
-        if (path.extname(file) == '.gyp') {
+      var found = false;
+      if (err) throw err;
+      files.forEach( function( file, index, array ) {
+        if (path.extname(file) == '.json') {
+          found = true;
           cb( file ); 
+        }
+        else if (!found && index == array.length - 1) {
+          throw 'no json file found'; 
         }
       } );    
     } );
@@ -89,6 +103,9 @@ function Base(program) {
     readTargetName( o.defFile, o.testDir, function( targetName ) { 
 
       var child; 
+
+      fs.unlink( o.defFile );
+
       if (program.gcc) {
         child = cp.spawn(
           'make',
@@ -130,6 +147,7 @@ function Base(program) {
 
     function readTargetName(defFile, testDir, cb) {
       var defPath = path.join( testDir, defFile );
+      
       fs.readFile( defPath, function( err, data ) {
         if (err) {
           Printer.cursor.red();
@@ -139,13 +157,16 @@ function Base(program) {
         }
         else {
           var matches = data.toString().match( /'target_name'\s*:\s*'(.*)'/ )
+          if (!matches) {
+            matches = data.toString().match( /"target_name"\s*:\s*"(.*)"/ )
+          }
           if (matches) {
             cb( matches[1] );
           }
         }
       } ); 
     }
-  };
+  };  
 
   this.run = function( o, cb ) {
     var execPath;

@@ -83,13 +83,19 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
   });
 
   emitter.on( 'traverse', function( o ) {
-    
     logic
     .traverse( o )
-    .then( function( o ) {
+    .then( function( o ) { 
       base.traverse( o, function(defFile) {
-        o['defFile'] = defFile;
-        emitter.emit( 'generate', o );
+        var gypFile = path.basename( defFile, '.json' ) + '.gyp';
+        logic.define( 
+          path.join( program.path, defFile ), 
+          path.join( program.path, gypFile )
+        )
+        .then( function() {
+            o['defFile'] = gypFile;
+            emitter.emit( 'generate', o );
+        });
       });
     });
   });
