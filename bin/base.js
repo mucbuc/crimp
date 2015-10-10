@@ -40,8 +40,6 @@ function Base(program) {
 
     makePathIfNone(o.output, function() {
 
-      console.log( 'o.output', o.output );
-
       var include = program.gcc ? 'cpp11-gcc.gypi' : 'cpp11.gypi'
         , args = [
           o.defFile,
@@ -101,7 +99,6 @@ function Base(program) {
   };
 
   this.build = function( o, cb ) {
-    console.log( o.output );
     
     readTargetName( o.defFile, o.testDir, function( targetName ) { 
 

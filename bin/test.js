@@ -87,13 +87,13 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
     .traverse( o )
     .then( function( o ) { 
       base.traverse( o, function(defFile) {
-        console.log( 'define', defFile ); 
+        var gypFile = path.basename( defFile, '.json' ) + '.gyp';
         logic.define( 
-          '/Users/mbusenitz/work/plank/test/test.json', // defFile,
-          '/Users/mbusenitz/work/plank/test/test.gyp'
+          path.join( program.path, defFile ), 
+          path.join( program.path, gypFile )
         )
         .then( function() {
-            o['defFile'] = 'test.gyp';
+            o['defFile'] = gypFile;
             emitter.emit( 'generate', o );
         });
       });
