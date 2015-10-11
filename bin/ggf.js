@@ -1,36 +1,60 @@
 #!/usr/bin/env node
 
+/*
+  
+objective: 
+  generate gyp file
+*/ 
+
 var fs = require( 'fs' )
   , path = require( 'path' )
   , util = require( 'util' )
   , assert = require( 'assert' )
-  , Printer = require( './printer' );
+  , Printer = require( './printer' )
+  , Promise = require( 'promise' ); 
 
-function defineGYP(pathJSON, pathGYP, cb) {
+function defineGYP(pathJSON, cb) {
 
-	assert( fs.existsSync( pathJSON ), "project json missing" ); 
+  var product = {
+    'sources': []
+  };
+  assert( fs.existsSync( pathJSON ), "project json missing" ); 
+  Printer.begin( 'define' );
 
-	Printer.begin( 'define' ); 
+  processDependencies( pathJSON ).then( function() {
+    cb(product); 
+  }); 
 
-	fs.readFile( pathJSON, function(err, data) {
-		var content
-		  , gyp;
+  function processDependencies(pathJSON) {
+    
+    return new Promise( function(resolve, reject) {
+      fs.readFile( pathJSON, function(err, data) {
+        var content;
+        if (err) throw err;
+        content = JSON.parse( data.toString() );
+        
+        if (content.hasOwnProperty('sources')) {
+          product.sources = product.sources.concat( content.sources );
+        }
 
-		if (err) throw err;
-		content = JSON.parse( data.toString() );
-		gyp = {
-			target_defaults: {
-				target_name: 'test',
-				type: 'executable',
-				sources: content.sources
-			}
-		};
-
-		fs.writeFile( pathGYP, JSON.stringify( gyp, null, 2 ), null, function() {
-			Printer.finishGreen( 'define' );
-			cb();
-		} ); 
-	});
+        if (  content.hasOwnProperty('import')
+          &&  content.import.length) {
+          content.import.forEach( function( item, index, array ) {
+            var importPath = path.join( path.dirname(pathJSON), item); 
+            processDependencies( importPath )
+            .then( function() {
+              if (index == array.length - 1) {
+                resolve(); 
+              }
+            });
+          });
+        }
+        else {
+          resolve(); 
+        }
+      });
+    } );
+  }
 }
 
 module.exports = defineGYP;

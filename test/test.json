@@ -2,5 +2,9 @@
 	"sources": 
 	[ 
 		"src/main.cpp" 
+	],
+	"import":
+	[
+		"lib/sublib/def.json"
 	]
 }
