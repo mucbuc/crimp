@@ -22,26 +22,31 @@ function defineGYP(pathJSON, cb) {
   Printer.begin( 'define' );
 
   processDependencies( pathJSON ).then( function() {
+    Printer.finishGreen('define');
+    console.log( product );
     cb(product); 
   }); 
 
-  function processDependencies(pathJSON) {
+  function processDependencies(fileJSON) {
     
     return new Promise( function(resolve, reject) {
-      fs.readFile( pathJSON, function(err, data) {
+      fs.readFile( fileJSON, function(err, data) {
         var content;
         if (err) throw err;
         content = JSON.parse( data.toString() );
         
         if (content.hasOwnProperty('sources')) {
-          product.sources = product.sources.concat( content.sources );
+          content.sources.forEach(function(source, index, array) {
+            product.sources = product.sources.concat(
+              path.join( path.dirname(fileJSON), source ) 
+            );
+          });
         }
 
         if (  content.hasOwnProperty('import')
           &&  content.import.length) {
           content.import.forEach( function( item, index, array ) {
-            var importPath = path.join( path.dirname(pathJSON), item); 
-            processDependencies( importPath )
+            processDependencies( item )
             .then( function() {
               if (index == array.length - 1) {
                 resolve(); 

@@ -89,7 +89,8 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
       base.traverse( o, function(defFile) {
         var gypFile = path.basename( defFile, '.json' ) + '.gyp';
         logic.define( 
-          path.join( program.path, defFile ), 
+          defFile,
+          //path.join( program.path, defFile ), 
           path.join( program.path, gypFile )
         )
         .then( function() {

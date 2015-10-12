@@ -28,7 +28,21 @@ function Base(program) {
   this.define = function(def, out, cb) {
     console.log( 'define', path.dirname(out) );
     makePathIfNone(path.dirname(out), function() {
-      gff(def, out, cb);
+      gff(def, function(product) {
+        var gyp = {
+            target_defaults: {
+              target_name: 'test',
+              type: 'executable',
+              sources: product.sources,
+              include_dirs: [ '.' ]
+            }
+          };
+
+        fs.writeFile( out, JSON.stringify( gyp, null, 2 ), null, function() {
+          Printer.finishGreen( 'define' );
+          cb();
+        } ); 
+      });
     }); 
   };
 
