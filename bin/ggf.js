@@ -21,16 +21,16 @@ function defineGYP(pathJSON, cb) {
   assert( fs.existsSync( pathJSON ), "project json missing" ); 
   Printer.begin( 'define' );
 
-  processDependencies( pathJSON ).then( function() {
+  processDependencies( pathJSON, '' ).then( function() {
     Printer.finishGreen('define');
     console.log( product );
     cb(product); 
   }); 
 
-  function processDependencies(fileJSON) {
+  function processDependencies(fileJSON, basePath) {
     
     return new Promise( function(resolve, reject) {
-      fs.readFile( fileJSON, function(err, data) {
+      fs.readFile( path.join(basePath, fileJSON), function(err, data) {
         var content;
         if (err) throw err;
         content = JSON.parse( data.toString() );
@@ -46,7 +46,7 @@ function defineGYP(pathJSON, cb) {
         if (  content.hasOwnProperty('import')
           &&  content.import.length) {
           content.import.forEach( function( item, index, array ) {
-            processDependencies( item )
+            processDependencies( item, path.dirname(fileJSON) )
             .then( function() {
               if (index == array.length - 1) {
                 resolve(); 

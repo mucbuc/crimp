@@ -8,9 +8,9 @@ test( 'ggf recursion', function(t) {
 	var expected = { 
 		"sources": [
 			'src/main.cpp', 
-			'src/subsrc.h', 
-			'src/subsrc.cpp', 
-			'src/sub2src.cpp'
+			'lib/sublib/src/subsrc.h', 
+			'lib/sublib/src/subsrc.cpp', 
+			'lib/sublib2/src/sub2src.cpp'
 		]
 	};		
 	ggf( './test.json', function(gyp) {
