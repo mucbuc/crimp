@@ -91,7 +91,7 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
         logic.define( 
           defFile,
           //path.join( program.path, defFile ), 
-          path.join( program.path, gypFile )
+          path.join( program.output, gypFile )
         )
         .then( function() {
             o['defFile'] = gypFile;

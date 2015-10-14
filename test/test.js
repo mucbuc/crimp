@@ -16,7 +16,7 @@ test( 'test build', function(t) {
 
   runPlank( [], function(code) {
     t.assert( !code );
-    runBuild( './build/Test/test', controller );  
+    runBuild( './build/build/Test/test', controller );  
   });
 });
 
@@ -26,7 +26,7 @@ test( 'release build', function(t) {
 
   runPlank( ['-r'], function(code) {
     t.assert( !code );
-    runBuild( './build/Release/test', controller ); 
+    runBuild( './build/build/Release/test', controller ); 
   });
 });
 
@@ -36,7 +36,7 @@ test( 'debug build', function(t) {
 
   runPlank( ['-d'], function(code) {
     t.assert( !code );
-    runBuild( './build/Debug/test', controller );
+    runBuild( './build/build/Debug/test', controller );
   });
 });
 
@@ -64,6 +64,7 @@ function runPlank( args, cb ) {
 
 function runBuild( path, controller ) {
   cp.execFile( path, function(err, stdout, stderr) {
+    console.log( err );
     if(err) throw err;
     controller.emit( stdout );
     controller.check();

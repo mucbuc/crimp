@@ -56,7 +56,7 @@ function Base(program) {
 
       var include = program.gcc ? 'cpp11-gcc.gypi' : 'cpp11.gypi'
         , args = [
-          o.defFile,
+          path.join( o.output, o.defFile ),
           '--depth=' + (program.gcc ? './' : '.'),
           '--generator-output=' + o.output,
           '--include=' + path.join( __dirname, '../def', include )
@@ -114,11 +114,11 @@ function Base(program) {
 
   this.build = function( o, cb ) {
     
-    readTargetName( o.defFile, o.testDir, function( targetName ) { 
+    readTargetName( o.defFile, o.output, function( targetName ) { 
 
       var child; 
 
-      fs.unlink( o.defFile );
+      //fs.unlink( o.defFile );
 
       if (program.gcc) {
         child = cp.spawn(
@@ -190,13 +190,13 @@ function Base(program) {
       execPath = path.join( o.output, 'out/Test', o.target );
     }
     else if (program.debug) {
-      execPath = path.join( o.output, 'Debug', o.target );
+      execPath = path.join( o.output, 'build/Debug', o.target );
     }
     else if (program.release) {
-      execPath = path.join( o.output, 'Release', o.target );
+      execPath = path.join( o.output, 'build/Release', o.target );
     }
     else {
-      execPath = path.join( o.output, 'Test', o.target );
+      execPath = path.join( o.output, 'build/Test', o.target );
     }
 
     cp.spawn( 
