@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 
-var ggf = require( '../bin/ggf.js' )
+var path = require( 'path' )
   , util = require( 'util' )
-  , test = require( 'tape' );
+  , test = require( 'tape' )
+  , thisPath = path.dirname(__filename);
+
+process.chdir( thisPath );
 
 test( 'ggf recursion', function(t) {
-	var expected = { 
+	var ggf = require( '../bin/ggf.js' )
+	  , expected = { 
 		"sources": [
 			'lib/sublib/src/subsrc.h', 
 			'lib/sublib/src/subsrc.cpp', 
