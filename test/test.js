@@ -14,11 +14,9 @@ test( 'test build', function(t) {
 	var controller = makeExpector(t);
 	controller.expect( 'hello test\n' );
 
-	cp
-	.fork( plankScript )
-	.on( 'exit', function(code) {
+	runPlank( [], function(code) {
 		t.assert( !code );
-		runBuild( './build/Test/test', controller );  
+ 	 	runBuild( './build/Test/test', controller );  
 	});
 });
 
@@ -26,13 +24,9 @@ test( 'release build', function(t) {
 	var controller = makeExpector(t);
 	controller.expect( 'hello release\n' );
 
-	cp
-	.fork( 
-		  plankScript
-		, ['-r'] )
-	.on( 'exit', function(code) {
+	runPlank( ['-r'], function(code) {
 		t.assert( !code );
-		runBuild( './build/Release/test', controller ); 
+ 	 	runBuild( './build/Release/test', controller ); 
 	});
 });
 
@@ -40,11 +34,7 @@ test( 'debug build', function(t) {
 	var controller = makeExpector(t);
 	controller.expect( 'hello debug\n' );
 
-	cp
-	.fork( 
-		  plankScript
-		, ['-d'] )
-	.on( 'exit', function(code) {
+	runPlank( ['-d'], function(code) {
 		t.assert( !code );
  	 	runBuild( './build/Debug/test', controller );
 	});
@@ -60,6 +50,16 @@ function makeExpector(tape) {
 	};
 
 	return controller;
+}
+
+function runPlank( args, cb ) {
+	cp
+	.fork( 
+		  plankScript
+		, args )
+	.on( 'exit', function(code) {
+		cb(code);
+ 	});
 }
 
 function runBuild( path, controller ) {
