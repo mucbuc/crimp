@@ -2,7 +2,7 @@
   "name": "plank",
   "version": "0.0.0",
   "description": "cpm",
-  "main": "none",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },
