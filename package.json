@@ -2,12 +2,12 @@
   "name": "plank",
   "version": "0.0.0",
   "description": "cpm",
-  "main": "none",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "node test/test.js"
+    "test": "node test/test.js; node test2/test.js"
   },
   "repository": {
     "type": "git",
