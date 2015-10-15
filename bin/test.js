@@ -90,7 +90,6 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
         var gypFile = path.basename( defFile, '.json' ) + '.gyp';
         logic.define( 
           defFile,
-          //path.join( program.path, defFile ), 
           path.join( program.output, gypFile )
         )
         .then( function() {

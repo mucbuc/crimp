@@ -38,7 +38,7 @@ function defineGYP(pathJSON, cb) {
         if (content.hasOwnProperty('sources')) {
           content.sources.forEach(function(source, index, array) {
             product.sources = product.sources.concat(
-              path.join( path.dirname(fileJSON), '..', source ) 
+              path.join( '..', path.dirname(fileJSON), source ) 
             );
           });
         }

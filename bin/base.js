@@ -116,10 +116,7 @@ function Base(program) {
     
     readTargetName( o.defFile, o.output, function( targetName ) { 
 
-      var child; 
-
-      //fs.unlink( o.defFile );
-
+      var child = null; 
       if (program.gcc) {
         child = cp.spawn(
           'make',
@@ -151,7 +148,7 @@ function Base(program) {
             stdio: 'inherit'
           } ); 
       }
-
+      assert(child); 
       child.on( 'close', function( code ) {
         o['target'] = targetName;
         o['exitCode'] = code;
