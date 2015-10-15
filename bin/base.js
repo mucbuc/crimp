@@ -34,7 +34,7 @@ function Base(program) {
               target_name: 'test',
               type: 'executable',
               sources: product.sources,
-              include_dirs: [ '.' ]
+              include_dirs: [ '../' ]
             }
           };
 
