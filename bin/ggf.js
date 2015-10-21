@@ -30,7 +30,7 @@ function defineGYP(pathJSON, cb) {
   function processDependencies(fileJSON, basePath) {
     
     return new Promise( function(resolve, reject) {
-      fs.readFile( path.join(basePath, fileJSON), function(err, data) {
+      fs.readFile( fileJSON, function(err, data) {
         var content;
         if (err) throw err;
         content = JSON.parse( data.toString() );

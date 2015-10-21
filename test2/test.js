@@ -13,7 +13,7 @@ test( 'ggf recursion', function(t) {
 		"sources": [
 			'../lib/sublib/src/subsrc.h', 
 			'../lib/sublib/src/subsrc.cpp', 
-			'../lib/sublib2/src/sub2src.cpp'
+			'../lib/sublib2/src/subsrc.cpp'
 		]
 	};		
 	ggf( './test-import.json', function(gyp) {
