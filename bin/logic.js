@@ -13,9 +13,13 @@ function Logic(base) {
   this.define = function(jsdef, output) {
     return new Promise(function(resolve, reject) {
       try {
-        base.define(jsdef, output, function() {
-          resolve(); 
-        });
+        fs.exists(jsdef, function(exists) {
+          if (!exists) 
+            throw "error: can not open definition file: " + jsdef;
+          base.define(jsdef, output, function() {
+            resolve(); 
+          });
+        } );
       }
       catch(e) {
         throw(e); 
