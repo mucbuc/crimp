@@ -48,6 +48,7 @@ program.path = program.path ? program.path : '.';
   }); 
 
   emitter.on( 'build', function( o ) {
+    
     if (program.ide) {
       logic.open( o );
     }
@@ -90,7 +91,7 @@ program.path = program.path ? program.path : '.';
       base.traverse( o.testDir, function(defFile) {
         var gypFile = path.basename( defFile, '.json' ) + '.gyp';
         logic.define( 
-          defFile,
+          path.join( program.path, defFile ),
           path.join( program.output, gypFile )
         )
         .then( function() {
@@ -102,7 +103,7 @@ program.path = program.path ? program.path : '.';
   });
   
   if (!program.suite) {
-    program.output = path.join( program.path, program.output ? program.output : 'build' );
+    program.output = program.output ? program.output : 'build';
 
     emitter.emit( 'traverse', { 
       testDir: program.path, 

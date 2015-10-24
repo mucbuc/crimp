@@ -54,8 +54,6 @@ function Logic(base) {
       Printer.begin( o.defFile, 'generate' );
       try {
         base.generate( o, function( exitCode, buildDir){
-          //o['buildDir'] = buildDir;
-          o['testDir'] = o.testDir;
           if (!exitCode) {
             Printer.finishGreen( o.defFile, 'generate' );
             resolve(o);

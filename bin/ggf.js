@@ -16,10 +16,12 @@ var fs = require( 'fs' )
 function defineGYP(pathJSON, cb) {
 
   var product = {
-    'sources': []
-  };
+        'sources': []
+      }
+    , buildDir = path.dirname(pathJSON);
+
   assert( fs.existsSync( pathJSON ), "project json missing: " + pathJSON ); 
-  Printer.begin( 'define' );
+  Printer.begin( 'define', pathJSON );
 
   processDependencies( pathJSON, '' ).then( function() {
     Printer.finishGreen('define');
@@ -32,7 +34,7 @@ function defineGYP(pathJSON, cb) {
     return new Promise( function(resolve, reject) {
       fs.readFile( fileJSON, function(err, data) {
         var content;
-        if (err) throw err;
+        if (err) throw "project json missing: " + fileJSON + " cwd: " + process.cwd();
         
         console.log( fileJSON, data.toString() );
         content = JSON.parse( data.toString() );
@@ -48,7 +50,7 @@ function defineGYP(pathJSON, cb) {
         if (  content.hasOwnProperty('import')
           &&  content.import.length) {
           content.import.forEach( function( item, index, array ) {
-            processDependencies( item, path.dirname(fileJSON) )
+            processDependencies( path.join( buildDir, item ), path.dirname(fileJSON) )
             .then( function() {
               if (index == array.length - 1) {
                 resolve(); 
