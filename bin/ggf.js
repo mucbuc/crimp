@@ -18,7 +18,7 @@ function defineGYP(pathJSON, cb) {
   var product = {
     'sources': []
   };
-  assert( fs.existsSync( pathJSON ), "project json missing" ); 
+  assert( fs.existsSync( pathJSON ), "project json missing: " + pathJSON ); 
   Printer.begin( 'define' );
 
   processDependencies( pathJSON, '' ).then( function() {
@@ -33,6 +33,8 @@ function defineGYP(pathJSON, cb) {
       fs.readFile( fileJSON, function(err, data) {
         var content;
         if (err) throw err;
+        
+        console.log( fileJSON, data.toString() );
         content = JSON.parse( data.toString() );
         
         if (content.hasOwnProperty('sources')) {

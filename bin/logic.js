@@ -18,7 +18,7 @@ function Logic(base) {
         });
       }
       catch(e) {
-        trow(e); 
+        throw(e); 
       }
     });
   };
