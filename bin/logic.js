@@ -35,10 +35,7 @@ function Logic(base) {
               resolve( o ); 
             }
             else {
-              Printer.cursor.red();
-              process.stdout.write( 'invalid test definition path: ' + o.testDir );
-              Printer.cursor.reset();
-              reject();
+              throw 'invalid test definition path: ' + o.testDir;
             }
           });
         }

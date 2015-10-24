@@ -25,7 +25,8 @@ program
   .option( '-i, --IDE', 'open IDE' )
   .parse( process.argv );
 
-program.path = program.path ? path.join( process.cwd(), program.path ) : process.cwd();
+//program.path = program.path ? path.join( process.cwd(), program.path ) : process.cwd();
+program.path = program.path ? program.path : '.';
 
 (function() {
   var base = new Base(program)
