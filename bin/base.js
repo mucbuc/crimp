@@ -96,8 +96,8 @@ function Base(program) {
     });
   }
 
-  this.traverse = function( o, cb ) {
-    fs.readdir( o.testDir, function( err, files ) {
+  this.traverse = function( dir, cb ) {
+    fs.readdir( dir, function( err, files ) {
       var found = false;
       if (err) throw err;
       files.forEach( function( file, index, array ) {
