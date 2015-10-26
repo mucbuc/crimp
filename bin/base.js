@@ -49,9 +49,6 @@ function Base(program) {
 
   this.generate = function( o, cb ) {
 
-
-    console.log( '*****' , o );
-
     assert( o.hasOwnProperty( 'output' ) );
     assert( o.hasOwnProperty( 'testDir' ) );
     assert( o.hasOwnProperty( 'defFile' ) );
@@ -91,14 +88,7 @@ function Base(program) {
     });
   };
 
-  function makePathIfNone( path, cb ) {
-    fs.exists(path, function(exists) {
-      if (exists) 
-        cb();
-      else 
-        fs.mkdir( path, [], cb ); 
-    });
-  }
+  this.makePathIfNone = makePathIfNone;
 
   this.traverse = function( dir, cb ) {
     fs.readdir( dir, function( err, files ) {
@@ -219,6 +209,15 @@ function Base(program) {
       console.log( data.toString() );
     });
   };
+  
+  function makePathIfNone( path, cb ) {
+    fs.exists(path, function(exists) {
+      if (exists) 
+        cb();
+      else 
+        fs.mkdir( path, [], cb ); 
+    });
+  }
 }
 
 module.exports = Base;

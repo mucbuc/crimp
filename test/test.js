@@ -6,12 +6,56 @@ var assert = require( 'assert' )
   , Expector = require( 'expector' ).Expector
   , test = require( 'tape' )
   , thisPath = path.dirname(__filename)
-  , plankScript = path.join( thisPath, '../bin/test.js' );
+  , plankScript = path.join( thisPath, '../bin/test.js' )
+  , define = require( '../bin/definer.js' )
+  , generate = require( '../bin/generator.js' )
+  , build = require( '../bin/builder.js' )
+  , buildProject = require( '../bin/controller.js' );
 
 process.chdir( thisPath ); 
 
+test( 'test controller', function(t) {
+  var expector = new Expector(t);
+    
+  buildProject( './test.json', function() {
+    console.log( 'done' ); 
+  });
+});
+
+
+/*
+test( 'test builder', function(t) {
+  var controller = new Expector(t)
+    , MACXCTOOLEXITCODEERROR = 7;
+  controller.expect(MACXCTOOLEXITCODEERROR);
+  build( 'sample.xcodeproj', function(code) {
+      controller.emit(code);
+      controller.check();
+    });
+});
+
+test( 'test generator', function(t) {
+  var controller = new Expector(t);
+  controller.expect( 7 );
+  generate( {
+      "defFile": 'sample.gyp',
+      "testDir": "."
+    }, function(code) {
+      controller.emit( code );
+      controller.check();
+    });
+});
+
+test( 'test definer', function(t) {
+  var controller = new Expector(t);
+  controller.expect( '{"sources":["../src/main.cpp"]}' );
+  define( './test.json', function(product) {
+    controller.emit( JSON.stringify(product) ); 
+    controller.check();
+  });
+});
 test( 'test build', function(t) {
-  var controller = makeExpector(t);
+  var controller = new Expector(t);
   controller.expect( 'hello test\n' );
 
   runPlank( [], function(code) {
@@ -21,7 +65,7 @@ test( 'test build', function(t) {
 });
 
 test( 'release build', function(t) {
-  var controller = makeExpector(t);
+  var controller = new Expector(t);
   controller.expect( 'hello release\n' );
 
   runPlank( ['-r'], function(code) {
@@ -31,7 +75,7 @@ test( 'release build', function(t) {
 });
 
 test( 'debug build', function(t) {
-  var controller = makeExpector(t);
+  var controller = new Expector(t);
   controller.expect( 'hello debug\n' );
 
   runPlank( ['-d'], function(code) {
@@ -39,18 +83,6 @@ test( 'debug build', function(t) {
     runBuild( './build/build/Debug/test', controller );
   });
 });
-
-function makeExpector(tape) {
-  var controller = new Expector(tape)
-    , tmpCheck = controller.check; 
-
-  controller.check = function() {
-    tmpCheck();
-    tape.end();
-  };
-
-  return controller;
-}
 
 function runPlank( args, cb ) {
   cp
@@ -70,3 +102,4 @@ function runBuild( path, controller ) {
     controller.check();
   } );
 }
+*/
