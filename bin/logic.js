@@ -13,12 +13,16 @@ function Logic(base) {
   this.define = function(jsdef, output) {
     return new Promise(function(resolve, reject) {
       try {
-        base.define(jsdef, output, function() {
-          resolve(); 
-        });
+        fs.exists(jsdef, function(exists) {
+          if (!exists) 
+            throw "error: can not open definition file: " + jsdef;
+          base.define(jsdef, output, function() {
+            resolve(); 
+          });
+        } );
       }
       catch(e) {
-        trow(e); 
+        throw(e); 
       }
     });
   };
@@ -31,10 +35,7 @@ function Logic(base) {
               resolve( o ); 
             }
             else {
-              Printer.cursor.red();
-              process.stdout.write( 'invalid test definition path: ' + o.testDir );
-              Printer.cursor.reset();
-              reject();
+              throw 'invalid test definition path: ' + o.testDir;
             }
           });
         }
@@ -53,8 +54,6 @@ function Logic(base) {
       Printer.begin( o.defFile, 'generate' );
       try {
         base.generate( o, function( exitCode, buildDir){
-          //o['buildDir'] = buildDir;
-          o['testDir'] = o.testDir;
           if (!exitCode) {
             Printer.finishGreen( o.defFile, 'generate' );
             resolve(o);

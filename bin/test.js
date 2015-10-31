@@ -25,7 +25,8 @@ program
   .option( '-i, --IDE', 'open IDE' )
   .parse( process.argv );
 
-program.path = program.path ? path.join( process.cwd(), program.path ) : process.cwd();
+//program.path = program.path ? path.join( process.cwd(), program.path ) : process.cwd();
+program.path = program.path ? program.path : '.';
 
 (function() {
   var base = new Base(program)
@@ -47,6 +48,7 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
   }); 
 
   emitter.on( 'build', function( o ) {
+    
     if (program.ide) {
       logic.open( o );
     }
@@ -86,10 +88,10 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
     logic
     .traverse( o )
     .then( function( o ) { 
-      base.traverse( o, function(defFile) {
+      base.traverse( o.testDir, function(defFile) {
         var gypFile = path.basename( defFile, '.json' ) + '.gyp';
         logic.define( 
-          defFile,
+          path.join( program.path, defFile ),
           path.join( program.output, gypFile )
         )
         .then( function() {
@@ -101,7 +103,7 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
   });
   
   if (!program.suite) {
-    program.output = path.join( program.path, program.output ? program.output : 'build' );
+    program.output = program.output ? program.output : 'build';
 
     emitter.emit( 'traverse', { 
       testDir: program.path, 

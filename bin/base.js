@@ -26,9 +26,10 @@ function Base(program) {
   }; 
 
   this.define = function(def, out, cb) {
-    console.log( 'define', path.dirname(out) );
-    makePathIfNone(path.dirname(out), function() {
-      gff(def, function(product) {
+    var buildDir = path.dirname(out);
+    console.log( 'define', buildDir );
+    makePathIfNone(buildDir, function() {
+      gff( def, function(product) {
         var gyp = {
             target_defaults: {
               target_name: 'test',
@@ -87,17 +88,10 @@ function Base(program) {
     });
   };
 
-  function makePathIfNone( path, cb ) {
-    fs.exists(path, function(exists) {
-      if (exists) 
-        cb();
-      else 
-        fs.mkdir( path, [], cb ); 
-    });
-  }
+  this.makePathIfNone = makePathIfNone;
 
-  this.traverse = function( o, cb ) {
-    fs.readdir( o.testDir, function( err, files ) {
+  this.traverse = function( dir, cb ) {
+    fs.readdir( dir, function( err, files ) {
       var found = false;
       if (err) throw err;
       files.forEach( function( file, index, array ) {
@@ -116,6 +110,7 @@ function Base(program) {
     
     readTargetName( o.defFile, o.output, function( targetName ) { 
 
+      o.output = path.join(o.output, 'build');
       var child = null; 
       if (program.gcc) {
         child = cp.spawn(
@@ -131,7 +126,7 @@ function Base(program) {
         var projectPath = path.join( o.output, targetName + '.xcodeproj' )
           , args = [
             "-project",
-            projectPath
+            targetName + '.xcodeproj'
           ];  
 
         if (program.IDE) {
@@ -139,14 +134,14 @@ function Base(program) {
           cp.spawn( 'open', [ projectPath ] );
         }
         
-        console.log( args ); 
+        console.log( args, o.output, process.cwd() ); 
 
         child = cp.spawn( 
           'xcodebuild', 
           args, {
-            cwd: o.output,
+            cwd: path.join( o.testDir, o.output ),
             stdio: 'inherit'
-          } ); 
+          } );
       }
       assert(child); 
       child.on( 'close', function( code ) {
@@ -158,7 +153,6 @@ function Base(program) {
 
     function readTargetName(defFile, testDir, cb) {
       var defPath = path.join( testDir, defFile );
-      
       fs.readFile( defPath, function( err, data ) {
         if (err) {
           Printer.cursor.red();
@@ -181,19 +175,19 @@ function Base(program) {
 
   this.run = function( o, cb ) {
     var execPath;
-    
+    o.output = path.join( o.testDir, o.output );
     if (program.gcc) {
       o.testDir = path.join( o.testDir, 'out' );
       execPath = path.join( o.output, 'out/Test', o.target );
     }
     else if (program.debug) {
-      execPath = path.join( o.output, 'build/Debug', o.target );
+      execPath = path.join( o.output, 'Debug', o.target );
     }
     else if (program.release) {
-      execPath = path.join( o.output, 'build/Release', o.target );
+      execPath = path.join( o.output, 'Release', o.target );
     }
     else {
-      execPath = path.join( o.output, 'build/Test', o.target );
+      execPath = path.join( o.output, 'Test', o.target );
     }
 
     cp.spawn( 
@@ -215,6 +209,15 @@ function Base(program) {
       console.log( data.toString() );
     });
   };
+  
+  function makePathIfNone( path, cb ) {
+    fs.exists(path, function(exists) {
+      if (exists) 
+        cb();
+      else 
+        fs.mkdir( path, [], cb ); 
+    });
+  }
 }
 
 module.exports = Base;
