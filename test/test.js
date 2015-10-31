@@ -22,18 +22,6 @@ test( 'test controller', function(t) {
   });
 });
 
-
-/*
-test( 'test builder', function(t) {
-  var controller = new Expector(t)
-    , MACXCTOOLEXITCODEERROR = 7;
-  controller.expect(MACXCTOOLEXITCODEERROR);
-  build( 'sample.xcodeproj', function(code) {
-      controller.emit(code);
-      controller.check();
-    });
-});
-
 test( 'test generator', function(t) {
   var controller = new Expector(t);
   controller.expect( 7 );
@@ -54,6 +42,7 @@ test( 'test definer', function(t) {
     controller.check();
   });
 });
+
 test( 'test build', function(t) {
   var controller = new Expector(t);
   controller.expect( 'hello test\n' );
@@ -102,4 +91,3 @@ function runBuild( path, controller ) {
     controller.check();
   } );
 }
-*/
