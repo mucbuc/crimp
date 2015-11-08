@@ -6,22 +6,45 @@ var assert = require( 'assert' )
   , Expector = require( 'expector' ).Expector
   , test = require( 'tape' )
   , thisPath = path.dirname(__filename)
-  , plankScript = path.join( thisPath, '../bin/test.js' );
+  , define = require( '../bin/definer.js' )
+  , generate = require( '../bin/generator.js' )
+  , build = require( '../bin/builder.js' )
+  , buildProject = require( '../bin/controller.js' );
 
 process.chdir( thisPath ); 
 
+test( 'test controller', function(t) {
+  var expector = new Expector(t);
+  expector.expect( 'done' );
+  buildProject( './test.json', function() {
+    expector.emit( 'done' );
+    expector.check(); 
+  });
+});
+
+test( 'test definer', function(t) {
+  var controller = new Expector(t);
+  controller.expect( '{"sources":["../src/main.cpp"]}' );
+  define( './test.json' )
+  .then( function(product) {
+    controller.emit( JSON.stringify(product) ); 
+    controller.check();
+  });
+});
+
 test( 'test build', function(t) {
-  var controller = makeExpector(t);
+  var controller = new Expector(t);
   controller.expect( 'hello test\n' );
 
-  runPlank( [], function(code) {
+  buildProject( 'test.json', function(code) {
     t.assert( !code );
     runBuild( './build/build/Test/test', controller );  
   });
 });
 
+/*
 test( 'release build', function(t) {
-  var controller = makeExpector(t);
+  var controller = new Expector(t);
   controller.expect( 'hello release\n' );
 
   runPlank( ['-r'], function(code) {
@@ -30,8 +53,9 @@ test( 'release build', function(t) {
   });
 });
 
+
 test( 'debug build', function(t) {
-  var controller = makeExpector(t);
+  var controller = new Expector(t);
   controller.expect( 'hello debug\n' );
 
   runPlank( ['-d'], function(code) {
@@ -39,33 +63,15 @@ test( 'debug build', function(t) {
     runBuild( './build/build/Debug/test', controller );
   });
 });
-
-function makeExpector(tape) {
-  var controller = new Expector(tape)
-    , tmpCheck = controller.check; 
-
-  controller.check = function() {
-    tmpCheck();
-    tape.end();
-  };
-
-  return controller;
-}
-
-function runPlank( args, cb ) {
-  cp
-  .fork( 
-      plankScript
-    , args )
-  .on( 'exit', function(code) {
-    cb(code);
-  });
-}
+*/
 
 function runBuild( path, controller ) {
   cp.execFile( path, function(err, stdout, stderr) {
     console.log( err );
-    if(err) throw err;
+    if(err) {
+      console.log( path, process.cwd() );
+      throw err;
+    }
     controller.emit( stdout );
     controller.check();
   } );

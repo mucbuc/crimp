@@ -2,7 +2,10 @@ var assert = require( 'assert' )
   , Promise = require( 'promise' ) 
   , Printer = require( './printer' )
   , fs = require( 'graceful-fs' )
-  , summary = '';
+  , summary = ''
+  , define = require( './definer.js' )
+  , generate = require( './generator.js' )
+  , build = require( './builder.js' );
 
 process.on( 'exit', function() {
   console.log( summary );
@@ -11,16 +14,7 @@ process.on( 'exit', function() {
 function Logic(base) {
 
   this.define = function(jsdef, output) {
-    return new Promise(function(resolve, reject) {
-      try {
-        base.define(jsdef, output, function() {
-          resolve(); 
-        });
-      }
-      catch(e) {
-        trow(e); 
-      }
-    });
+    return define( jsdef ); 
   };
   
   this.traverse = function(o) {
@@ -31,10 +25,7 @@ function Logic(base) {
               resolve( o ); 
             }
             else {
-              Printer.cursor.red();
-              process.stdout.write( 'invalid test definition path: ' + o.testDir );
-              Printer.cursor.reset();
-              reject();
+              throw 'invalid test definition path: ' + o.testDir;
             }
           });
         }
@@ -50,52 +41,37 @@ function Logic(base) {
 
   this.generate = function(o) {
     return new Promise(function(resolve, reject) {
-      Printer.begin( o.defFile, 'generate' );
-      try {
+
+      base.makePathIfNone(o.output, function() {
         base.generate( o, function( exitCode, buildDir){
-          //o['buildDir'] = buildDir;
-          o['testDir'] = o.testDir;
           if (!exitCode) {
-            Printer.finishGreen( o.defFile, 'generate' );
+            //Printer.finishGreen( o.defFile, 'generate' );
             resolve(o);
           }
           else {
-            Printer.finishRed( o.defFile ) ; 
+            //Printer.finishRed( o.defFile ) ; 
             reject(o); 
           }
-        });
-      }
-      catch( e ) 
-      {
-        Printer.printError( e );
-        summarize( e, o );
-        throw( e );
-      }
+        });      
+/* 
+        generate( { 
+          pathGYP: o.defFile, 
+          testDir: o.testDir
+        }, function(o) {
+          resolve(o);
+        } );
+*/
+
+      }); 
     });
   };
 
   this.build = function(o) {
     return new Promise( function(resolve, reject) {
-      Printer.begin( o.defFile, 'build' );
-      
-      try {    
-        base.build( o, function( o ) { 
-          if (!o.exitCode) {
-            Printer.finishGreen( o.defFile );
-            resolve( o );
-          }
-          else {
-            Printer.finishRed( o.defFile );
-            reject(o); 
-          }
-        });
-      }
-      catch(e) 
-      {
-        Printer.printError( e );
-        summarize( e, o );
-        throw e;
-      }
+      build( {
+        'buildDir': o.output,
+        'targetName': options.targetName
+      }, reslove );
     });
   };
 

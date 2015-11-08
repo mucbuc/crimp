@@ -25,7 +25,8 @@ program
   .option( '-i, --IDE', 'open IDE' )
   .parse( process.argv );
 
-program.path = program.path ? path.join( process.cwd(), program.path ) : process.cwd();
+//program.path = program.path ? path.join( process.cwd(), program.path ) : process.cwd();
+program.path = program.path ? program.path : '.';
 
 (function() {
   var base = new Base(program)
@@ -47,6 +48,7 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
   }); 
 
   emitter.on( 'build', function( o ) {
+    
     if (program.ide) {
       logic.open( o );
     }
@@ -61,6 +63,7 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
   });
 
   emitter.on( 'generate', function( o ) {
+
     if (program.clean) {
       base.clean( o, generate );
     }
@@ -72,8 +75,13 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
     }
 
     function generate() {
+      o.gcc = program.gcc;
+      o.debug = program.debug;
+      o.release = program.release;
+
       logic.generate( o )
       .then( function( o ) {
+        console.log( 'build emit ****' );
         emitter.emit( 'build', o );
       })
       .catch( function() {
@@ -86,22 +94,26 @@ program.path = program.path ? path.join( process.cwd(), program.path ) : process
     logic
     .traverse( o )
     .then( function( o ) { 
-      base.traverse( o, function(defFile) {
+      base.traverse( o.testDir, function(defFile) {
         var gypFile = path.basename( defFile, '.json' ) + '.gyp';
         logic.define( 
-          defFile,
+          path.join( program.path, defFile ),
           path.join( program.output, gypFile )
         )
         .then( function() {
+            console.log( '****n define failed', err );
             o['defFile'] = gypFile;
             emitter.emit( 'generate', o );
+        })
+        .catch( function(err) {
+          console.log( '**** define failed', err );
         });
       });
     });
   });
   
   if (!program.suite) {
-    program.output = path.join( program.path, program.output ? program.output : 'build' );
+    program.output = program.output ? program.output : 'build';
 
     emitter.emit( 'traverse', { 
       testDir: program.path, 
