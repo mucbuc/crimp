@@ -10,7 +10,6 @@ var fs = require( 'fs' )
   , path = require( 'path' )
   , util = require( 'util' )
   , assert = require( 'assert' )
-  , Printer = require( './printer' )
   , Promise = require( 'promise' ); 
 
 function defineGYP(pathJSON, cb) {
@@ -21,10 +20,8 @@ function defineGYP(pathJSON, cb) {
     , buildDir = path.dirname(pathJSON);
 
   assert( fs.existsSync( pathJSON ), "project json missing: " + pathJSON ); 
-  Printer.begin( 'define', pathJSON );
-
+  
   processDependencies( pathJSON, '' ).then( function() {
-    Printer.finishGreen('define');
     console.log( product );
     cb(product); 
   }); 

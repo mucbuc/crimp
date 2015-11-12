@@ -14,9 +14,16 @@ var assert = require( 'assert' )
 process.chdir( thisPath ); 
 
 test( 'test controller', function(t) {
-  var expector = new Expector(t);
+  var expector = new Expector(t)
+    , options = { 
+        buildDir: 'build',
+        targetName: 'test',
+        testDir: '.',
+        pathJSON: './test.json'
+    };
+
   expector.expect( 'done' );
-  buildProject( './test.json', function() {
+  buildProject( options, function() {
     expector.emit( 'done' );
     expector.check(); 
   });
@@ -33,37 +40,56 @@ test( 'test definer', function(t) {
 });
 
 test( 'test build', function(t) {
-  var controller = new Expector(t);
+  var controller = new Expector(t)
+    , options = { 
+        buildDir: 'build',
+        targetName: 'test',
+        testDir: '.',
+        pathJSON: './test.json'
+    };
+
   controller.expect( 'hello test\n' );
 
-  buildProject( 'test.json', function(code) {
+  buildProject( options, function(code) {
     t.assert( !code );
     runBuild( './build/build/Test/test', controller );  
   });
 });
 
-/*
 test( 'release build', function(t) {
-  var controller = new Expector(t);
+  var controller = new Expector(t)
+    , options = { 
+        buildDir: 'build',
+        targetName: 'test',
+        testDir: '.',
+        pathJSON: './test.json',
+        release: 'true'
+    };
+
   controller.expect( 'hello release\n' );
 
-  runPlank( ['-r'], function(code) {
+  buildProject( options, function(code) {
     t.assert( !code );
     runBuild( './build/build/Release/test', controller ); 
   });
 });
 
-
 test( 'debug build', function(t) {
-  var controller = new Expector(t);
+  var controller = new Expector(t)
+    , options = { 
+        buildDir: 'build',
+        targetName: 'test',
+        testDir: '.',
+        pathJSON: './test.json',
+        debug: 'true'
+    };
   controller.expect( 'hello debug\n' );
 
-  runPlank( ['-d'], function(code) {
+  buildProject( options, function(code) {
     t.assert( !code );
     runBuild( './build/build/Debug/test', controller );
   });
 });
-*/
 
 function runBuild( path, controller ) {
   cp.execFile( path, function(err, stdout, stderr) {

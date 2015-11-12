@@ -4,15 +4,9 @@ var define = require( '../bin/definer.js' )
   , fs = require( 'fs' )
   , path = require( 'path' );
 
-function buildProject( pathJSON, cb ) {
+function buildProject( options, cb ) {
   
-  var options = { 
-        buildDir: 'build',
-        targetName: 'test',
-        testDir: '.'
-    };
-
-  define( pathJSON )
+  define( options.pathJSON )
   .then( function(product) {
     makePathIfNone( options.buildDir, function() {
       options.pathGYP = path.join( options.buildDir, options.targetName + ".gyp" );
