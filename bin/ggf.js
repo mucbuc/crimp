@@ -12,7 +12,7 @@ var fs = require( 'fs' )
   , assert = require( 'assert' )
   , Promise = require( 'promise' ); 
 
-function defineGYP(pathJSON, cb) {
+function defineGYP(pathJSON) {
 
   var product = {
         'sources': []
@@ -21,10 +21,7 @@ function defineGYP(pathJSON, cb) {
 
   assert( fs.existsSync( pathJSON ), "project json missing: " + pathJSON ); 
   
-  processDependencies( pathJSON, '' ).then( function() {
-    console.log( product );
-    cb(product); 
-  }); 
+  return processDependencies( pathJSON, '' );
 
   function processDependencies(fileJSON, basePath) {
     
@@ -50,7 +47,7 @@ function defineGYP(pathJSON, cb) {
             processDependencies( path.join( buildDir, item ), path.dirname(fileJSON) )
             .then( function() {
               if (index == array.length - 1) {
-                resolve(); 
+                resolve(product); 
               }
             });
           });

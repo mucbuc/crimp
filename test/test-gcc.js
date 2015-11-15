@@ -17,7 +17,8 @@ test( 'test controller', function(t) {
         buildDir: 'build',
         targetName: 'test',
         testDir: '.',
-        pathJSON: './test.json'
+        pathJSON: './test.json',
+        gcc: 'true'
     };
 
   expector.expect( 'done' );
@@ -43,32 +44,35 @@ test( 'test build', function(t) {
         buildDir: 'build',
         targetName: 'test',
         testDir: '.',
-        pathJSON: './test.json'
+        pathJSON: './test.json',
+        gcc: 'true'
     };
 
   controller.expect( 'hello test\n' );
 
   buildProject( options, function(code) {
     t.assert( !code );
-    runBuild( './build/build/Test/test', controller );  
+    runBuild( './build/out/Test/test', controller );  
   });
 });
 
 test( 'release build', function(t) {
+  
   var controller = new Expector(t)
     , options = { 
         buildDir: 'build',
         targetName: 'test',
         testDir: '.',
         pathJSON: './test.json',
-        release: 'true'
+        release: 'true',
+        gcc: 'true'
     };
 
   controller.expect( 'hello release\n' );
 
   buildProject( options, function(code) {
     t.assert( !code );
-    runBuild( './build/build/Release/test', controller ); 
+    runBuild( './build/out/Release/test', controller ); 
   });
 });
 
@@ -79,13 +83,14 @@ test( 'debug build', function(t) {
         targetName: 'test',
         testDir: '.',
         pathJSON: './test.json',
-        debug: 'true'
+        debug: 'true',
+        gcc: 'true'
     };
   controller.expect( 'hello debug\n' );
 
   buildProject( options, function(code) {
     t.assert( !code );
-    runBuild( './build/build/Debug/test', controller );
+    runBuild( './build/out/Debug/test', controller );
   });
 });
 
