@@ -16,7 +16,7 @@ test( 'ggf recursion', function(t) {
 			'../lib/sublib2/src/subsrc.cpp'
 		]
 	};		
-	ggf( './test-import.json', function(gyp) {
+	ggf( './test-import.json' ).then( function(gyp) {
 		t.deepEqual( gyp, expected ); 
 		t.end();
 	} );

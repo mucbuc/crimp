@@ -11,12 +11,14 @@ function define(pathJSON) {
     , buildDir = path.dirname(pathJSON);
 
   return processDependencies( pathJSON, '' );
-  
+
   function processDependencies(fileJSON, basePath) {
     
     return new Promise( function(resolve, reject) {
+      
       fs.readFile( fileJSON, function(err, data) {
-        if (err) reject( err );
+        console.log( fileJSON ); 
+        if (err) throw err;
   
         var content = JSON.parse( data.toString() );
 

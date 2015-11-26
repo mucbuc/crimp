@@ -1,13 +1,10 @@
 {
   "name": "plank",
   "version": "0.0.0",
-  "description": "cpm",
-  "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
+  "description": "c++ build system based on gyp",
+  "main": "plank.js",
   "scripts": {
-    "test": "node test/test.js; node test2/test.js"
+    "test": "node test/test.js; node test/test-gcc.js; node test2/test.js; node test/smoke.js;"
   },
   "repository": {
     "type": "git",
@@ -24,6 +21,10 @@
     "expector": "*", 
     "date-time-string": "*",
     "tape": "*",
-    "rmrf": "*"
-  }
+    "rmrf": "*",
+    "traverjs": "*"
+  },
+  "bin": "./plank.js",
+  "preferGlobal": "true",
+  "keywords": [ "c++ build system", "gyp wrapper" ]
 }
