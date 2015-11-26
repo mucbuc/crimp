@@ -8,8 +8,6 @@ function generate( options ) {
   assert( options.hasOwnProperty( 'testDir' ) );
   assert( options.hasOwnProperty( 'pathGYP' ) );
 
-  console.log( options );
-
   return new Promise(function(resolve, reject) {
     var builDir = path.dirname( options.pathGYP )
       , args = [
@@ -38,15 +36,12 @@ function generate( options ) {
       }
     }
 
-    console.log( 'gyp args: ', args );
-    console.log( 'options.testDir: ', options.testDir );
-    console.log( 'process.cwd: ', process.cwd() );
-
     cp.spawn( 
       'gyp', 
       args, 
       {
-        stdio: 'inherit'
+        stdio: 'inherit',
+        cwd: options.testDir
       })
     .on( 'exit', function( code ) {
       if (code) 
