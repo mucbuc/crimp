@@ -1,14 +1,14 @@
 {
-  "name": "plank",
+  "name": "crimp",
   "version": "0.0.0",
   "description": "c++ build system based on gyp",
-  "main": "plank.js",
+  "main": "crimp.js",
   "scripts": {
     "test": "node test/test.js; node test/test-gcc.js; node test2/test.js; node test/smoke.js;"
   },
   "repository": {
     "type": "git",
-    "url": "https:///github.com/mucbuc/plank.git"
+    "url": "https:///github.com/mucbuc/crimp.git"
   },
   "author": "mbusenitz@gmail.com",
   "license": "GNU",
@@ -24,7 +24,7 @@
     "rmrf": "*",
     "traverjs": "*"
   },
-  "bin": "./plank.js",
+  "bin": "./crimp.js",
   "preferGlobal": "true",
   "keywords": [ "c++ build system", "gyp wrapper" ]
 }

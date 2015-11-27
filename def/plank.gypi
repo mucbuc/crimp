@@ -29,7 +29,7 @@
 			'../src/test.h',
         ],
         'include_dirs': [
-			'plank/src/',
+			'crimp/src/',
 		],	
     }
 }

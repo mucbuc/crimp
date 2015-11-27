@@ -1,13 +1,13 @@
-#plank
+#crimp
 nodejs build tool for C++ based on [gyp](https://chromium.googlesource.com/external/gyp/+/master/docs/UserDocumentation.md)
 
 
 #install
-`npm install -g plank`
+`npm install -g crimp`
 
 #usage
 ```
-  Usage: plank plank [options]
+  Usage: crimp [options]
 
   Options:
 
@@ -46,5 +46,5 @@ int main(int argc, const char * argv[])
 ```
 ### build and test
 ```
-plank -p test.json
+crimp -p test.json
 ```
