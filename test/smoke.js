@@ -9,7 +9,7 @@ test( 'smoke', function(t) {
   var e = new Expector( t ); 
   e.expect( 0 );
   cp
-  .fork( path.join( __dirname, '../plank.js'), [ '-p', path.join( __dirname, 'test.json' ) ] )
+  .fork( path.join( __dirname, '../crimp.js'), [ '-p', path.join( __dirname, 'test.json' ) ] )
   .on( 'exit', function(code) {
     e.emit( code );
     e.check();
