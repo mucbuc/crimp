@@ -1,6 +1,6 @@
 {
   "name": "crimp",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "c++ build system based on gyp",
   "main": "crimp.js",
   "scripts": {

@@ -17,7 +17,6 @@ function define(pathJSON) {
     return new Promise( function(resolve, reject) {
       
       fs.readFile( fileJSON, function(err, data) {
-        console.log( fileJSON ); 
         if (err) throw err;
   
         var content = JSON.parse( data.toString() );

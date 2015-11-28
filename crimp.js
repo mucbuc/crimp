@@ -34,6 +34,10 @@ if (program.release) {
 }
 else if (program.debug) {
   options.debug = true;
+} 
+else {
+  options.test = true;
+  options.execute = true;
 }
 
 if (program.output) {
