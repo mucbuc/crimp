@@ -34,7 +34,7 @@ function buildProject( options, cb ) {
           .then( function() {
             Printer.finishGreen( 'build' );
             if (options.execute) {
-              Printer.begin( 'execute' );
+              Printer.begin( 'execute', options.targetName );
               run(options)
               .then( function(stdout, stderr) {
                 process.stdout.write( stdout ); 
