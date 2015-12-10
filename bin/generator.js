@@ -36,6 +36,10 @@ function generate( options ) {
       }
     }
 
+    if (options.linkOpengl) {
+      args.push( '--include=' + getPlankGYPI( 'opengl.gypi' ) );
+    }
+
     cp.spawn( 
       'gyp', 
       args, 
