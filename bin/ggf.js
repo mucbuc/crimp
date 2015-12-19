@@ -17,6 +17,7 @@ function defineGYP(pathJSON) {
   var product = {
         'sources': []
       }
+    , productData = []
     , buildDir = path.dirname(pathJSON);
 
   assert( fs.existsSync( pathJSON ), "project json missing: " + pathJSON ); 
@@ -41,12 +42,25 @@ function defineGYP(pathJSON) {
           });
         }
 
+        if (content.hasOwnProperty('data')) {
+          content.data.forEach(function(dataPath) {
+            productData.push( path.join( 
+              '..', 
+              path.dirname(fileJSON), 
+              dataPath )
+            ); 
+          });   
+        }
+
         if (  content.hasOwnProperty('import')
           &&  content.import.length) {
           content.import.forEach( function( item, index, array ) {
             processDependencies( path.join( buildDir, item ), path.dirname(fileJSON) )
             .then( function() {
               if (index == array.length - 1) {
+                if (productData.length) {
+                  product.data = productData;
+                }
                 resolve(product); 
               }
             });
