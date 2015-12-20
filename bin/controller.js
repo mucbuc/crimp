@@ -17,8 +17,14 @@ function buildProject( options, cb ) {
 
   define( options.pathJSON )
   .then( function(product) {
-    
     Printer.finishGreen( 'define' );
+
+    if (product.hasOwnProperty('data'))
+    {
+      product.data.forEach(function(entry) {
+        console.log( '******', entry ); 
+      });
+    }
 
     makePathIfNone( options.buildDir, function() {
 
