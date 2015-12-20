@@ -15,9 +15,9 @@ var fs = require( 'fs' )
 function defineGYP(pathJSON) {
 
   var product = {
-        'sources': []
+        'sources': [],
+        'data': []
       }
-    , productData = []
     , buildDir = path.dirname(pathJSON);
 
   assert( fs.existsSync( pathJSON ), "project json missing: " + pathJSON ); 
@@ -31,7 +31,6 @@ function defineGYP(pathJSON) {
         var content;
         if (err) throw "project json missing: " + fileJSON + " cwd: " + process.cwd();
         
-        console.log( fileJSON, data.toString() );
         content = JSON.parse( data.toString() );
         
         if (content.hasOwnProperty('sources')) {
@@ -42,9 +41,11 @@ function defineGYP(pathJSON) {
           });
         }
 
-        if (content.hasOwnProperty('data')) {
+        if (    content.hasOwnProperty('data')
+            &&  content.data.length) {
+
           content.data.forEach(function(dataPath) {
-            productData.push( path.join( 
+            product.data.push( path.join( 
               '..', 
               path.dirname(fileJSON), 
               dataPath )
@@ -58,9 +59,6 @@ function defineGYP(pathJSON) {
             processDependencies( path.join( buildDir, item ), path.dirname(fileJSON) )
             .then( function() {
               if (index == array.length - 1) {
-                if (productData.length) {
-                  product.data = productData;
-                }
                 resolve(product); 
               }
             });
