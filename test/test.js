@@ -9,7 +9,17 @@ var assert = require( 'assert' )
   , define = require( '../bin/definer.js' )
   , buildProject = require( '../bin/controller.js' );
 
-process.chdir( thisPath ); 
+process.chdir( thisPath );
+
+test( 'data prep', function(t) {
+  var ggf = require( '../bin/ggf.js' );
+  ggf( './test-import.json' )
+  .then( function(gyp) {
+    t.assert( gyp.hasOwnProperty('data') );
+    t.assert( gyp.data.length );
+    t.end(); 
+  });
+});
 
 test( 'ggf recursion', function(t) {
   var ggf = require( '../bin/ggf.js' )
