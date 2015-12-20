@@ -5,26 +5,54 @@ var assert = require( 'assert' )
 
 function define(pathJSON) {
 
-  var product = {
-        'sources': []
-      }
-    , buildDir = path.dirname(pathJSON);
+  var buildDir = path.dirname(pathJSON)
+    , product = {
+        'sources': [],
+        'data': []
+      };
 
   return processDependencies( pathJSON, '' );
 
   function processDependencies(fileJSON, basePath) {
     
     return new Promise( function(resolve, reject) {
-      
+
       fs.readFile( fileJSON, function(err, data) {
+        var content;
+
         if (err) throw err;
   
-        var content = JSON.parse( data.toString() );
+        content = JSON.parse( data.toString() );
 
         handleSources( function() {
-          handleImports( resolve ); 
+          handleImports( function() {
+            handleData( function() {
+              resolve(product); 
+            } ); 
+          });
         });
 
+        function handleData(cb) {
+          if (    content.hasOwnProperty('data')
+              &&  content.data.length) {
+
+            content.data.forEach(function(dataPath, index, array) {
+              product.data.push( path.join( 
+                '..', 
+                path.dirname(fileJSON), 
+                dataPath )
+              );
+
+              if (index === array.length - 1) {
+                cb();
+              }
+            }); 
+          }
+          else {
+            cb();
+          }
+        }
+        
         function handleImports(cb) {
           if (  content.hasOwnProperty('import')
             &&  content.import.length) {

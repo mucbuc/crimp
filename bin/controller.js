@@ -6,7 +6,10 @@ var assert = require( 'assert' )
   , path = require( 'path' )
   , cp = require( 'child_process' )
   , Printer = require( './printer' )
-  , run = require( '../bin/runner.js' );
+  , run = require( '../bin/runner.js' )
+  , jsoncpp = require( 'jsoncpp' )
+
+assert( typeof jsoncpp !== 'undefined' );
 
 function buildProject( options, cb ) {
   
@@ -19,9 +22,12 @@ function buildProject( options, cb ) {
   .then( function(product) {
     Printer.finishGreen( 'define' );
 
+    console.log( product ); 
+
     if (product.hasOwnProperty('data'))
     {
       product.data.forEach(function(entry) {
+        //jsoncpp( entry ); 
         console.log( '******', entry ); 
       });
     }
