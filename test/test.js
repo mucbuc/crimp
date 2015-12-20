@@ -79,6 +79,8 @@ test( 'test definer', function(t) {
   define( './test.json', '.' )
   .then( function(product) {
     t.assert( product.hasOwnProperty('sources') );
+    
+    console.log( JSON.stringify(product.sources) ); 
     controller.emit( JSON.stringify(product.sources) ); 
     controller.check();
   });
