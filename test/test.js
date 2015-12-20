@@ -13,7 +13,7 @@ process.chdir( thisPath );
 
 test( 'data prep', function(t) {
   var ggf = require( '../bin/ggf.js' );
-  ggf( './test-import.json' )
+  ggf( './test-data.json' )
   .then( function(gyp) {
     t.assert( gyp.hasOwnProperty('data') );
     t.assert( gyp.data.length );

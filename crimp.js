@@ -1,12 +1,16 @@
 #!/usr/bin/env node
 
-var program = require( 'commander' )
+var assert = require( 'assert' )
+  , program = require( 'commander' )
   , buildProject = require( './bin/controller.js' )
   , path = require( 'path' )
   , rmrf = require( 'rmrf' )
   , cp = require( 'child_process' )
   , fs = require( 'fs' )
-  , traverse = require( 'traverjs' );
+  , traverse = require( 'traverjs' )
+  , jsoncpp = require( 'jsoncpp' );
+
+assert( typeof jsoncpp !== 'undefined' );
 
 program
   .version( '0.0.1' )
