@@ -9,15 +9,14 @@ process.chdir( thisPath );
 
 test( 'ggf recursion', function(t) {
 	var ggf = require( '../bin/ggf.js' )
-	  , expected = { 
-		"sources": [
+	  , expected = [
 			'../lib/sublib/src/subsrc.h', 
 			'../lib/sublib/src/subsrc.cpp', 
 			'../lib/sublib2/src/subsrc.cpp'
-		]
-	};		
+		];		
 	ggf( './test-import.json' ).then( function(gyp) {
-		t.deepEqual( gyp, expected ); 
+		t.assert( gyp.hasOwnProperty( 'sources' ) );
+		t.deepEqual( gyp.sources, expected ); 
 		t.end();
 	} );
 });
