@@ -22,7 +22,8 @@
     "date-time-string": "*",
     "tape": "*",
     "rmrf": "*",
-    "traverjs": "*"
+    "traverjs": "*",
+    "jsoncpp": "*"
   },
   "bin": "./crimp.js",
   "preferGlobal": "true",
