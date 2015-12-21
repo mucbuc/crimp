@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <data/content.h>
+#include <src/data/content.json.h>
 
 int main(int argc, const char * argv[])
 {

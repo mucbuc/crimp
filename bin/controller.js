@@ -20,6 +20,7 @@ function buildProject( options, cb ) {
 
   define( options.pathJSON )
   .then( function(product) {
+    
     Printer.finishGreen( 'define' );
 
     console.log( product ); 
@@ -27,7 +28,17 @@ function buildProject( options, cb ) {
     if (product.hasOwnProperty('data'))
     {
       product.data.forEach(function(entry) {
-        translate( entry ); 
+        translate( entry );
+
+        product.sources.push( path.join( 
+            '..',
+            path.dirname(entry), 
+            '..',
+            'src',
+            'data',
+            path.basename(path.basename(entry) )
+          ) + '.h'
+        );
       });
     }
 
@@ -36,6 +47,7 @@ function buildProject( options, cb ) {
       options.pathGYP = path.join( options.buildDir, options.targetName + ".gyp" );
       writeGYP( product, options.pathGYP, function(error) {
         if (error) throw error;
+
         Printer.begin( 'generate', options.pathGYP );
         generate( options )
         .then( function() {
