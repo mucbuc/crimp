@@ -37,7 +37,6 @@ function define(pathJSON) {
               &&  content.data.length) {
             content.data.forEach(function(dataPath, index, array) {
               var absPath = path.join( 
-                    '..', 
                     path.dirname(fileJSON), 
                     dataPath 
                   );
