@@ -1,15 +1,15 @@
 var assert = require( 'assert' )
-  , define = require( '../bin/definer.js' )
-  , generate = require( '../bin/generator.js' )
-  , build = require( '../bin/builder.js' )
+  , define = require( '../bin/definer' )
+  , generate = require( '../bin/generator' )
+  , build = require( '../bin/builder' )
   , fs = require( 'fs' )
   , path = require( 'path' )
   , cp = require( 'child_process' )
   , Printer = require( './printer' )
-  , run = require( '../bin/runner.js' )
-  , jsoncpp = require( 'jsoncpp' )
+  , run = require( '../bin/runner' )
+  , translate = require( '../bin/translator' );
 
-assert( typeof jsoncpp !== 'undefined' );
+assert( typeof translate !== 'undefined' ); 
 
 function buildProject( options, cb ) {
   
@@ -27,8 +27,7 @@ function buildProject( options, cb ) {
     if (product.hasOwnProperty('data'))
     {
       product.data.forEach(function(entry) {
-        //jsoncpp( entry ); 
-        console.log( '******', entry ); 
+        translate( entry ); 
       });
     }
 

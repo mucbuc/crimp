@@ -10,7 +10,7 @@ var assert = require( 'assert' )
   , buildProject = require( '../bin/controller.js' );
 
 process.chdir( thisPath );
-/*
+
 test( 'data output', function(t) {
   // crimp test-data.json
 
@@ -25,11 +25,11 @@ test( 'data output', function(t) {
     };
 
   buildProject( options, function(code) {
-
+    t.assert( !code ); 
+    t.end();
   });
 }); 
-*/
-
+/*
 test( 'data prep', function(t) {
   var define = require( '../bin/definer.js' );
   define( './test-data.json' )
@@ -137,6 +137,7 @@ test( 'debug build', function(t) {
     runBuild( './build/build/Debug/test', controller ); 
   });
 });
+*/
 
 function runBuild( path, controller ) {
   cp.execFile( path, function(err, stdout, stderr) {
