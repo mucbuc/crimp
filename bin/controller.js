@@ -27,18 +27,19 @@ function buildProject( options, cb ) {
 
     if (product.hasOwnProperty('data'))
     {
-      product.data.forEach(function(entry) {
-        translate( entry );
+      var cppDir = path.join( '..', 'src', 'data' );
 
-        product.sources.push( path.join( 
-            '..',
-            path.dirname(entry), 
-            '..',
-            'src',
-            'data',
-            path.basename(path.basename(entry) )
-          ) + '.h'
-        );
+      makePathIfNone( cppDir, function() {
+
+        product.data.forEach(function(entry) {
+          translate( entry );
+
+          product.sources.push( path.join( 
+              cppDir,
+              path.basename(path.basename(entry) )
+            ) + '.h'
+          );
+        });
       });
     }
 
