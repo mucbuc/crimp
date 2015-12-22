@@ -43,6 +43,10 @@ function buildProject( options, cb ) {
       });
     }
 
+    if (product.hasOwnProperty('opengl')) {
+      options.opengl = true;
+    }
+
     makePathIfNone( options.buildDir, function() {
 
       options.pathGYP = path.join( options.buildDir, options.targetName + ".gyp" );
