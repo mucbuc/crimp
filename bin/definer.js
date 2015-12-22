@@ -21,6 +21,11 @@ function define(pathJSON) {
   
         var content = JSON.parse( data.toString() );
 
+        if (    content.hasOwnProperty('opengl') 
+            &&  content.opengl) {
+          product.opengl = true;
+        }
+        
         handleSources( function() {
           handleImports( resolve ); 
         });

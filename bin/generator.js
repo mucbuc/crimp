@@ -36,7 +36,7 @@ function generate( options ) {
       }
     }
 
-    if (options.linkOpengl) {
+    if (options.opengl) {
       args.push( '--include=' + getPlankGYPI( 'opengl.gypi' ) );
     }
 
