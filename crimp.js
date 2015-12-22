@@ -24,7 +24,6 @@ program
   .option( '-g, --gcc', 'use gcc compiler' )
   .option( '-e, --execute', 'execute product' )
   .option( '-i, --ide', 'open project in ide' )
-  .option( '-l , --linkOpengl', 'link opengl libs' )
   .parse( process.argv );
 
 var options = { 
@@ -74,10 +73,6 @@ process.chdir( options.testDir );
 
 if (program.clean) {
   rmrf( options.buildDir ); 
-}
-
-if (program.linkOpengl) {
-  options.linkOpengl = program.linkOpengl;
 }
 
 if (program.suite) {
