@@ -5,21 +5,24 @@ var assert = require( 'assert' )
 
 function define(pathJSON) {
 
-  var product = {
-        'sources': []
-      }
-    , buildDir = path.dirname(pathJSON);
+  var buildDir = path.dirname(pathJSON)
+    , product = {
+        'sources': [],
+        'data': []
+      };
 
   return processDependencies( pathJSON, '' );
 
   function processDependencies(fileJSON, basePath) {
     
     return new Promise( function(resolve, reject) {
-      
+
       fs.readFile( fileJSON, function(err, data) {
+        var content;
+
         if (err) throw err;
   
-        var content = JSON.parse( data.toString() );
+        content = JSON.parse( data.toString() );
 
         if (    content.hasOwnProperty('opengl') 
             &&  content.opengl) {
@@ -27,9 +30,33 @@ function define(pathJSON) {
         }
         
         handleSources( function() {
-          handleImports( resolve ); 
+          handleImports( function() {
+            handleData( function() {
+              resolve(product); 
+            } ); 
+          });
         });
 
+        function handleData(cb) {
+          if (    content.hasOwnProperty('data')
+              &&  content.data.length) {
+            content.data.forEach(function(dataPath, index, array) {
+              var absPath = path.join( 
+                    path.dirname(fileJSON), 
+                    dataPath 
+                  );
+              product.data.push( absPath );
+
+              if (index == array.length - 1) {
+                cb();
+              }
+            }); 
+          }
+          else {
+            cb();
+          }
+        }
+        
         function handleImports(cb) {
           if (  content.hasOwnProperty('import')
             &&  content.import.length) {
@@ -37,14 +64,14 @@ function define(pathJSON) {
               processDependencies( path.join( buildDir, item ), path.dirname(fileJSON) )
               .then( function() {
                 if (index == array.length - 1) {
-                  cb(product); 
+                  cb(); 
                 }
               })
               .catch( reject );
             });
           }
           else {
-            cb(product); 
+            cb(); 
           }
         }
 
@@ -52,7 +79,7 @@ function define(pathJSON) {
           if (  content.hasOwnProperty('sources')
             &&  content.sources.length) {
             content.sources.forEach(function(source, index, array) {
-              product.sources = product.sources.concat( path.join( '..', path.dirname(fileJSON), source ) );
+              product.sources.push( path.join( '..', path.dirname(fileJSON), source ) );
               if (index == array.length - 1) {
                 cb();
               }

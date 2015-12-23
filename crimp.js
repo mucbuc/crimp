@@ -7,10 +7,7 @@ var assert = require( 'assert' )
   , rmrf = require( 'rmrf' )
   , cp = require( 'child_process' )
   , fs = require( 'fs' )
-  , traverse = require( 'traverjs' )
-  , jsoncpp = require( 'jsoncpp' );
-
-assert( typeof jsoncpp !== 'undefined' );
+  , traverse = require( 'traverjs' );
 
 program
   .version( '0.0.1' )
