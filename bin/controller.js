@@ -27,10 +27,9 @@ function buildProject( options, cb ) {
 
     if (product.hasOwnProperty('data'))
     {
-      var cppDir = path.join( '..', 'src', 'data' );
+      var cppDir = path.join( 'src', 'data' );
 
       makePathIfNone( cppDir, function() {
-
         product.data.forEach(function(entry) {
           translate( entry );
 
