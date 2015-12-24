@@ -6,6 +6,6 @@ int main(int argc, const char * argv[])
 {
 	using namespace std;
 	
-	cout << json<>()._hello << endl;
+	cout << static_port_data_content::json<>()._hello << endl;
 	return 0; 
 }
