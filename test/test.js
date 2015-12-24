@@ -134,7 +134,6 @@ test( 'debug build', function(t) {
     runBuild( './build/build/Debug/test', controller ); 
   });
 });
-*/
 
 function runBuild( path, controller ) {
   cp.execFile( path, function(err, stdout, stderr) {
