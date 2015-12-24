@@ -11,6 +11,22 @@ var assert = require( 'assert' )
 
 process.chdir( thisPath );
 
+test( 'data output', function(t) {
+  var controller = new Expector(t)
+    , options = { 
+        buildDir: 'build',
+        targetName: 'test',
+        testDir: '.',
+        pathJSON: './test-data.json',
+        debug: 'true'
+    };
+
+  buildProject( options, function(code) {
+    t.assert( !code ); 
+    t.end();
+  });
+}); 
+
 test( 'data prep', function(t) {
   var ggf = require( '../bin/ggf.js' );
   ggf( './test-data.json' )
