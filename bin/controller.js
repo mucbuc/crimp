@@ -1,12 +1,15 @@
 var assert = require( 'assert' )
-  , define = require( '../bin/definer.js' )
-  , generate = require( '../bin/generator.js' )
-  , build = require( '../bin/builder.js' )
+  , define = require( '../bin/definer' )
+  , generate = require( '../bin/generator' )
+  , build = require( '../bin/builder' )
   , fs = require( 'fs' )
   , path = require( 'path' )
   , cp = require( 'child_process' )
   , Printer = require( './printer' )
-  , run = require( '../bin/runner.js' );
+  , run = require( '../bin/runner' )
+  , translate = require( '../bin/translator' );
+
+assert( typeof translate !== 'undefined' ); 
 
 function buildProject( options, cb ) {
   
@@ -17,13 +20,31 @@ function buildProject( options, cb ) {
 
   define( options.pathJSON )
   .then( function(product) {
+    
     Printer.finishGreen( 'define' );
+
+    console.log( product ); 
 
     if (product.hasOwnProperty('data'))
     {
-      product.data.forEach(function(entry) {
-        console.log( '******', entry ); 
+      var cppDir = path.join( '..', 'src', 'data' );
+
+      makePathIfNone( cppDir, function() {
+
+        product.data.forEach(function(entry) {
+          translate( entry );
+
+          product.sources.push( path.join( 
+              cppDir,
+              path.basename(path.basename(entry) )
+            ) + '.h'
+          );
+        });
       });
+    }
+
+    if (product.hasOwnProperty('opengl')) {
+      options.opengl = true;
     }
 
     makePathIfNone( options.buildDir, function() {
@@ -31,6 +52,7 @@ function buildProject( options, cb ) {
       options.pathGYP = path.join( options.buildDir, options.targetName + ".gyp" );
       writeGYP( product, options.pathGYP, function(error) {
         if (error) throw error;
+
         Printer.begin( 'generate', options.pathGYP );
         generate( options )
         .then( function() {

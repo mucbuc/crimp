@@ -25,6 +25,11 @@ nodejs build tool for C++ based on [gyp](https://chromium.googlesource.com/exter
     -i, --ide            open project in ide
 ```
 
+###properties:
+- sources: array containing paths to C++ source files
+- import: array containing paths to defenition files
+- opengl: boolean to determine opengl linking
+
 # example
 ### src/main.cpp:
 ```

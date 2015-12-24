@@ -28,23 +28,26 @@ test( 'data output', function(t) {
 }); 
 
 test( 'data prep', function(t) {
-  var ggf = require( '../bin/ggf.js' );
-  ggf( './test-data.json' )
+  var define = require( '../bin/definer.js' );
+  define( './test-data.json' )
   .then( function(gyp) {
     t.assert( gyp.hasOwnProperty('data') );
     t.assert( gyp.data.length );
     t.end(); 
+  })
+  .catch( function(err) {
+    throw err;
   });
 });
 
-test( 'ggf recursion', function(t) {
-  var ggf = require( '../bin/ggf.js' )
+test( 'define recursion', function(t) {
+  var define = require( '../bin/definer.js' )
     , expected = [
       '../lib/sublib/src/subsrc.h', 
       '../lib/sublib/src/subsrc.cpp', 
       '../lib/sublib2/src/subsrc.cpp'
     ];    
-  ggf( './test-import.json' ).then( function(gyp) {
+  define( './test-import.json' ).then( function(gyp) {
     t.assert( gyp.hasOwnProperty( 'sources' ) );
     t.deepEqual( gyp.sources, expected ); 
     t.end();
@@ -69,10 +72,13 @@ test( 'test controller', function(t) {
 
 test( 'test definer', function(t) {
   var controller = new Expector(t);
-  controller.expect( '{"sources":["../src/main.cpp"]}' );
+  controller.expect( '["../src/main.cpp"]' );
   define( './test.json', '.' )
   .then( function(product) {
-    controller.emit( JSON.stringify(product) ); 
+    t.assert( product.hasOwnProperty('sources') );
+    
+    console.log( JSON.stringify(product.sources) ); 
+    controller.emit( JSON.stringify(product.sources) ); 
     controller.check();
   });
 });
@@ -125,9 +131,10 @@ test( 'debug build', function(t) {
 
   buildProject( options, function(code) {
     t.assert( !code );
-    runBuild( './build/build/Debug/test', controller );
+    runBuild( './build/build/Debug/test', controller ); 
   });
 });
+*/
 
 function runBuild( path, controller ) {
   cp.execFile( path, function(err, stdout, stderr) {

@@ -30,10 +30,11 @@ test( 'test controller', function(t) {
 
 test( 'test definer', function(t) {
   var controller = new Expector(t);
-  controller.expect( '{"sources":["../src/main.cpp"]}' );
+  controller.expect( '["../src/main.cpp"]' );
   define( './test.json' )
   .then( function(product) {
-    controller.emit( JSON.stringify(product) ); 
+    t.assert( product.hasOwnProperty("sources" ) ); 
+    controller.emit( JSON.stringify(product.sources) ); 
     controller.check();
   });
 });

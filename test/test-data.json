@@ -1,7 +1,8 @@
 {
-	"import":
-	[
-		"lib/sublib/def.json"
+	"sources": [
+		"src/main-data.cpp"
 	],
-	"data": [ "hellp" ]
+	"data": [ 
+		"data/content.json" 
+	]
 }

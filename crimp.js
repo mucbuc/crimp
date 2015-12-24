@@ -7,10 +7,7 @@ var assert = require( 'assert' )
   , rmrf = require( 'rmrf' )
   , cp = require( 'child_process' )
   , fs = require( 'fs' )
-  , traverse = require( 'traverjs' )
-  , jsoncpp = require( 'jsoncpp' );
-
-assert( typeof jsoncpp !== 'undefined' );
+  , traverse = require( 'traverjs' );
 
 program
   .version( '0.0.1' )
@@ -24,7 +21,6 @@ program
   .option( '-g, --gcc', 'use gcc compiler' )
   .option( '-e, --execute', 'execute product' )
   .option( '-i, --ide', 'open project in ide' )
-  .option( '-l , --linkOpengl', 'link opengl libs' )
   .parse( process.argv );
 
 var options = { 
@@ -74,10 +70,6 @@ process.chdir( options.testDir );
 
 if (program.clean) {
   rmrf( options.buildDir ); 
-}
-
-if (program.linkOpengl) {
-  options.linkOpengl = program.linkOpengl;
 }
 
 if (program.suite) {
