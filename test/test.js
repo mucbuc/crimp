@@ -58,22 +58,18 @@ test( 'define recursion', function(t) {
     ];    
   define( './test-import.json', function(path, cb) {
 
-    console.log( '******* path: ' path ); 
-    process.exit(0); 
-    if (path == path) 
-    {
-      cb( {
-        "import": [
-          "lib/sublib2/def.json"
-        ],
-        "sources": [
-          "src/subsrc.h",
-          "src/subsrc.cpp"
-        ]
-      } );
-    }
+    var result = {
+      "./test-import.json": 
+        { import: [ 'lib/sublib/def.json' ] },
+      "lib/sublib/def.json": 
+        { import: [ 'lib/sublib2/def.json' ],
+          sources: [ 'src/subsrc.h', 'src/subsrc.cpp' ] },
+      "lib/sublib2/def.json": 
+        { sources: [ 'src/subsrc.cpp' ] }
+      };
 
-  } ).then( function(gyp) {
+    cb( result[path] ); 
+  }).then( function(gyp) {
     t.assert( gyp.hasOwnProperty( 'sources' ) );
     t.deepEqual( gyp.sources, expected ); 
     t.end();
