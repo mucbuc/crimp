@@ -28,7 +28,6 @@ test( 'data output', function(t) {
 }); 
 
 test( 'data prep', function(t) {
-  var define = require( '../bin/definer.js' );
   define( './test-data.json', function(path, cb) {
     cb( { 
       "sources": [
@@ -50,8 +49,7 @@ test( 'data prep', function(t) {
 });
 
 test( 'define recursion', function(t) {
-  var define = require( '../bin/definer.js' )
-    , expected = [
+  var expected = [
       '../lib/sublib/src/subsrc.h', 
       '../lib/sublib/src/subsrc.cpp', 
       '../lib/sublib2/src/subsrc.cpp'
@@ -95,7 +93,9 @@ test( 'test controller', function(t) {
 test( 'test definer', function(t) {
   var controller = new Expector(t);
   controller.expect( '["../src/main.cpp"]' );
-  define( './test.json' )
+  define( './test.json', function(path, cb) {
+    cb( { "sources":  [ "src/main.cpp" ] } );
+  } )
   .then( function(product) {
     t.assert( product.hasOwnProperty('sources') );
     
