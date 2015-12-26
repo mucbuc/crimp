@@ -73,7 +73,7 @@ test( 'test controller', function(t) {
 test( 'test definer', function(t) {
   var controller = new Expector(t);
   controller.expect( '["../src/main.cpp"]' );
-  define( './test.json', '.' )
+  define( './test.json' )
   .then( function(product) {
     t.assert( product.hasOwnProperty('sources') );
     
