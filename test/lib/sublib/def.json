@@ -1,9 +1,0 @@
-{
-	"import": [
-		"lib/sublib2/def.json"
-	],
-	"sources": [
-		"src/subsrc.h",
-		"src/subsrc.cpp"
-	]
-}
