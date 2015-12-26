@@ -21,7 +21,7 @@ function define(pathJSON, objReader) {
     objReader = function(filePath, cb) {
       fs.readFile(filePath, function(err, data) {
         if (err) throw err;
-        cb( err, JSON.parse( data.toString() ) );
+        cb( JSON.parse( data.toString() ) );
       });
     };
   }
@@ -34,7 +34,7 @@ function define(pathJSON, objReader) {
     
     return new Promise( function(resolve, reject) {
 
-      objReader( fileJSON, function(err, content) {
+      objReader( fileJSON, function(content) {
         assert( typeof content === 'object' );
         if (    content.hasOwnProperty('opengl') 
             &&  content.opengl) {

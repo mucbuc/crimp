@@ -29,7 +29,16 @@ test( 'data output', function(t) {
 
 test( 'data prep', function(t) {
   var define = require( '../bin/definer.js' );
-  define( './test-data.json' )
+  define( './test-data.json', function(path, cb) {
+    cb( { 
+      "sources": [
+        "src/main-data.cpp"
+      ],
+      "data": [ 
+        "data/content.json" 
+      ]
+    } );
+  } )
   .then( function(gyp) {
     t.assert( gyp.hasOwnProperty('data') );
     t.assert( gyp.data.length );
