@@ -5,20 +5,21 @@ var assert = require( 'assert' )
 
 assert( typeof jsoncpp !== 'undefined' );
 
-module.exports = function(pathIn) {
+module.exports = function(pathIn, cb) {
 
-	jsoncpp( pathIn, function(result) {
+  jsoncpp( pathIn, function(result) {
+    var pathOut = path.join( 
+          path.dirname(pathIn), 
+          '..',
+          'src',
+          'data',
+          path.basename(path.basename(pathIn) ) );
 
-		console.log( result ); 
-		var pathOut = path.join( 
-					path.dirname(pathIn), 
-					'..',
-					'src',
-					'data',
-					path.basename(path.basename(pathIn) ) );
-
-		fs.writeFile( pathOut + '.h', result, function(err) {
-			console.log( err );
-		} );
-	});
+    fs.writeFile( pathOut + '.h', result, function(err) {
+      if (err) throw err;
+      if (typeof cb === 'function') {
+        cb();
+      }
+    } );
+  });
 };
