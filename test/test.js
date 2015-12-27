@@ -28,8 +28,16 @@ test( 'data output', function(t) {
 }); 
 
 test( 'data prep', function(t) {
-  var define = require( '../bin/definer.js' );
-  define( './test-data.json' )
+  define( './test-data.json', function(path, cb) {
+    cb( { 
+      "sources": [
+        "src/main-data.cpp"
+      ],
+      "data": [ 
+        "data/content.json" 
+      ]
+    } );
+  } )
   .then( function(gyp) {
     t.assert( gyp.hasOwnProperty('data') );
     t.assert( gyp.data.length );
@@ -41,13 +49,25 @@ test( 'data prep', function(t) {
 });
 
 test( 'define recursion', function(t) {
-  var define = require( '../bin/definer.js' )
-    , expected = [
+  var expected = [
       '../lib/sublib/src/subsrc.h', 
       '../lib/sublib/src/subsrc.cpp', 
       '../lib/sublib2/src/subsrc.cpp'
     ];    
-  define( './test-import.json' ).then( function(gyp) {
+  define( './test-import.json', function(path, cb) {
+
+    var result = {
+      "./test-import.json": 
+        { import: [ 'lib/sublib/def.json' ] },
+      "lib/sublib/def.json": 
+        { import: [ 'lib/sublib2/def.json' ],
+          sources: [ 'src/subsrc.h', 'src/subsrc.cpp' ] },
+      "lib/sublib2/def.json": 
+        { sources: [ 'src/subsrc.cpp' ] }
+      };
+
+    cb( result[path] ); 
+  }).then( function(gyp) {
     t.assert( gyp.hasOwnProperty( 'sources' ) );
     t.deepEqual( gyp.sources, expected ); 
     t.end();
@@ -73,7 +93,9 @@ test( 'test controller', function(t) {
 test( 'test definer', function(t) {
   var controller = new Expector(t);
   controller.expect( '["../src/main.cpp"]' );
-  define( './test.json', '.' )
+  define( './test.json', function(path, cb) {
+    cb( { "sources":  [ "src/main.cpp" ] } );
+  } )
   .then( function(product) {
     t.assert( product.hasOwnProperty('sources') );
     
