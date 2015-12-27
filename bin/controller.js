@@ -7,7 +7,8 @@ var assert = require( 'assert' )
   , cp = require( 'child_process' )
   , Printer = require( './printer' )
   , run = require( '../bin/runner' )
-  , translate = require( '../bin/translator' );
+  , translate = require( '../bin/translator' )
+  , Promise = require( 'promise' );
 
 assert( typeof translate !== 'undefined' ); 
 
@@ -29,57 +30,67 @@ function buildProject( options, cb ) {
       options.opengl = true;
     }
 
-    generateIt();
+    generateIt().then( function() { 
+      buildIt().then( function() {
+        if (options.execute) {
+          execute()
+          .then( cb ); 
+        }
+        else {
+          cb();
+        } 
+      }); 
+    });
 
     function generateIt() {
-      makePathIfNone( options.buildDir, function() {
+      return new Promise(function(resolve, reject) {
+        makePathIfNone( options.buildDir, function() {
 
-        options.pathGYP = path.join( options.buildDir, options.targetName + ".gyp" );
-        writeGYP( product, options.pathGYP, function(error) {
-          if (error) throw error;
+          options.pathGYP = path.join( options.buildDir, options.targetName + ".gyp" );
+          writeGYP( product, options.pathGYP, function(error) {
+            if (error) throw error;
 
-          Printer.begin( 'generate', options.pathGYP );
-          generate( options )
-          .then( function() {
-            Printer.finishGreen( 'generate' );
-            buildIt();
-          })
-          .catch(function(error) {
-            Printer.finishRed( 'generate' );
-            console.log(error);
+            Printer.begin( 'generate', options.pathGYP );
+            generate( options )
+            .then( function() {
+              Printer.finishGreen( 'generate' );
+              resolve(); 
+            })
+            .catch(function(error) {
+              Printer.finishRed( 'generate' );
+              console.log(error);
+              reject(); 
+            });
           });
         });
       });
     }
 
     function buildIt() {
-      Printer.begin( 'build', options.pathGYP);
-      build( options )
-      .then( function() {
-        Printer.finishGreen( 'build' );
-        if (options.execute) {
-          execute();
-        }
-        else {
-          cb();
-        }
-      })
+      return new Promise(function(resolve,reject) {
+        Printer.begin( 'build', options.pathGYP);
+        build( options )
+        .then( function() {
+          Printer.finishGreen( 'build' );
+          resolve(); 
+        });
+      });
+      
     }
 
     function execute() {
-      Printer.begin( 'execute', options.targetName );
-      run(options)
-      .then( function(stdout, stderr) {
-        process.stdout.write( stdout ); 
-        process.stderr.write( stderr );
-        Printer.finishGreen( 'execute' ); 
-        cb();
-      })
-      .catch( function(err) {
-        throw err; 
+      return new Promise(function(resolve,reject) {
+        Printer.begin( 'execute', options.targetName );
+        run(options)
+        .then( function(stdout, stderr) {
+          process.stdout.write( stdout ); 
+          process.stderr.write( stderr );
+          Printer.finishGreen( 'execute' ); 
+          resolve();
+        });
       });
     }
-    
+
     function processData() {
       if (product.hasOwnProperty('data')) {
         var cppDir = path.join( 'src', 'data' );
