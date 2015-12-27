@@ -23,65 +23,81 @@ function buildProject( options, cb ) {
     
     Printer.finishGreen( 'define' ); 
 
-    if (product.hasOwnProperty('data'))
-    {
-      var cppDir = path.join( 'src', 'data' );
-
-      makePathIfNone( cppDir, function() {
-        product.data.forEach(function(entry) {
-          translate( entry );
-
-          product.sources.push( path.join( 
-              cppDir,
-              path.basename(path.basename(entry) )
-            ) + '.h'
-          );
-        });
-      });
-    }
+    processData(); 
 
     if (product.hasOwnProperty('opengl')) {
       options.opengl = true;
     }
 
-    makePathIfNone( options.buildDir, function() {
+    generateIt();
 
-      options.pathGYP = path.join( options.buildDir, options.targetName + ".gyp" );
-      writeGYP( product, options.pathGYP, function(error) {
-        if (error) throw error;
+    function generateIt() {
+      makePathIfNone( options.buildDir, function() {
 
-        Printer.begin( 'generate', options.pathGYP );
-        generate( options )
-        .then( function() {
-          Printer.finishGreen( 'generate' );
-          Printer.begin( 'build', options.pathGYP);
-          build( options )
+        options.pathGYP = path.join( options.buildDir, options.targetName + ".gyp" );
+        writeGYP( product, options.pathGYP, function(error) {
+          if (error) throw error;
+
+          Printer.begin( 'generate', options.pathGYP );
+          generate( options )
           .then( function() {
-            Printer.finishGreen( 'build' );
-            if (options.execute) {
-              Printer.begin( 'execute', options.targetName );
-              run(options)
-              .then( function(stdout, stderr) {
-                process.stdout.write( stdout ); 
-                process.stderr.write( stderr );
-                Printer.finishGreen( 'execute' ); 
-                cb();
-              })
-              .catch( function(err) {
-                throw err; 
-              });
-            }
-            else {
-              cb();
-            }
+            Printer.finishGreen( 'generate' );
+            buildIt();
           })
-        })
-        .catch(function(error) {
-          Printer.finishRed( 'generate' );
-          console.log(error);
+          .catch(function(error) {
+            Printer.finishRed( 'generate' );
+            console.log(error);
+          });
         });
       });
-    });
+    }
+
+    function buildIt() {
+      Printer.begin( 'build', options.pathGYP);
+      build( options )
+      .then( function() {
+        Printer.finishGreen( 'build' );
+        if (options.execute) {
+          execute();
+        }
+        else {
+          cb();
+        }
+      })
+    }
+
+    function execute() {
+      Printer.begin( 'execute', options.targetName );
+      run(options)
+      .then( function(stdout, stderr) {
+        process.stdout.write( stdout ); 
+        process.stderr.write( stderr );
+        Printer.finishGreen( 'execute' ); 
+        cb();
+      })
+      .catch( function(err) {
+        throw err; 
+      });
+    }
+    
+    function processData() {
+      if (product.hasOwnProperty('data')) {
+        var cppDir = path.join( 'src', 'data' );
+
+        makePathIfNone( cppDir, function() {
+          product.data.forEach(function(entry) {
+            translate( entry );
+
+            product.sources.push( path.join( 
+                cppDir,
+                path.basename(path.basename(entry) )
+              ) + '.h'
+            );
+          });
+        });
+      }
+    }
+
   })
   .catch( function(error) {
     Printer.finishRed( 'define' );
