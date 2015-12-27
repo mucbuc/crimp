@@ -6,38 +6,9 @@ var assert = require( 'assert' )
   , Expector = require( 'expector' ).Expector
   , test = require( 'tape' )
   , thisPath = path.dirname(__filename)
-  , define = require( '../bin/definer.js' )
   , buildProject = require( '../bin/controller.js' );
 
 process.chdir( thisPath ); 
-
-test( 'test controller', function(t) {
-  var expector = new Expector(t)
-    , options = { 
-        buildDir: 'build',
-        targetName: 'test',
-        testDir: '.',
-        pathJSON: './test.json',
-        gcc: 'true'
-    };
-
-  expector.expect( 'done' );
-  buildProject( options, function() {
-    expector.emit( 'done' );
-    expector.check(); 
-  });
-});
-
-test( 'test definer', function(t) {
-  var controller = new Expector(t);
-  controller.expect( '["../src/main.cpp"]' );
-  define( './test.json' )
-  .then( function(product) {
-    t.assert( product.hasOwnProperty("sources" ) ); 
-    controller.emit( JSON.stringify(product.sources) ); 
-    controller.check();
-  });
-});
 
 test( 'test build', function(t) {
   var controller = new Expector(t)

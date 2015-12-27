@@ -4,7 +4,7 @@
   "description": "c++ build system based on gyp",
   "main": "crimp.js",
   "scripts": {
-    "test": "node test/test.js; node test/test-gcc.js; node test/smoke.js;"
+    "test": "tape test/*.js test/**/*.js"
   },
   "repository": {
     "type": "git",
