@@ -28,7 +28,7 @@ function buildProject( options, cb ) {
       options.opengl = true;
     }
 
-    processData()
+    translateData()
     .then( function() {
 
       generateIt().then( function() { 
@@ -93,19 +93,21 @@ function buildProject( options, cb ) {
       });
     }
 
-    function processData() {
+    function translateData() {
       return new Promise( function(resolve, reject) {
         if (product.hasOwnProperty('data')) {
           var cppDir = path.join( 'src', 'data' );
-
           traverse( product.data, function(entry, next) {
-            
             product.sources.push( path.join( 
                 cppDir,
                 path.basename(path.basename(entry) )
               ) + '.h'
             );
-            translate( entry, next );
+            Printer.begin( 'translate', entry ); 
+            translate( entry, function() {
+              Printer.finishGreen( 'translate' ); 
+              next(); 
+            });
           })
           .then( function() {
             makePathIfNone( cppDir, resolve );
