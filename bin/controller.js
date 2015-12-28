@@ -8,7 +8,8 @@ var assert = require( 'assert' )
   , Printer = require( './printer' )
   , run = require( '../bin/runner' )
   , translate = require( '../bin/translator' )
-  , Promise = require( 'promise' );
+  , Promise = require( 'promise' )
+  , traverse = require( 'traverjs' );
 
 assert( typeof translate !== 'undefined' ); 
 
@@ -16,30 +17,31 @@ function buildProject( options, cb ) {
   
   assert( options.hasOwnProperty('pathJSON') );
 
-
   Printer.begin( 'define', options.pathJSON );
 
   define( options.pathJSON )
   .then( function(product) {
     
     Printer.finishGreen( 'define' ); 
-
-    processData(); 
-
+      
     if (product.hasOwnProperty('opengl')) {
       options.opengl = true;
     }
 
-    generateIt().then( function() { 
-      buildIt().then( function() {
-        if (options.execute) {
-          execute()
-          .then( cb ); 
-        }
-        else {
-          cb();
-        } 
-      }); 
+    processData()
+    .then( function() {
+
+      generateIt().then( function() { 
+        buildIt().then( function() {
+          if (options.execute) {
+            execute()
+            .then( cb ); 
+          }
+          else {
+            cb();
+          } 
+        }); 
+      });
     });
 
     function generateIt() {
@@ -92,21 +94,29 @@ function buildProject( options, cb ) {
     }
 
     function processData() {
-      if (product.hasOwnProperty('data')) {
-        var cppDir = path.join( 'src', 'data' );
+      return new Promise( function(resolve, reject) {
+        if (product.hasOwnProperty('data')) {
+          var cppDir = path.join( 'src', 'data' );
 
-        makePathIfNone( cppDir, function() {
-          product.data.forEach(function(entry) {
-            translate( entry );
-
+          traverse( product.data, function(entry, next) {
+            
             product.sources.push( path.join( 
                 cppDir,
                 path.basename(path.basename(entry) )
               ) + '.h'
             );
-          });
-        });
-      }
+            translate( entry, next );
+          })
+          .then( function() {
+            makePathIfNone( cppDir, resolve );
+          })
+          .catch( resolve );
+          
+        }
+        else {
+          resolve();
+        }
+      });
     }
 
   })
