@@ -9,35 +9,35 @@ function build(options, cb) {
   assert( options.hasOwnProperty( 'buildDir' ) );
 
   return new Promise( function(resolve, reject) {
-      var child;
-      if (options.gcc) {
-        var args = [ '-j', '-C', './' ]; 
-        if (options.release) {
-          args.push( 'BUILDTYPE=Release' );
-        }
-        else if (options.debug) {
-          args.push( 'BUILDTYPE=Debug' );
-        }
-        child = cp.spawn( 'make', args, { stdio: 'inherit', cwd: options.buildDir } );
+    var child;
+    if (options.gcc) {
+      var args = [ '-j', '-C', './' ]; 
+      if (options.release) {
+        args.push( 'BUILDTYPE=Release' );
       }
-      else 
-      {
-        var pathProject = path.join( options.buildDir, options.buildDir, options.targetName + ".xcodeproj" )
-          , args = ['-project', pathProject ];
-        
-        child = cp.spawn( 'xcodebuild', args, { stdio: 'inherit' } );
+      else if (options.debug) {
+        args.push( 'BUILDTYPE=Debug' );
+      }
+      child = cp.spawn( 'make', args, { stdio: 'inherit', cwd: options.buildDir } );
+    }
+    else 
+    {
+      var pathProject = path.join( options.buildDir, options.buildDir, options.targetName + ".xcodeproj" )
+        , args = ['-project', pathProject ];
       
-        if (options.ide) {
-          cp.spawn( 'open', [ pathProject ] );
-        }
+      child = cp.spawn( 'xcodebuild', args, { stdio: 'inherit' } );
+    
+      if (options.ide) {
+        cp.spawn( 'open', [ pathProject ] );
       }
+    }
 
-      child.on( 'exit', function(code) {
-        if (code) 
-          reject(code);
-        else
-          resolve(code);
-      });
+    child.on( 'exit', function(code) {
+      if (code) 
+        reject(code);
+      else
+        resolve(code);
+    });
   });
 }
 
