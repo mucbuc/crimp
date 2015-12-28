@@ -27,7 +27,7 @@ test( 'data include', function(t) {
   });
 }); 
 
-test( 'test build', function(t) {
+test( 'test build', { skip: true }, function(t) {
   var controller = new Expector(t)
     , options = { 
         buildDir: 'build',

@@ -9,7 +9,7 @@ function build(options, cb) {
   assert( options.hasOwnProperty( 'buildDir' ) );
 
   return new Promise( function(resolve, reject) {
-    var child;
+    
     if (options.gcc) {
       var args = [ '-j', '-C', './' ]; 
       if (options.release) {
@@ -18,26 +18,20 @@ function build(options, cb) {
       else if (options.debug) {
         args.push( 'BUILDTYPE=Debug' );
       }
-      child = cp.spawn( 'make', args, { stdio: 'inherit', cwd: options.buildDir } );
+      cp.spawn( 'make', args, { stdio: 'inherit', cwd: options.buildDir } )
+      .on( 'exit', function(code) {
+        if (code) 
+          reject(code);
+        else
+          resolve(code);
+      });
     }
     else 
     {
-      var pathProject = path.join( options.buildDir, options.buildDir, options.targetName + ".xcodeproj" )
-        , args = ['-project', pathProject ];
-      
-      child = cp.spawn( 'xcodebuild', args, { stdio: 'inherit' } );
-    
-      if (options.ide) {
-        cp.spawn( 'open', [ pathProject ] );
-      }
+      resolve(0);
     }
 
-    child.on( 'exit', function(code) {
-      if (code) 
-        reject(code);
-      else
-        resolve(code);
-    });
+
   });
 }
 
