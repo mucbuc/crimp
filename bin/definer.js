@@ -60,7 +60,8 @@ function define(pathJSON, objReader) {
               product.data.push( absPath );
               next();
             })
-            .then( cb ); 
+            .then( cb )
+            .catch(cb); 
           }
           else {
             cb();
@@ -70,15 +71,13 @@ function define(pathJSON, objReader) {
         function handleImports(cb) {
           if (  content.hasOwnProperty('import')
             &&  content.import.length) {
-            content.import.forEach( function( item, index, array ) {
+            traverse( content.import, function( item, next ) {
               processDependencies( path.join( buildDir, item ), path.dirname(fileJSON) )
-              .then( function() {
-                if (index == array.length - 1) {
-                  cb(); 
-                }
-              })
+              .then( next )
               .catch( reject );
-            });
+            })
+            .then( cb )
+            .catch( cb );
           }
           else {
             cb(); 
