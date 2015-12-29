@@ -103,6 +103,7 @@ function buildProject( options, cb ) {
           makePathIfNone( cppDir, function() {
             traverse( product.data, function(entry, next) {
               product.sources.push( path.join( 
+                  '..',
                   cppDir,
                   path.basename(path.basename(entry) )
                 ) + '.h'
