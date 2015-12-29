@@ -7,7 +7,8 @@ objective:
 var assert = require( 'assert' )
   , path = require( 'path' )
   , fs = require( 'fs' )
-  , Promise = require( 'promise' );
+  , Promise = require( 'promise' )
+  , traverse = require( 'traverjs' );
 
 function define(pathJSON, objReader) {
 
@@ -50,19 +51,17 @@ function define(pathJSON, objReader) {
         });
 
         function handleData(cb) {
-          if (    content.hasOwnProperty('data')
-              &&  content.data.length) {
-            content.data.forEach(function(dataPath, index, array) {
+          if ( content.hasOwnProperty('data')) {
+            traverse( content.data, function(dataPath, next) {
               var absPath = path.join( 
                     path.dirname(fileJSON), 
                     dataPath 
                   );
               product.data.push( absPath );
-
-              if (index == array.length - 1) {
-                cb();
-              }
-            }); 
+              next();
+            })
+            .then( cb )
+            .catch(cb); 
           }
           else {
             cb();
@@ -72,15 +71,13 @@ function define(pathJSON, objReader) {
         function handleImports(cb) {
           if (  content.hasOwnProperty('import')
             &&  content.import.length) {
-            content.import.forEach( function( item, index, array ) {
+            traverse( content.import, function( item, next ) {
               processDependencies( path.join( buildDir, item ), path.dirname(fileJSON) )
-              .then( function() {
-                if (index == array.length - 1) {
-                  cb(); 
-                }
-              })
+              .then( next )
               .catch( reject );
-            });
+            })
+            .then( cb )
+            .catch( cb );
           }
           else {
             cb(); 
@@ -88,14 +85,13 @@ function define(pathJSON, objReader) {
         }
 
         function handleSources(cb) {
-          if (  content.hasOwnProperty('sources')
-            &&  content.sources.length) {
-            content.sources.forEach(function(source, index, array) {
+          if (content.hasOwnProperty('sources')) {
+            traverse( content.sources, function(source, next) {
               product.sources.push( path.join( '..', path.dirname(fileJSON), source ) );
-              if (index == array.length - 1) {
-                cb();
-              }
-            });
+              next();
+            })
+            .then( cb )
+            .catch( cb ); 
           }
           else {
             cb();

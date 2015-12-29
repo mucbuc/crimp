@@ -31,10 +31,10 @@ function buildProject( options, cb ) {
     translateData()
     .then( function() {
 
-      generateIt().then( function() { 
-        buildIt().then( function() {
+      generateProject().then( function() { 
+        buildTarget().then( function() {
           if (options.execute) {
-            execute()
+            executeTarget()
             .then( cb ); 
           }
           else {
@@ -44,7 +44,7 @@ function buildProject( options, cb ) {
       });
     });
 
-    function generateIt() {
+    function generateProject() {
       return new Promise(function(resolve, reject) {
         makePathIfNone( options.buildDir, function() {
 
@@ -68,7 +68,7 @@ function buildProject( options, cb ) {
       });
     }
 
-    function buildIt() {
+    function buildTarget() {
       return new Promise(function(resolve,reject) {
         Printer.begin( 'build', options.pathGYP);
         build( options )
@@ -83,7 +83,7 @@ function buildProject( options, cb ) {
       
     }
 
-    function execute() {
+    function executeTarget() {
       return new Promise(function(resolve,reject) {
         Printer.begin( 'execute', options.targetName );
         run(options)
