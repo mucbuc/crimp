@@ -43,8 +43,8 @@ function define(pathJSON, objReader) {
           product.opengl = true;
         }
         
-        handleSources( function() {
-          handleImports( function() {
+        handleImports( function() {
+          handleSources( function() {
             handleData( function() {
               resolve(product); 
             } ); 
