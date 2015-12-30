@@ -31,9 +31,9 @@ test( 'define recursion', function(t) {
   
   var controller = new Expector(t)
     , expected = [
+      '../lib/sublib2/src/subsrc.cpp',
       '../lib/sublib/src/subsrc.h', 
-      '../lib/sublib/src/subsrc.cpp', 
-      '../lib/sublib2/src/subsrc.cpp'
+      '../lib/sublib/src/subsrc.cpp'
     ];
 
   define( './test-import.json', mapFile )
