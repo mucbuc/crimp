@@ -87,10 +87,7 @@ function define(pathJSON, objReader) {
         function handleSources(cb) {
           if (content.hasOwnProperty('sources')) {
             traverse( content.sources, function(source, next) {
-              var entry = path.join( '..', path.dirname(fileJSON), source );
-              if (product.sources.indexOf(entry) == -1) {
-                product.sources.push( entry );
-              }
+              product.sources.push( path.join( '..', path.dirname(fileJSON), source ) );
               next();
             })
             .then( cb )
