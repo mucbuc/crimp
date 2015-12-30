@@ -16,7 +16,8 @@ function define(pathJSON, objReader) {
     , product = {
         'sources': [],
         'data': []
-      };
+      }
+    , imported = [];
 
   if (typeof objReader === 'undefined') {
     objReader = function(filePath, cb) {
@@ -72,9 +73,15 @@ function define(pathJSON, objReader) {
           if (  content.hasOwnProperty('import')
             &&  content.import.length) {
             traverse( content.import, function( item, next ) {
-              processDependencies( path.join( buildDir, item ), path.dirname(fileJSON) )
-              .then( next )
-              .catch( reject );
+              if (imported.indexOf(item) == -1) {
+                imported.push(item);
+                processDependencies( path.join( buildDir, item ), path.dirname(fileJSON) )
+                .then( next )
+                .catch( reject );
+              }
+              else {
+                next();
+              }
             })
             .then( cb )
             .catch( cb );
