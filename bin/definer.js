@@ -14,8 +14,7 @@ function define(pathJSON, objReader) {
 
   var buildDir
     , product = {
-        'sources': [],
-        'data': []
+        'sources': []
       }
     , imported = [];
 
@@ -53,6 +52,7 @@ function define(pathJSON, objReader) {
 
         function handleData(cb) {
           if ( content.hasOwnProperty('data')) {
+            product.data = [];
             traverse( content.data, function(dataPath, next) {
               var absPath = path.join( 
                     path.dirname(fileJSON), 
