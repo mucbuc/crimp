@@ -78,6 +78,7 @@ function buildProject( options, cb ) {
         })
         .catch( function(stderr, stdout) {
           Printer.finishRed( 'build', stderr.toString() + stdout.toString() );
+          reject();
         });
       });
       
@@ -86,12 +87,22 @@ function buildProject( options, cb ) {
     function executeTarget() {
       return new Promise(function(resolve,reject) {
         Printer.begin( 'execute', options.targetName );
+
         run(options)
-        .then( function(stdout, stderr) {
-          process.stdout.write( stdout ); 
-          process.stderr.write( stderr );
+        .then( function( stdout, stderr) {
+          if (typeof stdout !== 'undefined') {
+            process.stdout.write( stdout );
+          }
+          if (typeof stderr !== 'undefined') {
+            process.stderr.write( stderr );
+          }
           Printer.finishGreen( 'execute' ); 
           resolve();
+        })
+        .catch( function(error) {
+          Printer.printError( error ); 
+          Printer.finishRed( 'execute' );
+          reject();
         });
       });
     }
