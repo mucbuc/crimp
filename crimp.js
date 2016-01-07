@@ -57,28 +57,15 @@ if (program.ide) {
   options.ide = program.ide;
 }
 
-if (program.path) {
-  options.pathJSON = path.basename( program.path );
-  options.testDir = path.dirname( program.path );
-}
-else if (program.suite) {
-  options.testDir = path.dirname( program.suite );
-  program.suite = path.basename( program.suite );
-}
-
-process.chdir( options.testDir );
-
-if (program.clean) {
-  rmrf( options.buildDir ); 
-}
-
 if (program.suite) {
+
+  var dirname = path.dirname( program.suite );
+
   fs.readFile( program.suite, function(err, data) {
     if (err) throw err; 
     
     traverse( JSON.parse( data.toString() ).tests, function( pathJSON, next ) {
-       options.pathJSON = pathJSON; 
-       buildProject( options, next );
+      crimpIt( path.join( dirname, pathJSON ), next );
     } )
     .then( function() {
       
@@ -86,5 +73,25 @@ if (program.suite) {
   });
 }
 else {
-  buildProject( options );
+
+  crimpIt( program.path );
+
 }
+
+function crimpIt(pathJSON, cb) {
+
+  console.log( 'crimp', pathJSON );
+
+  options.pathJSON = path.basename( pathJSON );
+  options.testDir = path.dirname( pathJSON );
+
+  process.chdir( options.testDir );
+
+  if (program.clean) {
+    rmrf( options.buildDir ); 
+  }
+
+  buildProject( options, cb );
+}
+
+
