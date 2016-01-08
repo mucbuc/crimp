@@ -6,7 +6,8 @@ var assert = require( 'assert' )
   , Expector = require( 'expector' ).Expector
   , test = require( 'tape' )
   , thisPath = path.dirname(__filename)
-  , buildProject = require( '../bin/controller.js' );
+  , buildProject = require( '../bin/controller.js' )
+  , fs = require( 'fs' );
 
 process.chdir( thisPath );
 
@@ -17,12 +18,35 @@ test.only( 'asserter', function(t) {
         targetName: 'test',
         testDir: '.',
         pathJSON: './check_assert.json'
-    };
+      }
+    , resultPath = './test_result.json';
 
-  buildProject( options, function(code) {
-    t.assert( !code );
-    runBuild( './build/build/Test/test', controller );  
-  });
+  controller.expect( 'not exits' ); 
+  controller.expect( 'exits' ); 
+
+  fs.unlink( resultPath, function(err) {
+
+    tryOpen();
+
+    buildProject( options, function(code) {
+      t.assert( !code );
+      cp.execFile( './build/build/Test/test', function() {
+        tryOpen();
+        controller.check();
+      } );
+    });
+
+  } );
+
+  function tryOpen() {
+    try {
+      fs.statSync( resultPath );
+      controller.emit( "exits" );   
+    }
+    catch(err) {
+      controller.emit( "not exits" );
+    }
+  } 
 });
 
 test( 'data include', function(t) {

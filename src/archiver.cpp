@@ -1,8 +1,7 @@
 #include <fstream>
 
 #include "archiver.h"
-
-
+#include "data/config.json.h"
 
 namespace private_assert
 {
@@ -14,7 +13,8 @@ namespace private_assert
 
 	archiver::~archiver()
 	{
-		std::fstream out( "test_result.json", std::fstream::out );
+		const auto config( static_port____data_config::json<>{} );
+		std::fstream out( config._path, std::fstream::out );
 
 		out << "{\n";
 		out << "\"passed\": " << passed << std::endl;

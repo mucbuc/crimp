@@ -3,3 +3,5 @@ build/
 node_modules/
 build.log
 */src/data/
+src/data/
+test_result.json
