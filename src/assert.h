@@ -50,7 +50,10 @@
                 }   \
             } \
             local_obj = \
-            asserter_t::make_asserter( expr ).print_message( __FILE__, __LINE__, __FUNCTION__, #expr ).SMART_ASSERT_A
+            asserter_t::make_asserter( expr ) \
+            .print_message( __FILE__, __LINE__, __FUNCTION__, #expr ) \
+            .archive_result( __FILE__, __LINE__, __FUNCTION__, #expr ) \
+            .SMART_ASSERT_A
 
     class asserter_message_out;
     template<class> class asserter_throw_t;
@@ -60,7 +63,18 @@
     {	
     public:	
         virtual bool can_handle() const; 
-        virtual const asserter_t & print_message(const char * file, int line, const char * function, const char * = "" ) const;  
+        
+        virtual const asserter_t & print_message(
+            const char * file, 
+            int line, 
+            const char * function, 
+            const char * = "" ) const;  
+
+        virtual const asserter_t & archive_result(
+            const char * file, 
+            int line, 
+            const char * function, 
+            const char * = "" ) const; 
         
         template<class U> const asserter_t & print_current_val(const U &, const char*) const; 
        

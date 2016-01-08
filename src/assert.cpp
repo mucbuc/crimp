@@ -23,7 +23,11 @@ bool asserter_t::can_handle() const
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-const asserter_t & asserter_t::print_message(const char * file, int line, const char * function, const char * message) const
+const asserter_t & asserter_t::print_message(
+    const char * file, 
+    int line, 
+    const char * function, 
+    const char * message) const
 {
     static const char * code_red( "\x1b[31m" ); 
     static const char * code_reset( "\x1b[39;49m" );    
@@ -46,6 +50,16 @@ const asserter_t & asserter_t::print_message(const char * file, int line, const 
              << "function: " << function
              << code_reset << endl;
     }
+    return * this;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+const asserter_t & asserter_t::archive_result(
+    const char * file, 
+    int line, 
+    const char * function, 
+    const char * message ) const
+{
     return * this;
 }
 
