@@ -23,10 +23,12 @@
 	       	}	
 	    },
         'sources': [
+			'../src/archiver.cpp',
+			'../src/archiver.h',
 			'../src/assert.cpp',
 			'../src/assert.h',
 			'../src/assert.hxx',
-			'../src/test.h',
+			'../src/test.h'
         ],
         'include_dirs': [
 			'crimp/src/',

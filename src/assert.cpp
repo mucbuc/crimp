@@ -1,3 +1,4 @@
+#include "archiver.h"
 #include "assert.h"
 
 #undef SMART_ASSERT_A 
@@ -60,6 +61,11 @@ const asserter_t & asserter_t::archive_result(
     const char * function, 
     const char * message ) const
 {
+    auto & a( private_assert::archiver::instance() );
+    if (m_value)
+        a.pass();
+    else 
+        a.fail( file, line, function, message );
     return * this;
 }
 

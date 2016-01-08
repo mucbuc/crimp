@@ -1,7 +1,5 @@
 #include <iostream>
 
-//#include "test.h"
-
 int main(int argc, const char * argv[])
 {
 	using namespace std;
@@ -16,7 +14,6 @@ int main(int argc, const char * argv[])
 	string var( "hello release" );
 #endif
 #endif	 
-//	ASSERT( var.size() )(var);
 
 	cout << var << endl;
 	return 0; 

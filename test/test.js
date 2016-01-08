@@ -10,6 +10,21 @@ var assert = require( 'assert' )
 
 process.chdir( thisPath );
 
+test.only( 'asserter', function(t) {
+   var controller = new Expector(t)
+    , options = { 
+        buildDir: 'build',
+        targetName: 'test',
+        testDir: '.',
+        pathJSON: './check_assert.json'
+    };
+
+  buildProject( options, function(code) {
+    t.assert( !code );
+    runBuild( './build/build/Test/test', controller );  
+  });
+});
+
 test( 'data include', function(t) {
   
   var controller = new Expector(t)
