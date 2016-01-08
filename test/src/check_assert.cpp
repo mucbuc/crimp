@@ -9,5 +9,7 @@ int main(int argc, const char * argv[])
 
 	ASSERT( !a.empty() )( a );
 
+	ASSERT( a.empty() )( a );
+
 	return 0; 
 }
