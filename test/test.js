@@ -19,7 +19,7 @@ test.only( 'asserter', function(t) {
         testDir: '.',
         pathJSON: './check_assert.json'
       }
-    , resultPath = './test_result.json';
+    , resultPath = './build/result.json';
 
   controller.expect( 'not exits' ); 
   controller.expect( 'exits' ); 
