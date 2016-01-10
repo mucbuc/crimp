@@ -97,6 +97,18 @@ function buildProject( options, cb ) {
             process.stderr.write( stderr );
           }
           Printer.finishGreen( 'execute' ); 
+          
+          fs.readFile( 'build/result.json', function(err, data) {
+            var obj = {};
+            if (err) throw err;
+            try {
+              obj = JSON.parse( data.toString() );
+            }
+            catch(err) {
+              console.log(err);
+            }
+          }); 
+
           resolve();
         })
         .catch( function(error) {

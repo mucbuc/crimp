@@ -20,10 +20,19 @@ namespace private_assert
 		const auto config( static_port____data_config::json<>{} );
 		fstream out( config._path, fstream::out );
 
-		stringstream failed; 
+		stringstream failed;
+		if (m_failed.begin() != m_failed.end())
+		{
+			auto i( m_failed.begin() );
 
-		copy( m_failed.begin(), m_failed.end(), ostream_iterator<string>(failed, ",") );
+			failed << *(i++);
 
+			while (i != m_failed.end())
+			{
+				failed << ", " << *(i++);
+			}
+		}
+		
 		out << "{\n";
 		out << "\"passed\": " << m_passed << "," << endl;
 		out << "\"failed\": " << failed.str() << endl;
