@@ -1,5 +1,7 @@
+#include <assert.h>
+
 #include "archiver.h"
-#include "assert.h"
+#include "asserter.h"
 
 #undef SMART_ASSERT_A 
 #undef SMART_ASSERT_B

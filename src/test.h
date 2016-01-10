@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "assert.h"
+#include "asserter.h"
 
 #define FOOTER std::cout << __FUNCTION__ << " passed" << std::endl;
 

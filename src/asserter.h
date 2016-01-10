@@ -119,7 +119,7 @@
     };
 
 
-    #include "assert.hxx"
+    #include "asserter.hxx"
 
 #endif // NDEBUG
 

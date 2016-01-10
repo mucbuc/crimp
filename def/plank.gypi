@@ -25,9 +25,9 @@
         'sources': [
 			'../src/archiver.cpp',
 			'../src/archiver.h',
-			'../src/assert.cpp',
-			'../src/assert.h',
-			'../src/assert.hxx',
+			'../src/asserter.cpp',
+			'../src/asserter.h',
+			'../src/asserter.hxx',
 			'../src/test.h'
         ],
         'include_dirs': [
