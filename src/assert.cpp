@@ -1,6 +1,5 @@
 #include "archiver.h"
 #include "assert.h"
-#include <cassert>
 
 #undef SMART_ASSERT_A 
 #undef SMART_ASSERT_B
@@ -92,10 +91,10 @@ const asserter_t & asserter_message_out::print_message(const char * file, int li
     return asserter_t::print_message( file, line, function, m_message ); 
 }
 
+#include <cassert>
 void asserter_t::on_assert_fail()
 {
-    
-    //assert(false);
+    assert(false);
 }
 
-#endif 
+#endif // NDEBUG
