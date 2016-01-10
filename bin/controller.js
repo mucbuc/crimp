@@ -9,9 +9,14 @@ var assert = require( 'assert' )
   , run = require( '../bin/runner' )
   , translate = require( '../bin/translator' )
   , Promise = require( 'promise' )
-  , traverse = require( 'traverjs' );
+  , traverse = require( 'traverjs' )
+  , successCounter = 0;
 
 assert( typeof translate !== 'undefined' ); 
+
+process.on( 'exit', function() {
+  console.log(  'test passed: ', successCounter );
+});
 
 function buildProject( options, cb ) {
   
@@ -35,7 +40,14 @@ function buildProject( options, cb ) {
         buildTarget().then( function() {
           if (options.execute) {
             executeTarget()
-            .then( cb ); 
+            .readResults()
+            .then( function(results) {
+              successCounter += results.passed;
+              cb();
+            })
+            .catch(function(err) {
+              cb
+            } );
           }
           else {
             cb();
@@ -43,6 +55,21 @@ function buildProject( options, cb ) {
         }); 
       });
     });
+
+    function readResults(cb) {
+      return new Promise(function(resolve, reject) { 
+        fs.readFile( 'build/result.json', function(err, data) {
+          var obj = {};
+          if (err) throw err;
+          try {
+            resolve( JSON.parse( data.toString() ) );
+          }
+          catch(err) {
+            reject(err);
+          }
+        });
+      }); 
+    }
 
     function generateProject() {
       return new Promise(function(resolve, reject) {
@@ -98,17 +125,6 @@ function buildProject( options, cb ) {
           }
           Printer.finishGreen( 'execute' ); 
           
-          fs.readFile( 'build/result.json', function(err, data) {
-            var obj = {};
-            if (err) throw err;
-            try {
-              obj = JSON.parse( data.toString() );
-            }
-            catch(err) {
-              console.log(err);
-            }
-          }); 
-
           resolve();
         })
         .catch( function(error) {
