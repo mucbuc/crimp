@@ -15,7 +15,7 @@ var assert = require( 'assert' )
 assert( typeof translate !== 'undefined' ); 
 
 process.on( 'exit', function() {
-  console.log(  'test passed: ', successCounter );
+  console.log(  'assertions passed: ', successCounter );
 });
 
 function buildProject( options, cb ) {
@@ -40,14 +40,14 @@ function buildProject( options, cb ) {
         buildTarget().then( function() {
           if (options.execute) {
             executeTarget()
-            .readResults()
-            .then( function(results) {
-              successCounter += results.passed;
-              cb();
+            .then( function() {
+              readResults().then( function(results) {
+                successCounter += results.passed;
+                cb();
+              })
+              .catch(cb);
             })
-            .catch(function(err) {
-              cb
-            } );
+            .catch(cb);
           }
           else {
             cb();
@@ -60,11 +60,12 @@ function buildProject( options, cb ) {
       return new Promise(function(resolve, reject) { 
         fs.readFile( 'build/result.json', function(err, data) {
           var obj = {};
-          if (err) throw err;
+
           try {
             resolve( JSON.parse( data.toString() ) );
           }
           catch(err) {
+            console.log( err );
             reject(err);
           }
         });

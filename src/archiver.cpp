@@ -21,15 +21,20 @@ namespace private_assert
 		fstream out( config._path, fstream::out );
 
 		out << "{\n";
-		out << "\"passed\": " << m_passed << "," << endl;
+		out << "\"passed\": " << m_passed;
 
 		if (m_failed.begin() != m_failed.end())
 		{
+			out << "," << endl;
+
 			auto i( m_failed.begin() );
 			out << "\"failed\": [" << endl << *(i++) << endl;
 			while (i != m_failed.end())
 				out << ", " << *(i++) << endl;
 			out << "]" << endl;
+		}
+		else { 
+			out << endl;
 		}
 		out << "}\n";
 	}

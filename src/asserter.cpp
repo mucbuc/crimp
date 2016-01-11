@@ -96,7 +96,9 @@ const asserter_t & asserter_message_out::print_message(const char * file, int li
 #include <cassert>
 void asserter_t::on_assert_fail()
 {
+#if defined(TARGET_TEST) || defined(NDEBUG)
     assert(false);
+#endif
 }
 
 #endif // NDEBUG

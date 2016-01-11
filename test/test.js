@@ -11,7 +11,7 @@ var assert = require( 'assert' )
 
 process.chdir( thisPath );
 
-test.only( 'asserter', function(t) {
+test( 'asserter', function(t) {
    var controller = new Expector(t)
     , options = { 
         buildDir: 'build',
