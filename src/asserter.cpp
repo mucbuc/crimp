@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdexcept>
 
 #include "archiver.h"
 #include "asserter.h"
@@ -73,32 +74,21 @@ const asserter_t & asserter_t::archive_result(
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 const asserter_t asserter_t::make_asserter(bool value)
-{	return asserter_t(value); 	}
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-const asserter_message_out asserter_t::make_asserter(bool value, const char * message)
-{	return asserter_message_out(value, message); 	}
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-// asserter_message_out
-/////////////////////////////////////////////////////////////////////////////////////////////
-asserter_message_out::asserter_message_out(bool value, const char * message)
-    : asserter_t(value)
-    , m_message( message )
-{}
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-const asserter_t & asserter_message_out::print_message(const char * file, int line, const char * function, const char * ) const
-{
-    return asserter_t::print_message( file, line, function, m_message ); 
+{	
+    return asserter_t(value); 	
 }
 
-#include <cassert>
+/////////////////////////////////////////////////////////////////////////////////////////////
 void asserter_t::on_assert_fail()
 {
+
 #if defined(TARGET_TEST) || defined(NDEBUG)
     assert(false);
 #endif
 }
 
 #endif // NDEBUG
+
+
+
+

@@ -29,14 +29,13 @@ function run(options) {
 }
 
 function runBuild( path, resolve, reject ) {
-  cp.execFile( path, function(err, stdout, stderr) {
-    if(err) {
-      reject( err );
-    }
-    else {
-      resolve( stdout, stderr ); 
-    }
-  } );
+  cp.spawn( path, [], { stdio: 'inherit' } )
+  .on( 'exit', function(code) {
+    if (code)
+      reject();
+    else
+      resolve();
+  }); 
 }
 
 module.exports = run;

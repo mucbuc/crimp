@@ -7,7 +7,6 @@
 
 #include <cstring>
 #include <iostream>
-#include <stdexcept>
 
 #ifdef NDEBUG
 
@@ -55,22 +54,20 @@
             .archive_result( __FILE__, __LINE__, __FUNCTION__, #expr ) \
             .SMART_ASSERT_A
 
-    class asserter_message_out;
-    template<class> class asserter_throw_t;
-    
     // asserter_t
-    class asserter_t 
+    class asserter_t final
     {	
     public:	
-        virtual bool can_handle() const; 
+
+        bool can_handle() const; 
         
-        virtual const asserter_t & print_message(
+        const asserter_t & print_message(
             const char * file, 
             int line, 
             const char * function, 
             const char * = "" ) const;  
 
-        virtual const asserter_t & archive_result(
+        const asserter_t & archive_result(
             const char * file, 
             int line, 
             const char * function, 
@@ -79,8 +76,6 @@
         template<class U> const asserter_t & print_current_val(const U &, const char*) const; 
        
         static const asserter_t make_asserter(bool); 
-        static const asserter_message_out make_asserter(bool, const char *); 
-        template<class T> static const asserter_throw_t<T> make_asserter(bool, const char *); 
         
         asserter_t & SMART_ASSERT_A; 
         asserter_t & SMART_ASSERT_B; 
@@ -93,31 +88,6 @@
     private:
         const bool m_value;
     };
-
-    // asserter_message_out
-    class asserter_message_out : public asserter_t 
-    {
-    public:
-        asserter_message_out(bool, const char *); 
-    
-        virtual const asserter_t & print_message(const char * file, int line, const char * function, const char * = "" ) const;
-    
-    private:
-        const char * m_message; 
-    };
-
-    // asserter_throw_t
-    template<class T>
-    class asserter_throw_t : public asserter_t 
-    {
-    public:
-        asserter_throw_t(bool, const char *); 
-        virtual bool can_handle(const char * file, int line, const char * function) const; 
-        
-    private: 
-        const char * m_message; 
-    };
-
 
     #include "asserter.hxx"
 

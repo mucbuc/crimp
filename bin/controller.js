@@ -39,15 +39,17 @@ function buildProject( options, cb ) {
       generateProject().then( function() { 
         buildTarget().then( function() {
           if (options.execute) {
-            executeTarget()
-            .then( function() {
-              readResults().then( function(results) {
-                successCounter += results.passed;
-                cb();
+            fs.unlink( 'build/result.json', function() {
+              executeTarget()
+              .then( function() {
+                readResults().then( function(results) {
+                  successCounter += results.passed;
+                  cb();
+                })
+                .catch(cb);
               })
               .catch(cb);
-            })
-            .catch(cb);
+            } );
           }
           else {
             cb();
@@ -117,19 +119,11 @@ function buildProject( options, cb ) {
         Printer.begin( 'execute', options.targetName );
 
         run(options)
-        .then( function( stdout, stderr) {
-          if (typeof stdout !== 'undefined') {
-            process.stdout.write( stdout );
-          }
-          if (typeof stderr !== 'undefined') {
-            process.stderr.write( stderr );
-          }
+        .then( function() {
           Printer.finishGreen( 'execute' ); 
-          
           resolve();
         })
-        .catch( function(error) {
-          Printer.printError( error ); 
+        .catch( function() {
           Printer.finishRed( 'execute' );
           reject();
         });
