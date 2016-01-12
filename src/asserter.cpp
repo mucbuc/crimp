@@ -20,7 +20,7 @@ asserter_t::asserter_t(bool value)
 {}
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-bool asserter_t::can_handle() const
+bool asserter_t::pass() const
 {	
     return m_value; 	
 }
@@ -37,7 +37,7 @@ const asserter_t & asserter_t::print_message(
 
     using namespace std;
 
-    if (can_handle()) 
+    if (pass()) 
     {
         cout << "assertion passed: " << message << endl 
              << "file: " << file << endl 
@@ -64,26 +64,11 @@ const asserter_t & asserter_t::archive_result(
     const char * message ) const
 {
     auto & a( private_assert::archiver::instance() );
-    if (can_handle())
+    if (pass())
         a.pass();
     else 
         a.fail( file, line, function, message );
     return * this;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-const asserter_t asserter_t::make_asserter(bool value)
-{	
-    return asserter_t(value); 	
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-void asserter_t::on_assert_fail()
-{
-
-#if defined(TARGET_TEST) || defined(NDEBUG)
-    assert(false);
-#endif
 }
 
 #endif // NDEBUG

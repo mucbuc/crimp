@@ -5,6 +5,7 @@
 #ifndef ASSERT_H_9879879hkjh
 #define ASSERT_H_9879879hkjh
 
+#include <assert.h>
 #include <cstring>
 #include <iostream>
 
@@ -16,13 +17,12 @@
             struct local_t  \
             {   \
                 local_t( const asserter_t & ) {} \
-            } local_obj = asserter_t::make_asserter(false)
+            } local_obj = asserter_t(false)
 
         // asserter_t
         class asserter_t
         {
         public:
-            static const asserter_t make_asserter(bool) { return asserter_t(); }
             template<class T> const asserter_t operator()(const T &) const { return asserter_t(); } 
         };
 
@@ -43,22 +43,22 @@
             {   \
                 local_t( const asserter_t & o ) \
                 {   \
-                    if( !o.can_handle() )   \
-                        asserter_t::on_assert_fail();  \
+                    if( !(o.pass()) )   \
+                        assert(false);  \
                 }   \
             } \
             local_obj = \
-            asserter_t::make_asserter( expr ) \
+            asserter_t( expr ) \
             .print_message( __FILE__, __LINE__, __FUNCTION__, #expr ) \
             .archive_result( __FILE__, __LINE__, __FUNCTION__, #expr ) \
             .SMART_ASSERT_A
 
     // asserter_t
-    class asserter_t final
+    struct asserter_t final
     {	
-    public:	
+        asserter_t(bool); 
 
-        bool can_handle() const; 
+        bool pass() const;
         
         const asserter_t & print_message(
             const char * file, 
@@ -74,15 +74,9 @@
         
         template<class U> const asserter_t & print_current_val(const U &, const char*) const; 
        
-        static const asserter_t make_asserter(bool);         
-        static void on_assert_fail();
-
         asserter_t & SMART_ASSERT_A; 
         asserter_t & SMART_ASSERT_B; 
-        
-    protected:
-        asserter_t(bool); 
-        
+                
     private:
         const bool m_value;
     };

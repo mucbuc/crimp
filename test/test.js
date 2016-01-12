@@ -30,12 +30,12 @@ test( 'asserter', function(t) {
 
     buildProject( options, function(code) {
       t.assert( !code );
-      cp.execFile( './build/build/Test/test', function() {
+      cp.spawn( './build/build/Test/test', [], {stdio: 'inherit' })
+      .on( "exit", function() {
         tryOpen();
         controller.check();
       } );
     });
-
   } );
 
   function tryOpen() {
