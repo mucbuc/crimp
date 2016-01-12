@@ -23,7 +23,6 @@
         {
         public:
             static const asserter_t make_asserter(bool) { return asserter_t(); }
-            static const asserter_t make_asserter(bool, const char *) { return asserter_t(); }
             template<class T> const asserter_t operator()(const T &) const { return asserter_t(); } 
         };
 
@@ -38,7 +37,7 @@
     #endif
 
     #define ASSERT( expr ) \
-        if (!TARGET_TEST && (expr)); \
+        if (expr); \
         else    \
             struct local_t  \
             {   \
@@ -75,13 +74,12 @@
         
         template<class U> const asserter_t & print_current_val(const U &, const char*) const; 
        
-        static const asserter_t make_asserter(bool); 
-        
+        static const asserter_t make_asserter(bool);         
+        static void on_assert_fail();
+
         asserter_t & SMART_ASSERT_A; 
         asserter_t & SMART_ASSERT_B; 
         
-        static void on_assert_fail();
-
     protected:
         asserter_t(bool); 
         

@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <stdexcept>
 
 #include "archiver.h"
 #include "asserter.h"
@@ -38,7 +37,7 @@ const asserter_t & asserter_t::print_message(
 
     using namespace std;
 
-    if (m_value) 
+    if (can_handle()) 
     {
         cout << "assertion passed: " << message << endl 
              << "file: " << file << endl 
@@ -65,7 +64,7 @@ const asserter_t & asserter_t::archive_result(
     const char * message ) const
 {
     auto & a( private_assert::archiver::instance() );
-    if (m_value)
+    if (can_handle())
         a.pass();
     else 
         a.fail( file, line, function, message );
