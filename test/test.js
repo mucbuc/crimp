@@ -21,9 +21,12 @@ test( 'asserter', function(t) {
       }
     , resultPath = './build/result.json';
 
-  controller.expect( 'not exits' ); 
-  controller.expect( 'exits' ); 
-  controller.expect( 0 );
+  controller
+  .expect( 'not exits' ); 
+  controller
+  .expect( 'exits' ); 
+  controller
+  .expect( 0 );
 
   fs.unlink( resultPath, function(err) {
     tryOpen();
@@ -53,17 +56,48 @@ test( 'data include', function(t) {
 test( 'test build', function(t) {
   var controller = new Expector(t); 
 
-  controller.expect( 'hello test\n' );
-  controller.expect( 0 );
+  controller
+  .expect( 'hello test\n' )
+  .expect( 0 );
 
   crimp([ '-p', path.join( __dirname, 'test.json' ) ], controller );
+});
+
+test( 'test gcc build', function(t) {
+  var controller = new Expector(t);
+
+  controller
+  .expect( 'hello test\n' )
+  .expect( 0 ); 
+  crimp([ '-g', '-p', path.join( __dirname, 'test.json' ) ], controller );
+});
+
+test( 'release gcc build', function(t) {
+  
+  var controller = new Expector(t);
+
+  controller
+  .expect( 'hello release\n' )
+  .expect( 0 ); 
+  crimp([ '-g', '-r', '-e', '-p', path.join( __dirname, 'test.json' ) ], controller );
+});
+
+test( 'debug gcc build', function(t) {
+  var controller = new Expector(t);
+  
+  controller
+  .expect( 'hello debug\n' )
+  .expect( 0 ); 
+
+  crimp([ '-g', '-d', '-e', '-p', path.join( __dirname, 'test.json' ) ], controller );
 });
 
 test( 'release build', function(t) {
   var controller = new Expector(t);
 
-  controller.expect( 'hello release\n' );
-  controller.expect( 0 );
+  controller
+  .expect( 'hello release\n' )
+  .expect( 0 );
   
   crimp([ '-r', '-e', '-p', path.join( __dirname, 'test.json' ) ], controller );
 });
@@ -71,22 +105,12 @@ test( 'release build', function(t) {
 test( 'debug build', function(t) {
   var controller = new Expector(t);
 
-  controller.expect( 'hello debug\n' );
-  controller.expect( 0 );
+  controller
+  .expect( 'hello debug\n' )
+  .expect( 0 );
 
   crimp([ '-d', '-e', '-p', path.join( __dirname, 'test.json' ) ], controller );
 });
-
-function runBuild( path, controller ) {
-  cp.execFile( path, function(err, stdout, stderr) {
-    console.log( err );
-    if(err) {
-      console.log( path, process.cwd() );
-      throw err;
-    }
-    controller.emit( stdout ).check();
-  } );
-}
 
 function crimp(args, controller, cb) {
   var child = cp
