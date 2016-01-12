@@ -10,7 +10,7 @@ var assert = require( 'assert' )
 
 process.chdir( thisPath ); 
 
-test( 'test build', function(t) {
+test( 'test gcc build', function(t) {
   var controller = new Expector(t)
     , options = { 
         buildDir: 'build',
@@ -28,7 +28,7 @@ test( 'test build', function(t) {
   });
 });
 
-test( 'release build', function(t) {
+test( 'release gcc build', function(t) {
   
   var controller = new Expector(t)
     , options = { 
@@ -48,7 +48,7 @@ test( 'release build', function(t) {
   });
 });
 
-test( 'debug build', function(t) {
+test( 'debug gcc build', function(t) {
   var controller = new Expector(t)
     , options = { 
         buildDir: 'build',

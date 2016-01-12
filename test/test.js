@@ -23,19 +23,11 @@ test( 'asserter', function(t) {
 
   controller.expect( 'not exits' ); 
   controller.expect( 'exits' ); 
+  controller.expect( 0 );
 
   fs.unlink( resultPath, function(err) {
-
     tryOpen();
-
-    buildProject( options, function(code) {
-      t.assert( !code );
-      cp.spawn( './build/build/Test/test', [], {stdio: 'inherit' })
-      .on( "exit", function() {
-        tryOpen();
-        controller.check();
-      } );
-    });
+    crimp([ '-p', path.join( __dirname, 'check_assert.json' ) ], controller, tryOpen );
   } );
 
   function tryOpen() {
@@ -51,25 +43,18 @@ test( 'asserter', function(t) {
 
 test( 'data include', function(t) {
   
-  var controller = new Expector(t)
-    , options = { 
-        buildDir: 'build',
-        targetName: 'test',
-        testDir: '.',
-        pathJSON: './test-data.json',
-        debug: 'true'
-    };
+  var controller = new Expector(t);
   
-  controller.expect( 'built' ); 
-  buildProject( options, function() {
-    controller.emit( 'built' ).check();
-  });
+  controller.expect( 0 );
+
+  crimp([ '-d', '-p', path.join( __dirname, 'test-data.json' ) ], controller );
 }); 
 
 test( 'test build', function(t) {
   var controller = new Expector(t); 
 
   controller.expect( 'hello test\n' );
+  controller.expect( 0 );
 
   crimp([ '-p', path.join( __dirname, 'test.json' ) ], controller );
 });
@@ -78,14 +63,16 @@ test( 'release build', function(t) {
   var controller = new Expector(t);
 
   controller.expect( 'hello release\n' );
+  controller.expect( 0 );
   
   crimp([ '-r', '-e', '-p', path.join( __dirname, 'test.json' ) ], controller );
 });
 
-test.only( 'debug build', function(t) {
+test( 'debug build', function(t) {
   var controller = new Expector(t);
 
   controller.expect( 'hello debug\n' );
+  controller.expect( 0 );
 
   crimp([ '-d', '-e', '-p', path.join( __dirname, 'test.json' ) ], controller );
 });
@@ -101,15 +88,22 @@ function runBuild( path, controller ) {
   } );
 }
 
-function crimp(args, controller) {
+function crimp(args, controller, cb) {
   var child = cp
   .spawn( path.join( __dirname, '../crimp.js'), 
           args, 
           { stdio: 'pipe' } )
-  .on( 'exit', function() {
+  .on( 'exit', function(code) {
+    
+    if (typeof cb !== 'undefined') {
+      cb();
+    }
+    controller.emit( code );
     controller.check(); 
   });
   child.stdout.on( 'data', function(data) {
     controller.emit( data ); 
   });
+
+  return child;
 }
