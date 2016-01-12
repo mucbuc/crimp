@@ -37,7 +37,7 @@
     #endif
 
     #define ASSERT( expr ) \
-        if (expr); \
+        if (!TARGET_TEST && (expr)); \
         else    \
             struct local_t  \
             {   \
