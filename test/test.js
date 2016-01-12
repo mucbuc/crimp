@@ -67,55 +67,27 @@ test( 'data include', function(t) {
 }); 
 
 test( 'test build', function(t) {
-  var controller = new Expector(t)
-    , options = { 
-        buildDir: 'build',
-        targetName: 'test',
-        testDir: '.',
-        pathJSON: './test.json'
-    };
+  var controller = new Expector(t); 
 
   controller.expect( 'hello test\n' );
 
-  buildProject( options, function(code) {
-    t.assert( !code );
-    runBuild( './build/build/Test/test', controller );  
-  });
+  crimp([ '-p', path.join( __dirname, 'test.json' ) ], controller );
 });
 
 test( 'release build', function(t) {
-  var controller = new Expector(t)
-    , options = { 
-        buildDir: 'build',
-        targetName: 'test',
-        testDir: '.',
-        pathJSON: './test.json',
-        release: 'true'
-    };
+  var controller = new Expector(t);
 
   controller.expect( 'hello release\n' );
-
-  buildProject( options, function(code) {
-    t.assert( !code );
-    runBuild( './build/build/Release/test', controller ); 
-  });
+  
+  crimp([ '-r', '-e', '-p', path.join( __dirname, 'test.json' ) ], controller );
 });
 
-test( 'debug build', function(t) {
-  var controller = new Expector(t)
-    , options = { 
-        buildDir: 'build',
-        targetName: 'test',
-        testDir: '.',
-        pathJSON: './test.json',
-        debug: 'true'
-    };
+test.only( 'debug build', function(t) {
+  var controller = new Expector(t);
+
   controller.expect( 'hello debug\n' );
 
-  buildProject( options, function(code) {
-    t.assert( !code );
-    runBuild( './build/build/Debug/test', controller ); 
-  });
+  crimp([ '-d', '-e', '-p', path.join( __dirname, 'test.json' ) ], controller );
 });
 
 function runBuild( path, controller ) {
@@ -127,4 +99,17 @@ function runBuild( path, controller ) {
     }
     controller.emit( stdout ).check();
   } );
+}
+
+function crimp(args, controller) {
+  var child = cp
+  .spawn( path.join( __dirname, '../crimp.js'), 
+          args, 
+          { stdio: 'pipe' } )
+  .on( 'exit', function() {
+    controller.check(); 
+  });
+  child.stdout.on( 'data', function(data) {
+    controller.emit( data ); 
+  });
 }
