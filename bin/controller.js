@@ -81,7 +81,6 @@ function buildProject( options, cb ) {
 
           options.nameGYP = options.targetName + ".gyp";
           options.pathGYP = path.join( dirGYP, options.nameGYP );
-          console.log( 'write gyp at: ', options.pathGYP ); 
           writeGYP( product, options.pathGYP, function(error) {
             if (error) throw error;
 

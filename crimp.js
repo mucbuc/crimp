@@ -80,27 +80,20 @@ else {
 
 function crimpIt(pathJSON, cb) {
 
-  console.log( 'crimp', pathJSON );
-
-  
-  options.testDir = path.dirname( pathJSON );
-
-  options.pathJSON = pathJSON;
-
-  try {
-    //process.chdir( options.testDir );
+  var tmp = {};
+    
+  for(i in options) {
+    tmp[i] = options[i];
   }
-  catch(error) {
-    console.log( error ); 
-    cb();
-    return;
-  }
+
+  tmp.testDir = path.dirname( pathJSON );
+  tmp.pathJSON = pathJSON;
 
   if (program.clean) {
-    rmrf( options.buildDir ); 
+    rmrf( tmp[i] ); 
   }
 
-  buildProject( options, cb );
+  buildProject( tmp, cb );
 }
 
 
