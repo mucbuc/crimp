@@ -29,15 +29,24 @@ function define(pathJSON, objReader) {
 
   buildDir = path.dirname(pathJSON);
 
-  return processDependencies( pathJSON, '' );
+  return processDependencies( pathJSON, './lib/crimp/def.json' );
 
-  function processDependencies(fileJSON, basePath) {
+  function processDependencies(fileJSON, append) {
     
     return new Promise( function(resolve, reject) {
 
       objReader( fileJSON, function(content) {
+        
         assert( typeof content === 'object' );
 
+        if (typeof append !== 'undefined') {
+
+          if (!content.hasOwnProperty('import')) {
+            content.import = [];
+          }
+          content.import.push( append );
+        }
+        
         if (    content.hasOwnProperty('opengl') 
             &&  content.opengl) {
           product.opengl = true;
@@ -71,12 +80,13 @@ function define(pathJSON, objReader) {
         }
         
         function handleImports(cb) {
+          
           if (  content.hasOwnProperty('import')
             &&  content.import.length) {
             traverse( content.import, function( item, next ) {
               if (imported.indexOf(item) == -1) {
                 imported.push(item);
-                processDependencies( path.join( buildDir, item ), path.dirname(fileJSON) )
+                processDependencies( path.join( buildDir, item ) )
                 .then( next )
                 .catch( reject );
               }
