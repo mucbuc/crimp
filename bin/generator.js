@@ -11,7 +11,7 @@ function generate( options ) {
   return new Promise(function(resolve, reject) {
     var builDir = path.dirname( options.pathGYP )
       , args = [
-          options.pathGYP,
+          path.join( options.buildDir, options.nameGYP ),
           '--generator-output=' + builDir
         ];  
 
@@ -44,7 +44,8 @@ function generate( options ) {
       'gyp', 
       args, 
       {
-        stdio: 'inherit'
+        stdio: 'inherit',
+        cwd: options.testDir
       })
     .on( 'exit', function( code ) {
       if (code) 

@@ -22,11 +22,13 @@ function build(options, cb) {
     }
     else 
     {
-      var pathProject = path.join( options.buildDir, options.buildDir, options.targetName + ".xcodeproj" )
+      var pathProject = path.join( options.testDir, options.buildDir, options.buildDir, options.targetName + ".xcodeproj" )
         , args = ['-project', pathProject ];
       
+      //console.log( options.testDir, pathProject, process.cwd() ); 
+      //process.chdir( options.testDir ); 
       child = cp.spawn( 'xcodebuild', args, { stdio: 'inherit' } );
-    
+      
       if (options.ide) {
         cp.spawn( 'open', [ pathProject ] );
       }

@@ -59,14 +59,12 @@ if (program.ide) {
 
 if (program.suite) {
 
-  var dirname = path.dirname( program.suite )
-    , pathPop = process.cwd();
+  var dirname = path.dirname( program.suite );
 
   fs.readFile( program.suite, function(err, data) {
     if (err) throw err; 
     
     traverse( JSON.parse( data.toString() ).tests, function( pathJSON, next ) {
-      process.chdir( pathPop );
       crimpIt( path.join( dirname, pathJSON ), next );
     } )
     .then( function() {
@@ -84,11 +82,13 @@ function crimpIt(pathJSON, cb) {
 
   console.log( 'crimp', pathJSON );
 
-  options.pathJSON = path.basename( pathJSON );
+  
   options.testDir = path.dirname( pathJSON );
 
+  options.pathJSON = pathJSON;
+
   try {
-    process.chdir( options.testDir );
+    //process.chdir( options.testDir );
   }
   catch(error) {
     console.log( error ); 

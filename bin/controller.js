@@ -76,9 +76,12 @@ function buildProject( options, cb ) {
 
     function generateProject() {
       return new Promise(function(resolve, reject) {
-        makePathIfNone( options.buildDir, function() {
+        var dirGYP = path.join(options.testDir, options.buildDir)
+        makePathIfNone( dirGYP, function() {
 
-          options.pathGYP = path.join( options.buildDir, options.targetName + ".gyp" );
+          options.nameGYP = options.targetName + ".gyp";
+          options.pathGYP = path.join( dirGYP, options.nameGYP );
+          console.log( 'write gyp at: ', options.pathGYP ); 
           writeGYP( product, options.pathGYP, function(error) {
             if (error) throw error;
 
