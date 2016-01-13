@@ -2,8 +2,6 @@
 #include <sstream>
 #include <vector>
 
-#include "data/config.json.h"
-
 #include "archiver.h"
 
 using namespace std;
@@ -18,8 +16,7 @@ namespace private_assert
 
 	archiver::~archiver()
 	{
-		const auto config( static_port_lib_crimp_data_config::json<>{} );
-		fstream out( config._path, fstream::out );
+		fstream out( "build/result.json", fstream::out );
 
 		out << "{\n";
 		out << "\"passed\": " << m_passed;

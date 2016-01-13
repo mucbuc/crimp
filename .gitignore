@@ -2,4 +2,3 @@
 build/
 node_modules/
 build.log
-src/data/config.json.h

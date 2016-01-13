@@ -7,9 +7,5 @@
 		"src/asserter.h",
 		"src/asserter.hxx",
 		"src/test.h"
-	],
-	"data":
-	[
-		"data/config.json"
 	]
 }

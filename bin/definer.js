@@ -12,6 +12,8 @@ var assert = require( 'assert' )
 
 function define(pathJSON, objReader) {
 
+  console.log( 'define', pathJSON );
+
   var buildDir
     , product = {
         'sources': []
@@ -29,23 +31,15 @@ function define(pathJSON, objReader) {
 
   buildDir = path.dirname(pathJSON);
 
-  return processDependencies( pathJSON, './lib/crimp/def.json' );
+  return processDependencies( pathJSON );  
 
-  function processDependencies(fileJSON, append) {
+  function processDependencies(fileJSON) {
     
     return new Promise( function(resolve, reject) {
 
       objReader( fileJSON, function(content) {
         
         assert( typeof content === 'object' );
-
-        if (typeof append !== 'undefined') {
-
-          if (!content.hasOwnProperty('import')) {
-            content.import = [];
-          }
-          content.import.push( append );
-        }
         
         if (    content.hasOwnProperty('opengl') 
             &&  content.opengl) {
@@ -86,7 +80,7 @@ function define(pathJSON, objReader) {
             traverse( content.import, function( item, next ) {
               if (imported.indexOf(item) == -1) {
                 imported.push(item);
-                processDependencies( path.join( buildDir, item ) )
+                processDependencies( item )
                 .then( next )
                 .catch( reject );
               }
