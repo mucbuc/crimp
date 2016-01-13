@@ -1,8 +1,8 @@
 {
+	"import": [
+		"lib/crimp/def.json"
+	],
 	"sources": [
 		"src/check_assert.cpp"
-	],
-	"data": [ 
-		"../data/config.json" 
 	]
 }

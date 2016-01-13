@@ -1,4 +1,7 @@
 {
+	"import": [
+		"lib/crimp/def.json"
+	],
 	"sources": [
 		"src/main-data.cpp"
 	],

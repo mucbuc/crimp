@@ -12,20 +12,12 @@ var assert = require( 'assert' )
 process.chdir( thisPath );
 
 test( 'asserter', function(t) {
-   var controller = new Expector(t)
-    , options = { 
-        buildDir: 'build',
-        targetName: 'test',
-        testDir: '.',
-        pathJSON: './check_assert.json'
-      }
-    , resultPath = './build/result.json';
+  var controller = new Expector(t)
+   ,  resultPath = './build/result.json';
 
   controller
-  .expect( 'not exits' ); 
-  controller
-  .expect( 'exits' ); 
-  controller
+  .expect( 'not exits' )
+  .expect( 'exits' )
   .expect( 0 );
 
   fs.unlink( resultPath, function(err) {

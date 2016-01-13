@@ -37,6 +37,7 @@ function define(pathJSON, objReader) {
 
       objReader( fileJSON, function(content) {
         assert( typeof content === 'object' );
+
         if (    content.hasOwnProperty('opengl') 
             &&  content.opengl) {
           product.opengl = true;
