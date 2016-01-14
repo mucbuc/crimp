@@ -14,8 +14,7 @@ function define(pathJSON, objReader) {
 
   console.log( 'define', pathJSON );
 
-  var buildDir
-    , product = {
+  var product = {
         'sources': []
       }
     , imported = [];
@@ -28,8 +27,6 @@ function define(pathJSON, objReader) {
       });
     };
   }
-
-  buildDir = path.dirname(pathJSON);
 
   return processDependencies( pathJSON );  
 

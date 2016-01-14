@@ -24,6 +24,8 @@ function buildProject( options, cb ) {
 
   Printer.begin( 'define', options.pathJSON );
 
+  process.chdir( options.testDir ); 
+  
   define( options.pathJSON )
   .then( function(product) {
     
@@ -36,8 +38,16 @@ function buildProject( options, cb ) {
     translateData()
     .then( function() {
 
+      process.chdir( options.testDir ); 
+
       generateProject().then( function() { 
+        
+        process.chdir( options.testDir );
+
         buildTarget().then( function() {
+
+          process.chdir( options.testDir );
+
           if (options.execute) {
             fs.unlink( 'build/result.json', function() {
               executeTarget()

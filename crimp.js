@@ -85,19 +85,10 @@ function crimpIt(pathJSON, cb) {
   console.log( 'crimp', pathJSON );
 
   options.pathJSON = path.basename( pathJSON );
-  options.testDir = path.dirname( pathJSON );
-
-  try {
-    process.chdir( options.testDir );
-  }
-  catch(error) {
-    console.log( error ); 
-    cb();
-    return;
-  }
+  options.testDir = path.join( process.cwd(), path.dirname( pathJSON ) );
 
   if (program.clean) {
-    rmrf( options.buildDir ); 
+    rmrf( path.join( options.testDir, options.buildDir ) ); 
   }
 
   buildProject( options, cb );
