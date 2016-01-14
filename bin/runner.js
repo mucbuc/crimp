@@ -1,5 +1,6 @@
 var cp = require( 'child_process' )
-  , Promise = require( 'promise' );
+  , Promise = require( 'promise' )
+  , join = require( 'path' ).join;
 
 function run(options) {
   return new Promise( function( resolve, reject) {
@@ -26,16 +27,15 @@ function run(options) {
       }
     }
   });
-}
-
-function runBuild( path, resolve, reject ) {
-  cp.spawn( path, [], { stdio: 'inherit' } )
-  .on( 'exit', function(code) {
-    if (code)
-      reject();
-    else
-      resolve();
-  }); 
+  function runBuild( path, resolve, reject ) {
+    cp.spawn( join( options.testDir, path), [], { stdio: 'inherit' } )
+    .on( 'exit', function(code) {
+      if (code)
+        reject();
+      else
+        resolve();
+    }); 
+  }
 }
 
 module.exports = run;

@@ -41,10 +41,8 @@ function buildProject( options, cb ) {
       generateProject().then( function() { 
         buildTarget().then( function() {
 
-          process.chdir( options.testDir );
-
           if (options.execute) {
-            fs.unlink( 'build/result.json', function() {
+            fs.unlink( path.join( options.testDir, 'build/result.json' ), function() {
               executeTarget()
               .then( function() {
                 readResults().then( function(results) {
