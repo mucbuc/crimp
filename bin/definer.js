@@ -31,6 +31,7 @@ function define(pathJSON, pathBase, objReader) {
   function processDependencies(fileJSON, pathBase) {
     
     return new Promise( function(resolve, reject) {
+      console.log( path.join(pathBase, fileJSON), process.cwd() ); 
 
       objReader( path.join(pathBase, fileJSON), function(content) {
         

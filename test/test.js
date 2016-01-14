@@ -22,7 +22,7 @@ test( 'asserter', function(t) {
 
   fs.unlink( resultPath, function(err) {
     tryOpen();
-    crimp([ '-p', path.join( __dirname, 'check_assert.json' ) ], controller, tryOpen );
+    crimp([ '-p', 'check_assert.json' ], controller, tryOpen );
   } );
 
   function tryOpen() {
@@ -42,7 +42,7 @@ test( 'data include', function(t) {
   
   controller.expect( 0 );
 
-  crimp([ '-d', '-p', path.join( __dirname, 'test-data.json' ) ], controller );
+  crimp([ '-d', '-p', 'test-data.json' ], controller );
 }); 
 
 test( 'test build', function(t) {
@@ -91,7 +91,7 @@ test( 'release build', function(t) {
   .expect( 'hello release\n' )
   .expect( 0 );
   
-  crimp([ '-r', '-e', '-p', path.join( __dirname, 'test.json' ) ], controller );
+  crimp([ '-r', '-e', '-p', 'test.json' ], controller );
 });
 
 test( 'debug build', function(t) {
@@ -101,7 +101,7 @@ test( 'debug build', function(t) {
   .expect( 'hello debug\n' )
   .expect( 0 );
 
-  crimp([ '-d', '-e', '-p', path.join( __dirname, 'test.json' ) ], controller );
+  crimp([ '-d', '-e', '-p', 'test.json' ], controller );
 });
 
 function crimp(args, controller, cb) {
