@@ -119,7 +119,6 @@ function crimp(args, controller, cb) {
   });
   child.stdout.on( 'data', function(data) {
     controller.emit( data ); 
-    console.log( data.toString() );
   });
 
   return child;

@@ -28,7 +28,7 @@ test( 'data prep', function(t) {
   });
 });
 
-test.only( 'define recursion', function(t) {
+test( 'define recursion', function(t) {
   
   var controller = new Expector(t)
     , expected = [
