@@ -23,12 +23,17 @@ function buildProject( options, cb ) {
   assert( options.hasOwnProperty('pathJSON') );
 
   Printer.begin( 'define', options.pathJSON );
-
+/*
   process.chdir( options.testDir ); 
-  
-  define( options.pathJSON )
+
+  define( options.pathJSON, '.' )
+*/
+
+  define( options.pathJSON, options.testDir )
   .then( function(product) {
     
+    process.chdir( options.testDir ); 
+
     Printer.finishGreen( 'define' ); 
       
     if (product.hasOwnProperty('opengl')) {

@@ -10,7 +10,7 @@ var assert = require( 'assert' )
   , Promise = require( 'promise' )
   , traverse = require( 'traverjs' );
 
-function define(pathJSON, objReader) {
+function define(pathJSON, pathBase, objReader) {
 
   console.log( 'define', pathJSON );
 
@@ -28,13 +28,13 @@ function define(pathJSON, objReader) {
     };
   }
 
-  return processDependencies( pathJSON );  
+  return processDependencies( pathJSON, pathBase );  
 
-  function processDependencies(fileJSON) {
+  function processDependencies(fileJSON, pathBase) {
     
     return new Promise( function(resolve, reject) {
 
-      objReader( fileJSON, function(content) {
+      objReader( path.join(pathBase, fileJSON), function(content) {
         
         assert( typeof content === 'object' );
         
@@ -77,7 +77,7 @@ function define(pathJSON, objReader) {
             traverse( content.import, function( item, next ) {
               if (imported.indexOf(item) == -1) {
                 imported.push(item);
-                processDependencies( item )
+                processDependencies( item, pathBase )
                 .then( next )
                 .catch( reject );
               }
