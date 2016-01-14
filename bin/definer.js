@@ -12,8 +12,6 @@ var assert = require( 'assert' )
 
 function define(pathJSON, pathBase, objReader) {
 
-  console.log( 'define', pathJSON );
-
   var product = {
         'sources': []
       }

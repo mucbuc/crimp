@@ -44,7 +44,8 @@ function generate( options ) {
       'gyp', 
       args, 
       {
-        stdio: 'inherit'
+        stdio: 'inherit', 
+        cwd: options.testDir
       })
     .on( 'exit', function( code ) {
       if (code) 
