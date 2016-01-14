@@ -9,6 +9,7 @@ function build(options, cb) {
   assert( options.hasOwnProperty( 'buildDir' ) );
 
   return new Promise( function(resolve, reject) {
+    
     var child;
     if (options.gcc) {
       var args = [ '-j', '-C', './' ]; 
@@ -18,7 +19,7 @@ function build(options, cb) {
       else if (options.debug) {
         args.push( 'BUILDTYPE=Debug' );
       }
-      child = cp.spawn( 'make', args, { stdio: 'inherit', cwd: path.join(options.testDir, options.buildDir) } );
+      child = cp.spawn( 'make', args, { stdio: 'inherit', cwd: path.join( options.testDir, options.buildDir ) } );
     }
     else 
     {
@@ -26,7 +27,6 @@ function build(options, cb) {
         , args = ['-project', pathProject ];
       
       child = cp.spawn( 'xcodebuild', args, { stdio: 'inherit', cwd: options.testDir } );
-    
       if (options.ide) {
         cp.spawn( 'open', [ pathProject ] );
       }

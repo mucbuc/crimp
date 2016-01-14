@@ -34,6 +34,8 @@ function define(pathJSON, pathBase, objReader) {
 
       objReader( path.join(pathBase, fileJSON), function(content) {
         
+        console.log( fileJSON, content ); 
+
         assert( typeof content === 'object' );
         
         if (    content.hasOwnProperty('opengl') 

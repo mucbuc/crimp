@@ -27,11 +27,9 @@ function run(options) {
       }
     }
   });
+
   function runBuild( path, resolve, reject ) {
-    cp.spawn( path, [], { 
-        stdio: 'inherit', 
-        cwd: options.testDir 
-      } )
+    cp.spawn( path, [], { stdio: 'inherit', cwd: options.testDir } )
     .on( 'exit', function(code) {
       if (code)
         reject();
@@ -40,5 +38,6 @@ function run(options) {
     }); 
   }
 }
+
 
 module.exports = run;

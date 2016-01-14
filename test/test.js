@@ -52,10 +52,10 @@ test( 'test build', function(t) {
   .expect( 'hello test\n' )
   .expect( 0 );
 
-  crimp([ '-p', path.join( __dirname, 'test.json' ) ], controller );
+  crimp([ '-p', './test.json' ], controller );
 });
 
-test( 'test gcc build', function(t) {
+test.skip( 'test gcc build', function(t) {
   var controller = new Expector(t);
 
   controller
@@ -64,7 +64,7 @@ test( 'test gcc build', function(t) {
   crimp([ '-g', '-p', path.join( __dirname, 'test.json' ) ], controller );
 });
 
-test( 'release gcc build', function(t) {
+test.skip( 'release gcc build', function(t) {
   
   var controller = new Expector(t);
 
@@ -74,7 +74,7 @@ test( 'release gcc build', function(t) {
   crimp([ '-g', '-r', '-e', '-p', path.join( __dirname, 'test.json' ) ], controller );
 });
 
-test( 'debug gcc build', function(t) {
+test.skip( 'debug gcc build', function(t) {
   var controller = new Expector(t);
   
   controller
@@ -119,6 +119,7 @@ function crimp(args, controller, cb) {
   });
   child.stdout.on( 'data', function(data) {
     controller.emit( data ); 
+    console.log( data.toString() );
   });
 
   return child;

@@ -74,11 +74,13 @@ function buildProject( options, cb ) {
 
     function generateProject() {
       return new Promise(function(resolve, reject) {
-        
-        makePathIfNone( path.join( options.testDir, options.buildDir ), function() {
 
-          options.pathGYP = path.join( options.buildDir, options.targetName + ".gyp" );
-          writeGYP( product, path.join(options.testDir, options.pathGYP), function(error) {
+        var dirGYP = path.join(options.testDir, options.buildDir)
+        makePathIfNone( dirGYP, function() {
+
+          options.nameGYP = options.targetName + ".gyp";
+          options.pathGYP = path.join( dirGYP, options.nameGYP );
+          writeGYP( product, options.pathGYP, function(error) {
             if (error) throw error;
             
             Printer.begin( 'generate', options.pathGYP );
