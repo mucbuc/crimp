@@ -63,7 +63,7 @@ function buildProject( options, cb ) {
 
     function readResults(cb) {
       return new Promise(function(resolve, reject) { 
-        fs.readFile( 'build/result.json', function(err, data) {
+        fs.readFile( path.join( options.testDir, 'build/result.json' ), function(err, data) {
           var obj = {};
 
           try {
