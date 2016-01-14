@@ -40,7 +40,7 @@ function buildProject( options, cb ) {
       generateProject()
       .then( function() { 
         
-        
+        process.chdir( options.testDir );
 
         buildTarget()
         .then( function() {
@@ -89,7 +89,6 @@ function buildProject( options, cb ) {
           options.pathGYP = path.join( options.buildDir, options.targetName + ".gyp" );
           writeGYP( product, path.join(options.testDir, options.pathGYP), function(error) {
             if (error) throw error;
-            process.chdir( options.testDir );
             
             Printer.begin( 'generate', options.pathGYP );
             generate( options )
