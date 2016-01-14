@@ -55,13 +55,13 @@ test( 'test build', function(t) {
   crimp([ '-p', './test.json' ], controller );
 });
 
-test.skip( 'test gcc build', function(t) {
+test( 'test gcc build', function(t) {
   var controller = new Expector(t);
 
   controller
   .expect( 'hello test\n' )
   .expect( 0 ); 
-  crimp([ '-g', '-p', path.join( __dirname, 'test.json' ) ], controller );
+  crimp([ '-g', '-p', './test.json' ], controller );
 });
 
 test.skip( 'release gcc build', function(t) {
