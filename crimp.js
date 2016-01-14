@@ -65,12 +65,8 @@ if (program.suite) {
   fs.readFile( program.suite, function(err, data) {
     if (err) throw err; 
     
-    JSON.parse( data.toString() ).tests.forEach(function( pathJSON, index, array ) {
-      crimpIt( path.join( dirname, pathJSON ), function(passedCounter) {
-        if (typeof passedCounter != 'undefined') {
-          successCounter += passedCounter;
-        }
-      } );
+    traverse( JSON.parse( data.toString() ).tests, function( pathJSON, next ) {
+      crimpIt( path.join( dirname, pathJSON ), next );
     });
   });
 }
