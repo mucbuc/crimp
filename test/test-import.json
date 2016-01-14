@@ -1,6 +1,7 @@
 {
 	"import":
 	[
+		"lib/crimp/def.json",
 		"lib/sublib/def.json"
 	]
 }

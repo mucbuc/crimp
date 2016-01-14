@@ -9,7 +9,8 @@ var assert = require( 'assert' )
   , run = require( '../bin/runner' )
   , translate = require( '../bin/translator' )
   , Promise = require( 'promise' )
-  , traverse = require( 'traverjs' );
+  , traverse = require( 'traverjs' )
+  , successCounter = 0;
 
 assert( typeof translate !== 'undefined' ); 
 
@@ -19,9 +20,11 @@ function buildProject( options, cb ) {
 
   Printer.begin( 'define', options.pathJSON );
 
-  define( options.pathJSON )
+  define( options.pathJSON, options.testDir )
   .then( function(product) {
     
+    
+
     Printer.finishGreen( 'define' ); 
       
     if (product.hasOwnProperty('opengl')) {
@@ -30,12 +33,21 @@ function buildProject( options, cb ) {
 
     translateData()
     .then( function() {
-
-      generateProject().then( function() { 
-        buildTarget().then( function() {
+      generateProject()
+      .then( function() { 
+        buildTarget()
+        .then( function() {
           if (options.execute) {
-            executeTarget()
-            .then( cb ); 
+            fs.unlink( path.join( options.testDir, 'build/result.json' ), function() {
+              executeTarget()
+              .then( function() {
+                readResults().then( function(results) {
+                  cb(results.passed);
+                })
+                .catch(cb);
+              })
+              .catch(cb);
+            } );
           }
           else {
             cb();
@@ -44,14 +56,33 @@ function buildProject( options, cb ) {
       });
     });
 
+    function readResults(cb) {
+      return new Promise(function(resolve, reject) { 
+        fs.readFile( path.join( options.testDir, 'build/result.json' ), function(err, data) {
+          var obj = {};
+
+          try {
+            resolve( JSON.parse( data.toString() ) );
+          }
+          catch(err) {
+            console.log( err );
+            reject(err);
+          }
+        });
+      }); 
+    }
+
     function generateProject() {
       return new Promise(function(resolve, reject) {
-        makePathIfNone( options.buildDir, function() {
 
-          options.pathGYP = path.join( options.buildDir, options.targetName + ".gyp" );
+        var dirGYP = path.join(options.testDir, options.buildDir)
+        makePathIfNone( dirGYP, function() {
+
+          options.nameGYP = options.targetName + ".gyp";
+          options.pathGYP = path.join( dirGYP, options.nameGYP );
           writeGYP( product, options.pathGYP, function(error) {
             if (error) throw error;
-
+            
             Printer.begin( 'generate', options.pathGYP );
             generate( options )
             .then( function() {
@@ -89,18 +120,11 @@ function buildProject( options, cb ) {
         Printer.begin( 'execute', options.targetName );
 
         run(options)
-        .then( function( stdout, stderr) {
-          if (typeof stdout !== 'undefined') {
-            process.stdout.write( stdout );
-          }
-          if (typeof stderr !== 'undefined') {
-            process.stderr.write( stderr );
-          }
+        .then( function() {
           Printer.finishGreen( 'execute' ); 
           resolve();
         })
-        .catch( function(error) {
-          Printer.printError( error ); 
+        .catch( function() {
           Printer.finishRed( 'execute' );
           reject();
         });

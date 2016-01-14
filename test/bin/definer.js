@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-var test = require( 'tape' )
+var assert = require( 'assert' )
+  , test = require( 'tape' )
   , define = require( '../../bin/definer' )
   , Expector = require( 'expector' ).Expector;
 
@@ -9,7 +10,7 @@ test( 'data prep', function(t) {
   var controller = new Expector(t)
   controller.expect( "data/content.json" );
 
-  define( './test-data.json', function(path, cb) {
+  define( './test-data.json', '.', function(path, cb) {
     cb( { 
       "sources": [
         "src/main-data.cpp"
@@ -36,17 +37,21 @@ test( 'define recursion', function(t) {
       '../lib/sublib/src/subsrc.cpp'
     ];
 
-  define( './test-import.json', mapFile )
+  define( './test-import.json', '.', mapFile )
   .then( function(gyp) {
     t.assert( gyp.hasOwnProperty( 'sources' ) );
     t.deepEqual( gyp.sources, expected ); 
     t.end();
-  } );
+  } )
+  .catch( function(error) { 
+  
+    console.log( error ); 
+  });
 
   function mapFile(path, cb) {
 
     var result = {
-      "./test-import.json": 
+      "test-import.json": 
         { import: [ 'lib/sublib/def.json' ] },
       "lib/sublib/def.json": 
         { import: [ 'lib/sublib2/def.json' ],
@@ -54,6 +59,8 @@ test( 'define recursion', function(t) {
       "lib/sublib2/def.json": 
         { sources: [ 'src/subsrc.cpp' ] }
       };
+
+    assert( result.hasOwnProperty( path ) ); 
 
     cb( result[path] ); 
   }
@@ -64,8 +71,11 @@ test( 'test definer', function(t) {
   var controller = new Expector(t);
 
   controller.expect( '["../src/main.cpp"]' );
-  define( './test.json', function(path, cb) {
-    cb( { "sources":  [ "src/main.cpp" ] } );
+  define( './test.json', '.', function(path, cb) {
+    if (path == "lib/crimp/def.json")
+      cb( {} );
+    else 
+    cb( { "sources": [ "src/main.cpp" ] } );
   } )
   .then( function(product) {
     t.assert( product.hasOwnProperty('sources') );

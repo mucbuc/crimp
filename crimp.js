@@ -28,8 +28,9 @@ var options = {
       targetName: 'test',
       testDir: '.',
       pathJSON: './test.json'
-  };
-  
+  }, 
+  successCounter = 0; 
+
 if (program.release) {
   options.release = true;
 }
@@ -59,48 +60,36 @@ if (program.ide) {
 
 if (program.suite) {
 
-  var dirname = path.dirname( program.suite )
-    , pathPop = process.cwd();
+  var dirname = path.dirname( program.suite );
 
   fs.readFile( program.suite, function(err, data) {
     if (err) throw err; 
     
     traverse( JSON.parse( data.toString() ).tests, function( pathJSON, next ) {
-      process.chdir( pathPop );
       crimpIt( path.join( dirname, pathJSON ), next );
-    } )
-    .then( function() {
-      
     });
   });
 }
 else {
-
   crimpIt( program.path );
-
 }
 
 function crimpIt(pathJSON, cb) {
 
-  console.log( 'crimp', pathJSON );
+  var tmp = {};
 
-  options.pathJSON = path.basename( pathJSON );
-  options.testDir = path.dirname( pathJSON );
+  for (i in options) {
+    tmp[i] = options[i];
+  }
 
-  try {
-    process.chdir( options.testDir );
-  }
-  catch(error) {
-    console.log( error ); 
-    cb();
-    return;
-  }
+  tmp.pathJSON = path.basename( pathJSON );
+  tmp.testDir = path.join( process.cwd(), path.dirname( pathJSON ) );
 
   if (program.clean) {
-    rmrf( options.buildDir ); 
+    rmrf( path.join( tmp.testDir, tmp.buildDir ) ); 
   }
 
-  buildProject( options, cb );
+  buildProject( tmp, cb );
 }
 
 

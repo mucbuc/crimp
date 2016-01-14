@@ -10,10 +10,9 @@ var assert = require( 'assert' )
   , Promise = require( 'promise' )
   , traverse = require( 'traverjs' );
 
-function define(pathJSON, objReader) {
+function define(pathJSON, pathBase, objReader) {
 
-  var buildDir
-    , product = {
+  var product = {
         'sources': []
       }
     , imported = [];
@@ -27,16 +26,15 @@ function define(pathJSON, objReader) {
     };
   }
 
-  buildDir = path.dirname(pathJSON);
+  return processDependencies( pathJSON, pathBase );  
 
-  return processDependencies( pathJSON, '' );
-
-  function processDependencies(fileJSON, basePath) {
+  function processDependencies(fileJSON, pathBase) {
     
     return new Promise( function(resolve, reject) {
-
-      objReader( fileJSON, function(content) {
+      objReader( path.join(pathBase, fileJSON), function(content) {
+        
         assert( typeof content === 'object' );
+        
         if (    content.hasOwnProperty('opengl') 
             &&  content.opengl) {
           product.opengl = true;
@@ -70,12 +68,13 @@ function define(pathJSON, objReader) {
         }
         
         function handleImports(cb) {
+          
           if (  content.hasOwnProperty('import')
             &&  content.import.length) {
             traverse( content.import, function( item, next ) {
               if (imported.indexOf(item) == -1) {
                 imported.push(item);
-                processDependencies( path.join( buildDir, item ), path.dirname(fileJSON) )
+                processDependencies( item, pathBase )
                 .then( next )
                 .catch( reject );
               }

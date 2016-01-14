@@ -1,4 +1,7 @@
-#include "assert.h"
+#include <assert.h>
+
+#include "archiver.h"
+#include "asserter.h"
 
 #undef SMART_ASSERT_A 
 #undef SMART_ASSERT_B
@@ -17,20 +20,24 @@ asserter_t::asserter_t(bool value)
 {}
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-bool asserter_t::can_handle() const
+bool asserter_t::pass() const
 {	
     return m_value; 	
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-const asserter_t & asserter_t::print_message(const char * file, int line, const char * function, const char * message) const
+const asserter_t & asserter_t::print_message(
+    const char * file, 
+    int line, 
+    const char * function, 
+    const char * message) const
 {
     static const char * code_red( "\x1b[31m" ); 
     static const char * code_reset( "\x1b[39;49m" );    
 
     using namespace std;
 
-    if (m_value) 
+    if (pass()) 
     {
         cout << "assertion passed: " << message << endl 
              << "file: " << file << endl 
@@ -50,30 +57,22 @@ const asserter_t & asserter_t::print_message(const char * file, int line, const 
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-const asserter_t asserter_t::make_asserter(bool value)
-{	return asserter_t(value); 	}
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-const asserter_message_out asserter_t::make_asserter(bool value, const char * message)
-{	return asserter_message_out(value, message); 	}
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-// asserter_message_out
-/////////////////////////////////////////////////////////////////////////////////////////////
-asserter_message_out::asserter_message_out(bool value, const char * message)
-    : asserter_t(value)
-    , m_message( message )
-{}
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-const asserter_t & asserter_message_out::print_message(const char * file, int line, const char * function, const char * ) const
+const asserter_t & asserter_t::archive_result(
+    const char * file, 
+    int line, 
+    const char * function, 
+    const char * message ) const
 {
-    return asserter_t::print_message( file, line, function, m_message ); 
+    auto & a( private_assert::archiver::instance() );
+    if (pass())
+        a.pass();
+    else 
+        a.fail( file, line, function, message );
+    return * this;
 }
 
-void asserter_t::on_assert_fail()
-{
-    memset((void*)1,0,1);
-}
+#endif // NDEBUG
 
-#endif 
+
+
+
