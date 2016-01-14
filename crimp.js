@@ -59,14 +59,13 @@ if (program.ide) {
 
 if (program.suite) {
 
-  var dirname = path.dirname( program.suite )
-    , pathPop = process.cwd();
+  var dirname = path.dirname( program.suite );
 
   fs.readFile( program.suite, function(err, data) {
     if (err) throw err; 
     
     traverse( JSON.parse( data.toString() ).tests, function( pathJSON, next ) {
-      process.chdir( pathPop );
+      //process.chdir( pathPop );
       crimpIt( path.join( dirname, pathJSON ), next );
     } )
     .then( function() {
