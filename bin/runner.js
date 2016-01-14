@@ -28,7 +28,10 @@ function run(options) {
     }
   });
   function runBuild( path, resolve, reject ) {
-    cp.spawn( join( options.testDir, path), [], { stdio: 'inherit' } )
+    cp.spawn( join( options.testDir, path), [], { 
+        stdio: 'inherit', 
+        cwd: options.testDir 
+      } )
     .on( 'exit', function(code) {
       if (code)
         reject();
