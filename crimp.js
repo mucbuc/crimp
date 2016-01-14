@@ -28,8 +28,9 @@ var options = {
       targetName: 'test',
       testDir: '.',
       pathJSON: './test.json'
-  };
-  
+  }, 
+  successCounter = 0; 
+
 if (program.release) {
   options.release = true;
 }
@@ -64,32 +65,35 @@ if (program.suite) {
   fs.readFile( program.suite, function(err, data) {
     if (err) throw err; 
     
-    traverse( JSON.parse( data.toString() ).tests, function( pathJSON, next ) {
-      crimpIt( path.join( dirname, pathJSON ), next );
-    } )
-    .then( function() {
-      
+    JSON.parse( data.toString() ).tests.forEach(function( pathJSON, index, array ) {
+      crimpIt( path.join( dirname, pathJSON ), function(passedCounter) {
+        if (typeof passedCounter != 'undefined') {
+          successCounter += passedCounter;
+        }
+      } );
     });
   });
 }
 else {
-
   crimpIt( program.path );
-
 }
 
 function crimpIt(pathJSON, cb) {
 
-  console.log( 'crimp', pathJSON );
+  var tmp = {};
 
-  options.pathJSON = path.basename( pathJSON );
-  options.testDir = path.join( process.cwd(), path.dirname( pathJSON ) );
-
-  if (program.clean) {
-    rmrf( path.join( options.testDir, options.buildDir ) ); 
+  for (i in options) {
+    tmp[i] = options[i];
   }
 
-  buildProject( options, cb );
+  tmp.pathJSON = path.basename( pathJSON );
+  tmp.testDir = path.join( process.cwd(), path.dirname( pathJSON ) );
+
+  if (program.clean) {
+    rmrf( path.join( tmp.testDir, tmp.buildDir ) ); 
+  }
+
+  buildProject( tmp, cb );
 }
 
 

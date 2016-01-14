@@ -14,10 +14,6 @@ var assert = require( 'assert' )
 
 assert( typeof translate !== 'undefined' ); 
 
-process.on( 'exit', function() {
-  console.log(  'assertions passed: ', successCounter );
-});
-
 function buildProject( options, cb ) {
   
   assert( options.hasOwnProperty('pathJSON') );
@@ -46,8 +42,7 @@ function buildProject( options, cb ) {
               executeTarget()
               .then( function() {
                 readResults().then( function(results) {
-                  successCounter += results.passed;
-                  cb();
+                  cb(results.passed);
                 })
                 .catch(cb);
               })

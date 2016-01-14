@@ -28,7 +28,7 @@ function run(options) {
     }
   });
   function runBuild( path, resolve, reject ) {
-    cp.spawn( join( options.testDir, path), [], { 
+    cp.spawn( path, [], { 
         stdio: 'inherit', 
         cwd: options.testDir 
       } )
