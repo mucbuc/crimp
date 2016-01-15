@@ -143,6 +143,7 @@ function buildProject( options, cb ) {
                   path.basename(path.basename(entry) )
                 ) + '.h'
               );
+              entry = path.join( options.testDir, entry);
               Printer.begin( 'translate', entry ); 
               translate( entry, function() {
                 Printer.finishGreen( 'translate' ); 

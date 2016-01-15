@@ -6,6 +6,8 @@ var assert = require( 'assert' )
 assert( typeof jsoncpp !== 'undefined' );
 
 module.exports = function(pathIn, cb) {
+  
+  pathIn = path.join( options.testDir, pathIn );
 
   jsoncpp( pathIn, function(result) {
     var pathOut = path.join( 
