@@ -12,7 +12,7 @@ function build(options, cb) {
   return new Promise( function(resolve, reject) {
     
     var child
-      , pathProject = path.join( options.tempDir, options.buildDir );
+      , pathProject = path.join( options.testDir, options.tempDir );
     
     if (options.gcc) {
       var args = [ '-j', '-C', './' ]; 
@@ -22,6 +22,7 @@ function build(options, cb) {
       else if (options.debug) {
         args.push( 'BUILDTYPE=Debug' );
       }
+
       child = cp.spawn( 'make', args, { stdio: 'inherit', cwd: pathProject } );
     }
     else 

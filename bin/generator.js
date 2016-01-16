@@ -11,8 +11,8 @@ function generate( options ) {
 
   return new Promise(function(resolve, reject) {
     var args = [
-          options.nameGYP,
-          '--generator-output=' + options.buildDir
+          options.nameGYP
+          //, '--generator-output=' + options.buildDir
         ];  
 
     if (options.gcc) {

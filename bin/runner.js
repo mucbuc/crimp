@@ -6,7 +6,7 @@ function run(options) {
   return new Promise( function( resolve, reject) {
 
     var cwd = join(options.testDir, options.tempDir )
-      , execPath = options.gcc ? join( 'build', 'out' ) : 'build';
+      , execPath = options.gcc ? 'out' : 'build';
 
       if (options.release) {
         execPath = join( execPath, 'Release');
