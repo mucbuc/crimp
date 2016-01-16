@@ -25,7 +25,7 @@ program
 
 var options = { 
       buildDir: 'build',
-      tempDir: 'tmp',
+      tempDir: 'build',
       targetName: 'test',
       testDir: '.',
       pathJSON: './test.json'
@@ -87,7 +87,7 @@ function crimpIt(pathJSON, cb) {
   tmp.testDir = path.join( process.cwd(), path.dirname( pathJSON ) );
 
   if (program.clean) {
-    rmrf( path.join( tmp.testDir, tmp.buildDir ) ); 
+    rmrf( path.join( tmp.testDir, tmp.tempDir ) ); 
   }
 
   buildProject( tmp, cb );

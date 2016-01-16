@@ -23,7 +23,8 @@ function buildProject( options, cb ) {
   define( options.pathJSON, options.testDir )
   .then( function(product) {
     
-    var resultPath = path.join( options.testDir, options.buildDir, 'result.json' );
+    var dirGYP = path.join(options.testDir, options.tempDir)
+      , resultPath = path.join( dirGYP, 'result.json' );
 
     Printer.finishGreen( 'define' ); 
       
@@ -75,7 +76,6 @@ function buildProject( options, cb ) {
     function generateProject() {
       return new Promise(function(resolve, reject) {
 
-        var dirGYP = path.join(options.testDir, options.buildDir)
         makePathIfNone( dirGYP, function() {
 
           options.nameGYP = options.targetName + ".gyp";
