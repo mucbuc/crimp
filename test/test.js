@@ -13,7 +13,7 @@ process.chdir( thisPath );
 
 test( 'asserter', function(t) {
   var controller = new Expector(t)
-   ,  resultPath = './build/result.json';
+   ,  resultPath = './tmp/result.json';
 
   controller
   .expect( 'not exits' )

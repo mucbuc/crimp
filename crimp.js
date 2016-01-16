@@ -25,7 +25,7 @@ program
 
 var options = { 
       buildDir: 'build',
-      tempDir: 'build',
+      tempDir: 'tmp',
       targetName: 'test',
       testDir: '.',
       pathJSON: './test.json'

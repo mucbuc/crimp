@@ -4,39 +4,34 @@ var cp = require( 'child_process' )
 
 function run(options) {
   return new Promise( function( resolve, reject) {
-    if (options.gcc) {
+
+    var cwd = join(options.testDir, options.tempDir )
+      , execPath = options.gcc ? join( 'build', 'out' ) : 'build';
+
       if (options.release) {
-        runBuild( './build/out/Release/test', resolve, reject );
+        execPath = join( execPath, 'Release');
       }
       else if (options.test) {
-        runBuild( './build/out/Test/test', resolve, reject );
+        execPath = join( execPath, 'Test');
       }
       else {
-        runBuild( './build/out/Debug/test', resolve, reject ); 
+        execPath = join( execPath, 'Debug');
       }
-    }
-    else {
-      if (options.release) {
-        runBuild( './build/build/Release/test', resolve, reject );
-      }
-      else if (options.test) {
-        runBuild( './build/build/Test/test', resolve, reject ); 
-      }
-      else {
-        runBuild( './build/build/Debug/test', resolve, reject );
-      }
-    }
+
+      execPath = join( execPath, options.targetName );
+
+      cp.spawn( 
+        execPath,
+        [], 
+        { stdio: 'inherit', cwd: cwd } )
+      .on( 'exit', function(code) {
+        if (code)
+          reject();
+        else
+          resolve();
+      });
   });
 
-  function runBuild( path, resolve, reject ) {
-    cp.spawn( path, [], { stdio: 'inherit', cwd: options.testDir } )
-    .on( 'exit', function(code) {
-      if (code)
-        reject();
-      else
-        resolve();
-    }); 
-  }
 }
 
 

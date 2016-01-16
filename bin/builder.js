@@ -11,7 +11,9 @@ function build(options, cb) {
 
   return new Promise( function(resolve, reject) {
     
-    var child;
+    var child
+      , pathProject = path.join( options.tempDir, options.buildDir );
+    
     if (options.gcc) {
       var args = [ '-j', '-C', './' ]; 
       if (options.release) {
@@ -20,11 +22,11 @@ function build(options, cb) {
       else if (options.debug) {
         args.push( 'BUILDTYPE=Debug' );
       }
-      child = cp.spawn( 'make', args, { stdio: 'inherit', cwd: path.join( options.testDir, options.tempDir ) } );
+      child = cp.spawn( 'make', args, { stdio: 'inherit', cwd: pathProject } );
     }
     else 
     {
-      var pathProject = path.join( options.tempDir, options.buildDir, options.targetName + ".xcodeproj" )
+      var pathProject = path.join( pathProject, options.targetName + ".xcodeproj" )
         , args = ['-project', pathProject ];
       
       child = cp.spawn( 'xcodebuild', args, { stdio: 'inherit', cwd: options.testDir } );

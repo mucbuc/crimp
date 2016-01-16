@@ -16,7 +16,7 @@ namespace private_assert
 
 	archiver::~archiver()
 	{
-		fstream out( "build/result.json", fstream::out );
+		fstream out( "result.json", fstream::out );
 
 		out << "{\n";
 		out << "\"passed\": " << m_passed;
