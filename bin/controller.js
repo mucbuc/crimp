@@ -23,7 +23,7 @@ function buildProject( options, cb ) {
   define( options.pathJSON, options.testDir )
   .then( function(product) {
     
-    
+    var resultPath = path.join( options.testDir, options.buildDir, 'result.json' );
 
     Printer.finishGreen( 'define' ); 
       
@@ -38,7 +38,7 @@ function buildProject( options, cb ) {
         buildTarget()
         .then( function() {
           if (options.execute) {
-            fs.unlink( path.join( options.testDir, 'build/result.json' ), function() {
+            fs.unlink( resultPath, function() {
               executeTarget()
               .then( function() {
                 readResults().then( function(results) {
@@ -57,8 +57,8 @@ function buildProject( options, cb ) {
     });
 
     function readResults(cb) {
-      return new Promise(function(resolve, reject) { 
-        fs.readFile( path.join( options.testDir, 'build/result.json' ), function(err, data) {
+      return new Promise(function(resolve, reject) {
+        fs.readFile( resultPath, function(err, data) {
           var obj = {};
 
           try {
