@@ -42,10 +42,7 @@ else {
 
 function crimpIt(pathJSON, cb) {
 
-  var context = new Context( program ); 
-
-  context.pathJSON = path.basename( pathJSON );
-  context.testDir = path.join( process.cwd(), path.dirname( pathJSON ) );
+  var context = new Context( program, pathJSON ); 
 
   if (program.clean) {
     rmrf( path.join( context.testDir, context.tempDir ) ); 
