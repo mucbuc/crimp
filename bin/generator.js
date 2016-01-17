@@ -1,6 +1,5 @@
 var assert = require( 'assert' )
   , path = require( 'path' )
-  , cp = require( 'child_process' )
   , Promise = require( 'promise' );
 
 function generate( context ) {
@@ -39,13 +38,11 @@ function generate( context ) {
       args.push( '--include=' + getPlankGYPI( 'opengl.gypi' ) );
     }
 
-    cp.spawn( 
+    context.spawn( 
       'gyp', 
       args, 
-      {
-        stdio: 'inherit', 
-        cwd: path.join( context.testDir, context.tempDir )
-      })
+      context.tempDir
+    )
     .on( 'exit', function( code ) {
       if (code) 
         reject(code) 
