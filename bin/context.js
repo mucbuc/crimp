@@ -36,6 +36,9 @@ function Context(program) {
   }
 
   this.spawn = function(exec, args, cwd) {
+    if (typeof cwd === 'undefined') {
+      cwd = '.';
+    }
     return cp.spawn( 
       exec,
       args, 
