@@ -3,6 +3,8 @@ var cp = require( 'child_process' )
 
 function Context(program) {
 
+  var instance = this; 
+
   this.tempDir = 'tmp';
   this.targetName = 'test';
   this.testDir = '.';
@@ -35,6 +37,8 @@ function Context(program) {
     this.ide = program.ide;
   }
 
+  this.stdioMode = program.verbose ? 'inherit' : 'pipe';
+  
   this.spawn = function(exec, args, cwd) {
     if (typeof cwd === 'undefined') {
       cwd = '.';
@@ -43,7 +47,7 @@ function Context(program) {
       exec,
       args, 
       { 
-        stdio: 'inherit', 
+        stdio: instance.stdioMode, 
         cwd: path.join( this.testDir, cwd ) 
       });
   };

@@ -5,7 +5,6 @@ var assert = require( 'assert' )
   , buildProject = require( './bin/controller.js' )
   , path = require( 'path' )
   , rmrf = require( 'rmrf' )
-  , cp = require( 'child_process' )
   , fs = require( 'fs' )
   , traverse = require( 'traverjs' )
   , Context = require( './bin/context' );
@@ -22,6 +21,7 @@ program
   .option( '-g, --gcc', 'use gcc compiler' )
   .option( '-e, --execute', 'execute product' )
   .option( '-i, --ide', 'open project in ide' )
+  .option( '-v, --verbose', 'output everything' )
   .parse( process.argv );
 
 if (program.suite) {
