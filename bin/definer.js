@@ -1,6 +1,6 @@
 /*
 objective:
-  - create product object associating properties with types 
+  - create product object mapping properties with types 
   - read and parse json
 */
 

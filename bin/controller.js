@@ -23,7 +23,8 @@ function buildProject( options, cb ) {
   define( options.pathJSON, options.testDir )
   .then( function(product) {
     
-    
+    var dirGYP = path.join(options.testDir, options.tempDir)
+      , resultPath = path.join( dirGYP, 'result.json' );
 
     Printer.finishGreen( 'define' ); 
       
@@ -38,7 +39,7 @@ function buildProject( options, cb ) {
         buildTarget()
         .then( function() {
           if (options.execute) {
-            fs.unlink( path.join( options.testDir, 'build/result.json' ), function() {
+            fs.unlink( resultPath, function() {
               executeTarget()
               .then( function() {
                 readResults().then( function(results) {
@@ -57,8 +58,8 @@ function buildProject( options, cb ) {
     });
 
     function readResults(cb) {
-      return new Promise(function(resolve, reject) { 
-        fs.readFile( path.join( options.testDir, 'build/result.json' ), function(err, data) {
+      return new Promise(function(resolve, reject) {
+        fs.readFile( resultPath, function(err, data) {
           var obj = {};
 
           try {
@@ -75,7 +76,6 @@ function buildProject( options, cb ) {
     function generateProject() {
       return new Promise(function(resolve, reject) {
 
-        var dirGYP = path.join(options.testDir, options.buildDir)
         makePathIfNone( dirGYP, function() {
 
           options.nameGYP = options.targetName + ".gyp";

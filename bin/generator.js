@@ -7,12 +7,12 @@ function generate( options ) {
 
   assert( options.hasOwnProperty( 'testDir' ) );
   assert( options.hasOwnProperty( 'pathGYP' ) );
-  assert( options.hasOwnProperty( 'buildDir' ) );
+  assert( options.hasOwnProperty( 'tempDir' ) );
 
   return new Promise(function(resolve, reject) {
     var args = [
-          path.join( options.buildDir, options.nameGYP ),
-          '--generator-output=' + options.buildDir
+          options.nameGYP
+          //, '--generator-output=' + options.buildDir
         ];  
 
     if (options.gcc) {
@@ -45,7 +45,7 @@ function generate( options ) {
       args, 
       {
         stdio: 'inherit', 
-        cwd: options.testDir
+        cwd: path.join( options.testDir, options.tempDir )
       })
     .on( 'exit', function( code ) {
       if (code) 

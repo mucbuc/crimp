@@ -7,10 +7,13 @@ function build(options, cb) {
   
   assert( options.hasOwnProperty( 'targetName' ) );
   assert( options.hasOwnProperty( 'buildDir' ) );
+  assert( options.hasOwnProperty( 'tempDir' ) );
 
   return new Promise( function(resolve, reject) {
     
-    var child;
+    var child
+      , pathProject = path.join( options.testDir, options.tempDir );
+    
     if (options.gcc) {
       var args = [ '-j', '-C', './' ]; 
       if (options.release) {
@@ -19,11 +22,12 @@ function build(options, cb) {
       else if (options.debug) {
         args.push( 'BUILDTYPE=Debug' );
       }
-      child = cp.spawn( 'make', args, { stdio: 'inherit', cwd: path.join( options.testDir, options.buildDir ) } );
+
+      child = cp.spawn( 'make', args, { stdio: 'inherit', cwd: pathProject } );
     }
     else 
     {
-      var pathProject = path.join( options.buildDir, options.buildDir, options.targetName + ".xcodeproj" )
+      var pathProject = path.join( pathProject, options.targetName + ".xcodeproj" )
         , args = ['-project', pathProject ];
       
       child = cp.spawn( 'xcodebuild', args, { stdio: 'inherit', cwd: options.testDir } );
