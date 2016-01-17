@@ -1,37 +1,41 @@
-var cp = require( 'child_process' )
+var assert = require( 'assert' )
+  , cp = require( 'child_process' )
   , Promise = require( 'promise' )
-  , join = require( 'path' ).join;
+  , join = require( 'path' ).join
+  , Context = require( './context' );
+
+assert( typeof Context !== 'undefined' ); 
 
 function run(context) {
   return new Promise( function( resolve, reject) {
 
-    var cwd = join(context.testDir, context.tempDir )
-      , execPath = context.gcc ? 'out' : 'build';
+    var execPath = context.gcc ? 'out' : 'build'
+      , executer = new Context(context); 
 
-      if (context.release) {
-        execPath = join( execPath, 'Release');
-      }
-      else if (context.test) {
-        execPath = join( execPath, 'Test');
-      }
-      else {
-        execPath = join( execPath, 'Debug');
-      }
+    if (context.release) {
+      execPath = join( execPath, 'Release');
+    }
+    else if (context.test) {
+      execPath = join( execPath, 'Test');
+    }
+    else {
+      execPath = join( execPath, 'Debug');
+    }
 
-      execPath = join( execPath, context.targetName );
+    execPath = join( execPath, context.targetName );
 
-      cp.spawn( 
-        execPath,
-        [], 
-        { stdio: 'inherit', cwd: cwd } )
-      .on( 'exit', function(code) {
-        if (code)
-          reject();
-        else
-          resolve();
-      });
+    executer.spawn(  
+      execPath,
+      [], 
+      context.tempDir
+    )
+    .on( 'exit', function(code) {
+      if (code)
+        reject();
+      else
+        resolve();
+    });
   });
-
 }
 
 
