@@ -3,18 +3,18 @@ var assert = require( 'assert' )
   , cp = require( 'child_process' )
   , Promise = require( 'promise' );
 
-function generate( options ) {
+function generate( context ) {
 
-  assert( options.hasOwnProperty( 'testDir' ) );
-  assert( options.hasOwnProperty( 'pathGYP' ) );
-  assert( options.hasOwnProperty( 'tempDir' ) );
+  assert( context.hasOwnProperty( 'testDir' ) );
+  assert( context.hasOwnProperty( 'pathGYP' ) );
+  assert( context.hasOwnProperty( 'tempDir' ) );
 
   return new Promise(function(resolve, reject) {
     var args = [
-          options.nameGYP
+          context.nameGYP
         ];  
 
-    if (options.gcc) {
+    if (context.gcc) {
       args = args.concat( [
         '--depth=./',
         '--include=' + getPlankGYPI( 'cpp11-gcc.gypi' ),
@@ -27,15 +27,15 @@ function generate( options ) {
         '--include=' + getPlankGYPI( 'cpp11.gypi' )
       ]);
     
-      if (options.debug) {
+      if (context.debug) {
         args.push( '--build=Debug' );  
       }
-      else if (options.release) {
+      else if (context.release) {
         args.push( '--build=Release' );
       }
     }
 
-    if (options.opengl) {
+    if (context.opengl) {
       args.push( '--include=' + getPlankGYPI( 'opengl.gypi' ) );
     }
 
@@ -44,7 +44,7 @@ function generate( options ) {
       args, 
       {
         stdio: 'inherit', 
-        cwd: path.join( options.testDir, options.tempDir )
+        cwd: path.join( context.testDir, context.tempDir )
       })
     .on( 'exit', function( code ) {
       if (code) 

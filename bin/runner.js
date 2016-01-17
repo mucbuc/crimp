@@ -2,23 +2,23 @@ var cp = require( 'child_process' )
   , Promise = require( 'promise' )
   , join = require( 'path' ).join;
 
-function run(options) {
+function run(context) {
   return new Promise( function( resolve, reject) {
 
-    var cwd = join(options.testDir, options.tempDir )
-      , execPath = options.gcc ? 'out' : 'build';
+    var cwd = join(context.testDir, context.tempDir )
+      , execPath = context.gcc ? 'out' : 'build';
 
-      if (options.release) {
+      if (context.release) {
         execPath = join( execPath, 'Release');
       }
-      else if (options.test) {
+      else if (context.test) {
         execPath = join( execPath, 'Test');
       }
       else {
         execPath = join( execPath, 'Debug');
       }
 
-      execPath = join( execPath, options.targetName );
+      execPath = join( execPath, context.targetName );
 
       cp.spawn( 
         execPath,

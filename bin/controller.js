@@ -14,22 +14,22 @@ var assert = require( 'assert' )
 
 assert( typeof translate !== 'undefined' ); 
 
-function buildProject( options, cb ) {
+function buildProject( context, cb ) {
   
-  assert( options.hasOwnProperty('pathJSON') );
+  assert( context.hasOwnProperty('pathJSON') );
 
-  Printer.begin( 'define', options.pathJSON );
+  Printer.begin( 'define', context.pathJSON );
 
-  define( options.pathJSON, options.testDir )
+  define( context.pathJSON, context.testDir )
   .then( function(product) {
     
-    var dirGYP = path.join(options.testDir, options.tempDir)
+    var dirGYP = path.join(context.testDir, context.tempDir)
       , resultPath = path.join( dirGYP, 'result.json' );
 
     Printer.finishGreen( 'define' ); 
       
     if (product.hasOwnProperty('opengl')) {
-      options.opengl = true;
+      context.opengl = true;
     }
 
     translateData()
@@ -38,7 +38,7 @@ function buildProject( options, cb ) {
       .then( function() { 
         buildTarget()
         .then( function() {
-          if (options.execute) {
+          if (context.execute) {
             fs.unlink( resultPath, function() {
               executeTarget()
               .then( function() {
@@ -78,13 +78,13 @@ function buildProject( options, cb ) {
 
         makePathIfNone( dirGYP, function() {
 
-          options.nameGYP = options.targetName + ".gyp";
-          options.pathGYP = path.join( dirGYP, options.nameGYP );
-          writeGYP( product, options.pathGYP, function(error) {
+          context.nameGYP = context.targetName + ".gyp";
+          context.pathGYP = path.join( dirGYP, context.nameGYP );
+          writeGYP( product, context.pathGYP, function(error) {
             if (error) throw error;
             
-            Printer.begin( 'generate', options.pathGYP );
-            generate( options )
+            Printer.begin( 'generate', context.pathGYP );
+            generate( context )
             .then( function() {
               Printer.finishGreen( 'generate' );
               resolve(); 
@@ -101,8 +101,8 @@ function buildProject( options, cb ) {
 
     function buildTarget() {
       return new Promise(function(resolve,reject) {
-        Printer.begin( 'build', options.pathGYP);
-        build( options )
+        Printer.begin( 'build', context.pathGYP);
+        build( context )
         .then( function() {
           Printer.finishGreen( 'build' );
           resolve(); 
@@ -117,9 +117,9 @@ function buildProject( options, cb ) {
 
     function executeTarget() {
       return new Promise(function(resolve,reject) {
-        Printer.begin( 'execute', options.targetName );
+        Printer.begin( 'execute', context.targetName );
 
-        run(options)
+        run(context)
         .then( function() {
           Printer.finishGreen( 'execute' ); 
           resolve();
@@ -143,7 +143,7 @@ function buildProject( options, cb ) {
                   path.basename(path.basename(entry) )
                 ) + '.h'
               );
-              entry = path.join( options.testDir, entry);
+              entry = path.join( context.testDir, entry);
               Printer.begin( 'translate', entry ); 
               translate( entry, function() {
                 Printer.finishGreen( 'translate' ); 

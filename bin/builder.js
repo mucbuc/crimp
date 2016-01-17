@@ -3,22 +3,22 @@ var assert = require( 'assert' )
   , path = require( 'path' )
   , Promise = require( 'promise' );
 
-function build(options, cb) {
+function build(context, cb) {
   
-  assert( options.hasOwnProperty( 'targetName' ) );
-  assert( options.hasOwnProperty( 'tempDir' ) );
+  assert( context.hasOwnProperty( 'targetName' ) );
+  assert( context.hasOwnProperty( 'tempDir' ) );
 
   return new Promise( function(resolve, reject) {
     
     var child
-      , pathProject = path.join( options.testDir, options.tempDir );
+      , pathProject = path.join( context.testDir, context.tempDir );
     
-    if (options.gcc) {
+    if (context.gcc) {
       var args = [ '-j', '-C', './' ]; 
-      if (options.release) {
+      if (context.release) {
         args.push( 'BUILDTYPE=Release' );
       }
-      else if (options.debug) {
+      else if (context.debug) {
         args.push( 'BUILDTYPE=Debug' );
       }
 
@@ -26,11 +26,11 @@ function build(options, cb) {
     }
     else 
     {
-      var pathProject = path.join( pathProject, options.targetName + ".xcodeproj" )
+      var pathProject = path.join( pathProject, context.targetName + ".xcodeproj" )
         , args = ['-project', pathProject ];
       
-      child = cp.spawn( 'xcodebuild', args, { stdio: 'inherit', cwd: options.testDir } );
-      if (options.ide) {
+      child = cp.spawn( 'xcodebuild', args, { stdio: 'inherit', cwd: context.testDir } );
+      if (context.ide) {
         cp.spawn( 'open', [ pathProject ] );
       }
     }
