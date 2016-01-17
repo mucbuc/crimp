@@ -5,9 +5,9 @@ var assert = require( 'assert' )
   , buildProject = require( './bin/controller.js' )
   , path = require( 'path' )
   , rmrf = require( 'rmrf' )
-  , cp = require( 'child_process' )
   , fs = require( 'fs' )
-  , traverse = require( 'traverjs' );
+  , traverse = require( 'traverjs' )
+  , Context = require( './bin/context' );
 
 program
   .version( '0.0.1' )
@@ -21,43 +21,8 @@ program
   .option( '-g, --gcc', 'use gcc compiler' )
   .option( '-e, --execute', 'execute product' )
   .option( '-i, --ide', 'open project in ide' )
+  .option( '-v, --verbose', 'output everything' )
   .parse( process.argv );
-
-var options = { 
-      buildDir: 'build',
-      tempDir: 'tmp',
-      targetName: 'test',
-      testDir: '.',
-      pathJSON: './test.json'
-  }, 
-  successCounter = 0; 
-
-if (program.release) {
-  options.release = true;
-}
-else if (program.debug) {
-  options.debug = true;
-} 
-else {
-  options.test = true;
-  options.execute = true;
-}
-
-if (program.output) {
-  options.buildDir = program.output;
-}
-
-if (program.gcc) {
-  options.gcc = true;
-}
-
-if (program.execute) {
-  options.execute = true;
-}
-
-if (program.ide) {
-  options.ide = program.ide;
-}
 
 if (program.suite) {
 
@@ -77,20 +42,16 @@ else {
 
 function crimpIt(pathJSON, cb) {
 
-  var tmp = {};
+  var context = new Context( program ); 
 
-  for (i in options) {
-    tmp[i] = options[i];
-  }
-
-  tmp.pathJSON = path.basename( pathJSON );
-  tmp.testDir = path.join( process.cwd(), path.dirname( pathJSON ) );
+  context.pathJSON = path.basename( pathJSON );
+  context.testDir = path.join( process.cwd(), path.dirname( pathJSON ) );
 
   if (program.clean) {
-    rmrf( path.join( tmp.testDir, tmp.tempDir ) ); 
+    rmrf( path.join( context.testDir, context.tempDir ) ); 
   }
 
-  buildProject( tmp, cb );
+  buildProject( context, cb );
 }
 
 
