@@ -6,7 +6,6 @@ var assert = require( 'assert' )
 function build(options, cb) {
   
   assert( options.hasOwnProperty( 'targetName' ) );
-  assert( options.hasOwnProperty( 'buildDir' ) );
   assert( options.hasOwnProperty( 'tempDir' ) );
 
   return new Promise( function(resolve, reject) {

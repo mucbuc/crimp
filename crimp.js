@@ -24,7 +24,6 @@ program
   .parse( process.argv );
 
 var options = { 
-      buildDir: 'build',
       tempDir: 'tmp',
       targetName: 'test',
       testDir: '.',
@@ -44,7 +43,7 @@ else {
 }
 
 if (program.output) {
-  options.buildDir = program.output;
+  options.tempDir = program.output;
 }
 
 if (program.gcc) {
