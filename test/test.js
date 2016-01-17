@@ -52,7 +52,7 @@ test( 'test build', function(t) {
   .expect( 'hello test\n' )
   .expect( 0 );
 
-  crimp([ '-p', 'test.json' ], controller );
+  crimp([ '-p', '-v', 'test.json' ], controller );
 });
 
 test( 'test gcc build', function(t) {
@@ -61,7 +61,7 @@ test( 'test gcc build', function(t) {
   controller
   .expect( 'hello test\n' )
   .expect( 0 ); 
-  crimp([ '-g', '-p', 'test.json' ], controller );
+  crimp([ '-g', '-p', '-v', 'test.json' ], controller );
 });
 
 test( 'release gcc build', function(t) {
@@ -71,7 +71,7 @@ test( 'release gcc build', function(t) {
   controller
   .expect( 'hello release\n' )
   .expect( 0 ); 
-  crimp([ '-g', '-r', '-e', '-p', 'test.json' ], controller );
+  crimp([ '-g', '-r', '-e', '-p', '-v', 'test.json' ], controller );
 });
 
 test( 'debug gcc build', function(t) {
@@ -81,7 +81,7 @@ test( 'debug gcc build', function(t) {
   .expect( 'hello debug\n' )
   .expect( 0 ); 
 
-  crimp([ '-g', '-d', '-e', '-p', 'test.json' ], controller );
+  crimp([ '-g', '-d', '-e', '-p', '-v', 'test.json' ], controller );
 });
 
 test( 'release build', function(t) {
@@ -91,7 +91,7 @@ test( 'release build', function(t) {
   .expect( 'hello release\n' )
   .expect( 0 );
   
-  crimp([ '-r', '-e', '-p', 'test.json' ], controller );
+  crimp([ '-r', '-e', '-p', '-v', 'test.json' ], controller );
 });
 
 test( 'debug build', function(t) {
@@ -101,7 +101,7 @@ test( 'debug build', function(t) {
   .expect( 'hello debug\n' )
   .expect( 0 );
 
-  crimp([ '-d', '-e', '-p', 'test.json' ], controller );
+  crimp([ '-d', '-e', '-p', '-v', 'test.json' ], controller );
 });
 
 function crimp(args, controller, cb) {
