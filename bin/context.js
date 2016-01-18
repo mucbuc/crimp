@@ -1,14 +1,14 @@
 var cp = require( 'child_process' )
   , path = require( 'path' ); 
 
-function Context(program) {
+function Context(program, pathJSON) {
 
   var instance = this; 
-
+  
+  this.pathJSON = path.basename( pathJSON );
+  this.testDir = path.join( process.cwd(), path.dirname( pathJSON ) );
   this.tempDir = 'tmp';
   this.targetName = 'test';
-  this.testDir = '.';
-  this.pathJSON = './test.json';
   
   if (program.release) {
     this.release = true;

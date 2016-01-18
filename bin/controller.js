@@ -14,10 +14,14 @@ var assert = require( 'assert' )
 assert( typeof translate !== 'undefined' ); 
 
 function buildProject( context, cb ) {
-  
+
+  var absPath;
+
   assert( context.hasOwnProperty('pathJSON') );
 
-  Printer.begin( 'define', context.pathJSON );
+  absPath = path.join( context.testDir, context.pathJSON );
+  Printer.begin( 'unit', absPath ); 
+  Printer.begin( 'define', absPath );
 
   define( context.pathJSON, context.testDir )
   .then( function(product) {
@@ -41,6 +45,7 @@ function buildProject( context, cb ) {
             fs.unlink( resultPath, function() {
               executeTarget()
               .then( function() {
+                Printer.finishGreen( 'unit' );
                 readResults().then( function(results) {
                   cb(results.passed);
                 })
@@ -50,6 +55,7 @@ function buildProject( context, cb ) {
             } );
           }
           else {
+            Printer.finishGreen( 'unit' );
             cb();
           } 
         }); 
@@ -60,13 +66,17 @@ function buildProject( context, cb ) {
       return new Promise(function(resolve, reject) {
         fs.readFile( resultPath, function(err, data) {
           var obj = {};
-
-          try {
-            resolve( JSON.parse( data.toString() ) );
-          }
-          catch(err) {
-            console.log( err );
+          if (err) {
             reject(err);
+          }
+          else {
+            try {
+              resolve( JSON.parse( data.toString() ) );
+            }
+            catch(err) {
+              console.log( err );
+              reject(err);
+            }
           }
         });
       }); 
