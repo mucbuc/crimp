@@ -60,13 +60,17 @@ function buildProject( context, cb ) {
       return new Promise(function(resolve, reject) {
         fs.readFile( resultPath, function(err, data) {
           var obj = {};
-
-          try {
-            resolve( JSON.parse( data.toString() ) );
-          }
-          catch(err) {
-            console.log( err );
+          if (err) {
             reject(err);
+          }
+          else {
+            try {
+              resolve( JSON.parse( data.toString() ) );
+            }
+            catch(err) {
+              console.log( err );
+              reject(err);
+            }
           }
         });
       }); 
