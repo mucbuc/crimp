@@ -7,7 +7,8 @@ var assert = require( 'assert' )
   , rmrf = require( 'rmrf' )
   , fs = require( 'fs' )
   , traverse = require( 'traverjs' )
-  , Context = require( './bin/context' );
+  , Context = require( './bin/context' )
+  , Printer = require( './bin/printer' );
 
 program
   .version( '0.0.1' )
@@ -22,18 +23,34 @@ program
   .option( '-e, --execute', 'execute product' )
   .option( '-i, --ide', 'open project in ide' )
   .option( '-v, --verbose', 'output everything' )
+  .option( '-q, --sequence', 'run tests in sequence')
   .parse( process.argv );
 
 if (program.suite) {
 
   var dirname = path.dirname( program.suite );
-
+  Printer.begin( 'total', program.suite );  
   fs.readFile( program.suite, function(err, data) {
-    if (err) throw err; 
+    var tests; 
+    if (err) throw err;
+    tests = JSON.parse( data.toString() ).tests;
     
-    traverse( JSON.parse( data.toString() ).tests, function( pathJSON, next ) {
-      crimpIt( path.join( dirname, pathJSON ), next );
-    });
+    if (program.sequence) {
+      traverse( tests, function( pathJSON, next ) { 
+        crimpIt( path.join( dirname, pathJSON ), next );
+      } )
+      .then( function() {
+        Printer.finishGreen( 'total', program.suite );
+      });
+    }
+    else {
+      process.on( 'exit', function() {
+        Printer.finishGreen( 'total', program.suite );
+      });
+      tests.forEach( function( pathJSON ) {
+        crimpIt( path.join( dirname, pathJSON ) );
+      });
+    }
   });
 }
 else {
