@@ -22,9 +22,12 @@ program
   .option( '-g, --gcc', 'use gcc compiler' )
   .option( '-e, --execute', 'execute product' )
   .option( '-i, --ide', 'open project in ide' )
-  .option( '-v, --verbose', 'output everything' )
-  .option( '-q, --sequence', 'run tests in sequence')
+  //.option( '-v, --verbose', 'output everything' )
+  //.option( '-q, --sequence', 'run tests in sequence')
   .parse( process.argv );
+
+program.verbose = true;
+program.sequence = true;
 
 if (program.suite) {
 

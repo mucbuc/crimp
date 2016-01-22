@@ -37,7 +37,7 @@ function Context(program, pathJSON) {
     this.ide = program.ide;
   }
 
-  this.stdioMode = program.verbose ? 'inherit' : 'pipe';
+  this.stdoutMode = program.verbose ? 'inherit' : 'pipe';
   
   this.spawn = function(exec, args, cwd) {
     if (typeof cwd === 'undefined') {
@@ -47,7 +47,7 @@ function Context(program, pathJSON) {
       exec,
       args, 
       { 
-        stdio: instance.stdioMode, 
+        stdio: [ 'inherit', instance.stdoutMode, instance.stdoutMode ],
         cwd: path.join( this.testDir, cwd ) 
       });
   };
