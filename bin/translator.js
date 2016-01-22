@@ -7,9 +7,8 @@ assert( typeof jsoncpp !== 'undefined' );
 
 module.exports = function(pathIn, cb) {
   
-  pathIn = path.join( context.testDir, pathIn );
-
   jsoncpp( pathIn, function(result) {
+
     var pathOut = path.join( 
           path.dirname(pathIn), 
           '..',

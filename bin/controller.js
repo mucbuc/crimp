@@ -160,7 +160,7 @@ function buildProject( context, cb ) {
               });
             })
             .then( resolve )
-            .catch( resolve );
+            .catch( reject );
           });
         }
         else {
