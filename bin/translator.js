@@ -1,5 +1,5 @@
 var assert = require( 'assert' )
-  , jsoncpp = require( 'jsoncpp' )
+  , jsoncpp = require( 'jsoncpp' ).translateFile
   , fs = require( 'fs' )
   , path = require( 'path' );
 
