@@ -25,15 +25,18 @@ function generate( context ) {
         '--depth=.',
         '--include=' + getPlankGYPI( 'cpp11.gypi' )
       ]);
-    
-      if (context.debug) {
-        args.push( '--build=Debug' );  
-      }
-      else if (context.release) {
-        args.push( '--build=Release' );
-      }
     }
-
+    
+    if (context.debug) {
+      args.push( '--build=Debug' );  
+    }
+    else if (context.release) {
+      args.push( '--build=Release' );
+    }
+    else {
+      args.push( '--build=Test' );
+    }
+    
     if (context.opengl) {
       args.push( '--include=' + getPlankGYPI( 'opengl.gypi' ) );
     }
