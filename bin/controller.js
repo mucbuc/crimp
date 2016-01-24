@@ -1,7 +1,6 @@
 var assert = require( 'assert' )
   , define = require( '../bin/definer' )
   , generate = require( '../bin/generator' )
-  , build = require( '../bin/builder' )
   , fs = require( 'fs' )
   , path = require( 'path' )
   , Printer = require( './printer' )
@@ -38,27 +37,24 @@ function buildProject( context, cb ) {
     translateData()
     .then( function() {
       generateProject()
-      .then( function() { 
-        buildTarget()
-        .then( function() {
-          if (context.execute) {
-            fs.unlink( resultPath, function() {
-              executeTarget()
-              .then( function() {
-                Printer.finishGreen( 'unit' );
-                readResults().then( function(results) {
-                  cb(results.passed);
-                })
-                .catch(cb);
+      .then( function() {
+        if (context.execute) {
+          fs.unlink( resultPath, function() {
+            executeTarget()
+            .then( function() {
+              Printer.finishGreen( 'unit' );
+              readResults().then( function(results) {
+                cb(results.passed);
               })
               .catch(cb);
-            } );
-          }
-          else {
-            Printer.finishGreen( 'unit' );
-            cb();
-          } 
-        }); 
+            })
+            .catch(cb);
+          } );
+        }
+        else {
+          Printer.finishGreen( 'unit' );
+          cb();
+        } 
       });
     });
 
@@ -106,22 +102,6 @@ function buildProject( context, cb ) {
           });
         });
       });
-    }
-
-    function buildTarget() {
-      return new Promise(function(resolve,reject) {
-        Printer.begin( 'build', context.pathGYP);
-        build( context )
-        .then( function() {
-          Printer.finishGreen( 'build' );
-          resolve(); 
-        })
-        .catch( function(stderr, stdout) {
-          Printer.finishRed( 'build', stderr.toString() + stdout.toString() );
-          reject();
-        });
-      });
-      
     }
 
     function executeTarget() {
