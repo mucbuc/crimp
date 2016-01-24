@@ -51,7 +51,10 @@ function generate( context ) {
         reject(code) 
       else
         resolve(code);
-    }); 
+    })
+    .on( 'error', function(error) {
+      console.log( error ); 
+    });
   });
 
   function getPlankGYPI(gypFile) {

@@ -106,9 +106,9 @@ test( 'debug build', function(t) {
 
 function crimp(args, controller, cb) {
   var child = cp
-  .spawn( path.join( __dirname, '../crimp.js'), 
+  .fork( path.join( __dirname, '..', 'crimp.js'), 
           args, 
-          { stdio: 'pipe' } )
+          { silent: true } )
   .on( 'exit', function(code) {
     
     if (typeof cb !== 'undefined') {
