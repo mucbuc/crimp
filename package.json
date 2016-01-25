@@ -23,7 +23,8 @@
     "tape": "*",
     "rmrf": "*",
     "traverjs": "*",
-    "jsoncpp": "*"
+    "jsoncpp": "*",
+    "mkdir-recursive": "*"
   },
   "bin": "./crimp.js",
   "preferGlobal": "true",
