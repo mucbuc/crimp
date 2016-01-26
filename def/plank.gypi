@@ -32,7 +32,7 @@
 				"../src/test.h"
 			],
         'include_dirs': [
-			'crimp/src/',
+			'../src/',
 		],	
     }
 }
