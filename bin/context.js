@@ -47,7 +47,7 @@ function Context(program, pathJSON) {
       exec,
       args, 
       { 
-        stdio: [ 'inherit', instance.stdoutMode, instance.stdoutMode ],
+        stdio: instance.stdoutMode,
         cwd: path.join( this.testDir, cwd ) 
       });
   };
