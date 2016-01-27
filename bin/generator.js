@@ -15,7 +15,7 @@ function generate( context ) {
 
     if (context.gcc) {
       args = args.concat( [
-        '--depth=./',
+        '--depth=.',
         '--include=' + getPlankGYPI( 'cpp11-gcc.gypi' ),
         '--format=make'
       ]);
