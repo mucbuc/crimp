@@ -1,6 +1,6 @@
 #include <iostream>
 
-int main(int argc, const char * argv[])
+int main()
 {
 	using namespace std;
 	

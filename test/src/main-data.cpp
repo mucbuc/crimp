@@ -2,7 +2,7 @@
 
 #include <src/data/content.json.h>
 
-int main(int argc, const char * argv[])
+int main()
 {
 	using namespace std;
 	

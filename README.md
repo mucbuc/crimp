@@ -33,9 +33,7 @@ nodejs build tool for C++ based on [gyp](https://chromium.googlesource.com/exter
 # example
 ### src/main.cpp:
 ```
-#include "test.h"
-
-int main(int argc, const char * argv[])
+int main()
 {
 	std::cout << "hello" << std::endl;
 	return 0; 
