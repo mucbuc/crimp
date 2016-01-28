@@ -1,0 +1,8 @@
+{
+	"import": [
+		"lib/asserter/def.json"
+	],
+	"sources": [
+		"src/check_assert.cpp"
+	]
+}
