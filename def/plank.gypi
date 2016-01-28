@@ -21,18 +21,6 @@
 	       			'TARGET_TEST=1'
 	       		],
 	       	}	
-	    },
-		"sources": 
-			[
-				"../src/archiver.cpp",
-				"../src/archiver.h",
-				"../src/asserter.cpp",
-				"../src/asserter.h",
-				"../src/asserter.hxx",
-				"../src/test.h"
-			],
-        'include_dirs': [
-			'../src/',
-		],	
-    }
+	    }
+	}
 }
