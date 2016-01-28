@@ -1,5 +1,5 @@
 {
-	"src" : [
+	"lib" : [
 		"https://github.com/mucbuc/asserter.git"
 	]
 }
