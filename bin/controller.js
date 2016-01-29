@@ -1,14 +1,14 @@
 var assert = require( 'assert' )
   , define = require( '../bin/definer' )
   , generate = require( '../bin/generator' )
-  , fs = require( 'fs' )
   , path = require( 'path' )
   , Printer = require( './printer' )
   , run = require( '../bin/runner' )
   , translate = require( '../bin/translator' )
   , Promise = require( 'promise' )
   , traverse = require( 'traverjs' )
-  , successCounter = 0;
+  , successCounter = 0
+  , fs = require( 'fs.extra' );
 
 assert( typeof translate !== 'undefined' ); 
 
@@ -29,34 +29,58 @@ function buildProject( context, cb ) {
       , resultPath = path.join( dirGYP, 'result.json' );
 
     Printer.finishGreen( 'define' ); 
-      
+
     if (product.hasOwnProperty('opengl')) {
       context.opengl = true;
     }
+    
+    Printer.begin( 'copy files', dirGYP );
 
-    translateData()
+    copyFiles( dirGYP )
     .then( function() {
-      generateProject()
+      
+      Printer.finishGreen( 'copy files' );
+
+      translateData()
       .then( function() {
-        if (context.execute) {
-          fs.unlink( resultPath, function() {
-            executeTarget()
-            .then( function() {
-              Printer.finishGreen( 'unit' );
-              readResults().then( function(results) {
-                cb(results.passed);
+        generateProject()
+        .then( function() {
+          if (context.execute) {
+            fs.unlink( resultPath, function() {
+              executeTarget()
+              .then( function() {
+                Printer.finishGreen( 'unit' );
+                readResults().then( function(results) {
+                  cb(results.passed);
+                })
+                .catch(cb);
               })
               .catch(cb);
-            })
-            .catch(cb);
-          } );
-        }
-        else {
-          Printer.finishGreen( 'unit' );
-          cb();
-        } 
+            } );
+          }
+          else {
+            Printer.finishGreen( 'unit' );
+            cb();
+          } 
+        });
       });
     });
+
+    function copyFiles(tmpPath) {
+      return new Promise(function(resolve, reject) {
+        var source = path.join( __dirname, '..', 'lib', 'asserter', 'src' )
+          , dest = path.join( tmpPath, 'src' );
+
+        fs.copyRecursive( 
+          source, 
+          dest,
+          function(error) {
+            //if (error) throw error;
+            resolve();
+          }
+        ); 
+      });
+    }
 
     function readResults(cb) {
       return new Promise(function(resolve, reject) {
