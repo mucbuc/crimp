@@ -26,47 +26,61 @@ function buildProject( context, cb ) {
   .then( function(product) {
     
     var dirGYP = path.join(context.testDir, context.tempDir)
-      , resultPath = path.join( dirGYP, 'result.json' )
-      , source = path.join( __dirname, '..', 'lib', 'asserter', 'src' )
-      , dest = path.join( dirGYP, 'src' );
+      , resultPath = path.join( dirGYP, 'result.json' );
 
     Printer.finishGreen( 'define' ); 
-    
-    fs.copyRecursive( 
-      source, 
-      dest,
-      function(error) {
-//        if (error) throw error;
-      }
-    ); 
 
     if (product.hasOwnProperty('opengl')) {
       context.opengl = true;
     }
+    
+    Printer.begin( 'copy files', dirGYP );
 
-    translateData()
+    copyFiles( dirGYP )
     .then( function() {
-      generateProject()
+      
+      Printer.finishGreen( 'copy files' );
+
+      translateData()
       .then( function() {
-        if (context.execute) {
-          fs.unlink( resultPath, function() {
-            executeTarget()
-            .then( function() {
-              Printer.finishGreen( 'unit' );
-              readResults().then( function(results) {
-                cb(results.passed);
+        generateProject()
+        .then( function() {
+          if (context.execute) {
+            fs.unlink( resultPath, function() {
+              executeTarget()
+              .then( function() {
+                Printer.finishGreen( 'unit' );
+                readResults().then( function(results) {
+                  cb(results.passed);
+                })
+                .catch(cb);
               })
               .catch(cb);
-            })
-            .catch(cb);
-          } );
-        }
-        else {
-          Printer.finishGreen( 'unit' );
-          cb();
-        } 
+            } );
+          }
+          else {
+            Printer.finishGreen( 'unit' );
+            cb();
+          } 
+        });
       });
     });
+
+    function copyFiles(tmpPath) {
+      return new Promise(function(resolve, reject) {
+        var source = path.join( __dirname, '..', 'lib', 'asserter', 'src' )
+          , dest = path.join( tmpPath, 'src' );
+
+        fs.copyRecursive( 
+          source, 
+          dest,
+          function(error) {
+            //if (error) throw error;
+            resolve();
+          }
+        ); 
+      });
+    }
 
     function readResults(cb) {
       return new Promise(function(resolve, reject) {

@@ -64,10 +64,14 @@ function crimpIt(pathJSON, cb) {
   var context = new Context( program, pathJSON ); 
 
   if (program.clean) {
-    fs.rmrf( path.join( context.testDir, context.tempDir ) ); 
+    fs.rmrf( path.join( context.testDir, context.tempDir ), function(err) {
+      if (err) throw err;
+      buildProject( context, cb );
+    });
   }
-
-  buildProject( context, cb );
+  else {
+    buildProject( context, cb );
+  }
 }
 
 
