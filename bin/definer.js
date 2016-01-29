@@ -17,6 +17,13 @@ function define(pathJSON, pathBase, objReader) {
       }
     , imported = [];
 
+  fs.readFile( path.join( __dirname, '../lib/asserter/def.json' ), function(err, data) {
+    if (err) throw err;
+    JSON.parse(data.toString()).sources.forEach( function(file) {
+      product.sources.push( file ); 
+    });
+  });
+
   if (typeof objReader === 'undefined') {
     objReader = function(filePath, cb) {
       fs.readFile(filePath, function(err, data) {

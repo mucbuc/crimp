@@ -24,7 +24,8 @@
     "rmrf": "*",
     "traverjs": "*",
     "jsoncpp": "*",
-    "mkdir-recursive": "*"
+    "mkdir-recursive": "*",
+    "fs.extra": "*"
   },
   "bin": "./crimp.js",
   "preferGlobal": "true",

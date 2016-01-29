@@ -8,7 +8,8 @@ var assert = require( 'assert' )
   , translate = require( '../bin/translator' )
   , Promise = require( 'promise' )
   , traverse = require( 'traverjs' )
-  , successCounter = 0;
+  , successCounter = 0
+  , fs = require( 'fs.extra' );
 
 assert( typeof translate !== 'undefined' ); 
 
@@ -26,10 +27,20 @@ function buildProject( context, cb ) {
   .then( function(product) {
     
     var dirGYP = path.join(context.testDir, context.tempDir)
-      , resultPath = path.join( dirGYP, 'result.json' );
+      , resultPath = path.join( dirGYP, 'result.json' )
+      , source = path.join( __dirname, '..', 'lib', 'asserter', 'src' )
+      , dest = path.join( dirGYP, 'src' );
 
     Printer.finishGreen( 'define' ); 
-      
+    
+    fs.copyRecursive( 
+      source, 
+      dest,
+      function(error) {
+//        if (error) throw error;
+      }
+    ); 
+
     if (product.hasOwnProperty('opengl')) {
       context.opengl = true;
     }
