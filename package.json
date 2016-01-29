@@ -21,10 +21,8 @@
     "expector": "*", 
     "date-time-string": "*",
     "tape": "*",
-    "rmrf": "*",
     "traverjs": "*",
     "jsoncpp": "*",
-    "mkdir-recursive": "*",
     "fs.extra": "*"
   },
   "bin": "./crimp.js",

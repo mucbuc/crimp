@@ -1,7 +1,6 @@
 var assert = require( 'assert' )
   , define = require( '../bin/definer' )
   , generate = require( '../bin/generator' )
-  , fs = require( 'fs' )
   , path = require( 'path' )
   , Printer = require( './printer' )
   , run = require( '../bin/runner' )
