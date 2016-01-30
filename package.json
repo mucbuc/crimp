@@ -13,17 +13,16 @@
   "author": "mbusenitz@gmail.com",
   "license": "GNU",
   "dependencies": {
-    "graceful-fs": "*",
-    "fs-extra": "*",
     "ansi": "*",
     "commander": "*",
-    "promise": "*",
-    "expector": "*", 
     "date-time-string": "*",
-    "tape": "*",
-    "traverjs": "*",
+    "expector": "*",
+    "fs.extra": "*",
+    "graceful-fs": "*",
     "jsoncpp": "*",
-    "fs.extra": "*"
+    "promise": "*",
+    "tape": "*",
+    "traverjs": "*"
   },
   "bin": "./crimp.js",
   "preferGlobal": "true",
