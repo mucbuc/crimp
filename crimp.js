@@ -13,8 +13,6 @@ var assert = require( 'assert' )
 program
   .version( version )
   .option( '-o, --output [path]', 'build output (default: build)' )
-  .option( '-p, --path [path]', 'test path (default .)' )
-  .option( '-s, --suite [path]', 'suite json' )
   .option( '-t, --test', 'test build (default)' )
   .option( '-d, --debug', 'target debug' )
   .option( '-r, --release', 'target release' )
@@ -24,41 +22,42 @@ program
   .option( '-i, --ide', 'open project in ide' )
   //.option( '-v, --verbose', 'output everything' )
   //.option( '-q, --sequence', 'run tests in sequence')
-  .parse( process.argv );
+  .action( function() {
 
-program.verbose = true;
-program.sequence = true;
+    var args = [];
+    for (var i = 0; i < arguments.length - 1; ++i) {
+      args.push( arguments[i] );
+    }
 
-if (program.suite) {
-
-  var dirname = path.dirname( program.suite );
-  Printer.begin( 'total', program.suite );  
-  fs.readFile( program.suite, function(err, data) {
-    var tests; 
-    if (err) throw err;
-    tests = JSON.parse( data.toString() ).tests;
+    program.verbose = true;
+    program.sequence = true;
     
-    if (program.sequence) {
-      traverse( tests, function( pathJSON, next ) { 
-        crimpIt( path.join( dirname, pathJSON ), next );
-      } )
-      .then( function() {
-        Printer.finishGreen( 'total', program.suite );
+    Printer.begin( 'total', 'test run' );
+    process.on( 'exit', function() {
+      Printer.finishGreen( 'total' );
+    });
+    
+    traverse( args, function( arg, next) {
+      var pathJson = arg 
+        , dirname = path.dirname( pathJson );
+
+      fs.readFile( pathJson, function(err, data) {
+        var tests; 
+        if (err) throw err;
+        // this readFile and JSON.parse seems wasteful and redundant
+        tests = JSON.parse( data.toString() ).tests;
+        if (typeof tests !== 'undefined') {
+          traverse( tests, function( pathJSON, next ) { 
+            crimpIt( path.join( dirname, pathJSON ), next );
+          } );
+        }
+        else {
+          crimpIt( pathJson, next ); 
+        }
       });
-    }
-    else {
-      process.on( 'exit', function() {
-        Printer.finishGreen( 'total', program.suite );
-      });
-      tests.forEach( function( pathJSON ) {
-        crimpIt( path.join( dirname, pathJSON ) );
-      });
-    }
-  });
-}
-else {
-  crimpIt( program.path );
-}
+    });
+  })
+  .parse( process.argv );
 
 function crimpIt(pathJSON, cb) {
 
