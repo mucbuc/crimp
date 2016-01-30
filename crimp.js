@@ -7,10 +7,11 @@ var assert = require( 'assert' )
   , fs = require( 'fs.extra' )
   , traverse = require( 'traverjs' )
   , Context = require( './bin/context' )
-  , Printer = require( './bin/printer' );
+  , Printer = require( './bin/printer' )
+  , version = require( './package.json' ).version
 
 program
-  .version( '0.0.1' )
+  .version( version )
   .option( '-o, --output [path]', 'build output (default: build)' )
   .option( '-p, --path [path]', 'test path (default .)' )
   .option( '-s, --suite [path]', 'suite json' )
