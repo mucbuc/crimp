@@ -9,6 +9,7 @@ var assert = require( 'assert' )
   , Context = require( './bin/context' )
   , Printer = require( './bin/printer' )
   , version = require( './package.json' ).version
+  , assertCount = 0; 
 
 program
   .version( version )
@@ -35,6 +36,7 @@ program
     Printer.begin( 'total', 'test run' );
     process.on( 'exit', function() {
       Printer.finishGreen( 'total' );
+      console.log( 'assertions passed: ', assertCount ); 
     });
     
     traverse( args, function( arg, next) {
@@ -48,11 +50,20 @@ program
         tests = JSON.parse( data.toString() ).tests;
         if (typeof tests !== 'undefined') {
           traverse( tests, function( pathJSON, next ) { 
-            crimpIt( path.join( dirname, pathJSON ), next );
+            crimpIt( path.join( dirname, pathJSON ), makeAccumulator(next) );
           } );
         }
         else {
-          crimpIt( pathJson, next ); 
+          crimpIt( pathJson, makeAccumulator(next) ); 
+        }
+
+        function makeAccumulator(next) {
+          return function(result) {
+            if (typeof result === 'number' ) {
+              assertCount += result; 
+            }
+            next();
+          };
         }
       });
     });
