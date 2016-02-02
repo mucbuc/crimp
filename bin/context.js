@@ -3,7 +3,8 @@ var cp = require( 'child_process' )
 
 function Context(program, pathJSON) {
 
-  var instance = this; 
+  var instance = this
+    , stdoutMode = program.verbose ? 'inherit' : 'pipe';
   
   this.pathJSON = path.basename( pathJSON );
   this.testDir = path.join( process.cwd(), path.dirname( pathJSON ) );
@@ -37,7 +38,7 @@ function Context(program, pathJSON) {
     this.ide = program.ide;
   }
 
-  this.stdoutMode = program.verbose ? 'inherit' : 'pipe';
+  
   
   this.spawn = function(exec, args, cwd) {
     if (typeof cwd === 'undefined') {
@@ -47,7 +48,7 @@ function Context(program, pathJSON) {
       exec,
       args, 
       { 
-        stdio: instance.stdoutMode,
+        stdio: stdoutMode,
         cwd: path.join( this.testDir, cwd ) 
       });
   };
