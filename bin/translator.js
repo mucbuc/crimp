@@ -5,12 +5,12 @@ var assert = require( 'assert' )
 
 assert( typeof jsoncpp !== 'undefined' );
 
-module.exports = function(pathIn, cb) {
+module.exports = function(pathIn, pathOut, cb) {
+
+  assert( typeof pathIn !== 'undefined' );
+  assert( typeof pathOut !== 'undefined' );
   
   jsoncpp( pathIn, function(result) {
-
-    var pathOut = path.join( path.dirname(pathIn), '..', 'src', 'data' );
-
     fs.mkdirp(pathOut, function(err) {
       if (err) throw err;
       fs.writeFile( 

@@ -147,7 +147,9 @@ function buildProject( context, cb ) {
     function translateData() {
       return new Promise( function(resolve, reject) {
         if (product.hasOwnProperty('data')) {
-          var cppDir = path.join( 'src', 'data' );
+          
+          var cppDir = path.join(context.tempDir, 'src', 'data');
+
           makePathIfNone( cppDir, function() {
             traverse( product.data, function(entry, next) {
               product.sources.push( path.join( 
@@ -158,7 +160,7 @@ function buildProject( context, cb ) {
               );
               entry = path.join( context.testDir, entry);
               Printer.begin( 'translate', entry ); 
-              translate( entry, function() {
+              translate( entry, cppDir, function() {
                 Printer.finishGreen( 'translate' ); 
                 next(); 
               });
