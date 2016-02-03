@@ -1,15 +1,15 @@
 var assert = require( 'assert' )
-  , jsoncpp = require( 'jsoncpp' ).translateFile
-  , fs = require( 'fs.extra' ); 
+  , translateFile = require( 'jsoncpp' ).translateFile
+  , fs = require( 'fs' ); 
 
-assert( typeof jsoncpp !== 'undefined' );
+assert( typeof translateFile !== 'undefined' );
 
 module.exports = function(pathIn, pathOut, cb) {
 
   assert( typeof pathIn !== 'undefined' );
   assert( typeof pathOut !== 'undefined' );
   
-  jsoncpp( pathIn, function(result) {
+  translateFile( pathIn, function(result) {
     fs.writeFile( 
       pathOut, 
       result, 
