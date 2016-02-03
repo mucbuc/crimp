@@ -7,15 +7,13 @@ nodejs build tool for C++ based on [gyp](https://chromium.googlesource.com/exter
 
 #usage
 ```
-  Usage: crimp [options]
+  Usage: crimp [files] [options]
 
   Options:
 
     -h, --help           output usage information
     -V, --version        output the version number
     -o, --output [path]  build output (default: build)
-    -p, --path [path]    test path (default .)
-    -s, --suite [path]   suite json
     -t, --test           test build (default)
     -d, --debug          target debug
     -r, --release        target release
@@ -23,12 +21,14 @@ nodejs build tool for C++ based on [gyp](https://chromium.googlesource.com/exter
     -g, --gcc            use gcc compiler
     -e, --execute        execute product
     -i, --ide            open project in ide
+    -x, --xargs []       pass on arguments
 ```
 
 ###properties:
 - sources: array containing paths to C++ source files
 - import: array containing paths to defenition files
 - opengl: boolean to determine opengl linking
+- tests: array of definition files 
 
 # example
 ### src/main.cpp:
@@ -49,5 +49,5 @@ int main()
 ```
 ### build and test
 ```
-crimp -p test.json
+crimp test.json
 ```

@@ -1,6 +1,6 @@
 {
   "name": "crimp",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "c++ build system based on gyp",
   "main": "crimp.js",
   "scripts": {
@@ -18,7 +18,6 @@
     "date-time-string": "*",
     "expector": "*",
     "fs.extra": "*",
-    "graceful-fs": "*",
     "jsoncpp": "*",
     "promise": "*",
     "tape": "*",

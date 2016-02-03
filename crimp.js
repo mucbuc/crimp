@@ -13,6 +13,7 @@ var assert = require( 'assert' )
 
 program
   .version( version )
+  .usage( '[files] [options]')
   .option( '-o, --output [path]', 'build output (default: build)' )
   .option( '-t, --test', 'test build (default)' )
   .option( '-d, --debug', 'target debug' )
