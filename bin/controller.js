@@ -147,18 +147,24 @@ function buildProject( context, cb ) {
     function translateData() {
       return new Promise( function(resolve, reject) {
         if (product.hasOwnProperty('data')) {
-          var cppDir = path.join( 'src', 'data' );
+          
+          var cppDir = path.join(context.tempDir, 'src', 'data');
+
           makePathIfNone( cppDir, function() {
             traverse( product.data, function(entry, next) {
+              var fileName = path.basename(path.basename(entry)) + '.h'
+                , pathOut = path.join( cppDir, fileName );
+
               product.sources.push( path.join( 
                   '..',
                   cppDir,
-                  path.basename(path.basename(entry) )
-                ) + '.h'
+                  fileName
+                )
               );
               entry = path.join( context.testDir, entry);
+
               Printer.begin( 'translate', entry ); 
-              translate( entry, function() {
+              translate( entry, pathOut, function() {
                 Printer.finishGreen( 'translate' ); 
                 next(); 
               });
@@ -200,7 +206,7 @@ function makePathIfNone( path, cb ) {
     if (exists) 
       cb();
     else 
-      fs.mkdir( path, [], cb ); 
+      fs.mkdirp( path, [], cb ); 
   });
 }
 

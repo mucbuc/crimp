@@ -1,27 +1,23 @@
 var assert = require( 'assert' )
   , jsoncpp = require( 'jsoncpp' ).translateFile
-  , fs = require( 'fs.extra' )
-  , path = require( 'path' ); 
+  , fs = require( 'fs.extra' ); 
 
 assert( typeof jsoncpp !== 'undefined' );
 
-module.exports = function(pathIn, cb) {
+module.exports = function(pathIn, pathOut, cb) {
+
+  assert( typeof pathIn !== 'undefined' );
+  assert( typeof pathOut !== 'undefined' );
   
   jsoncpp( pathIn, function(result) {
-
-    var pathOut = path.join( path.dirname(pathIn), '..', 'src', 'data' );
-
-    fs.mkdirp(pathOut, function(err) {
-      if (err) throw err;
-      fs.writeFile( 
-        path.join( pathOut, path.basename(path.basename(pathIn) ) + '.h' ), 
-        result, 
-        function(err) {
-          if (err) throw err;
-          if (typeof cb === 'function') {
-            cb();
-          }
-        } ); 
+    fs.writeFile( 
+      pathOut, 
+      result, 
+      function(err) {
+        if (err) throw err;
+        if (typeof cb === 'function') {
+          cb();
+        }
+      }); 
     });
-  });
 };
