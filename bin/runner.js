@@ -17,7 +17,7 @@ function run(context) {
 
     execPath = join( execPath, context.targetName );
 
-    context.spawn( execPath, [], context.tempDir, resolve, reject );
+    context.spawn( execPath, context.xargs, context.tempDir, resolve, reject );
   });
 
 }
