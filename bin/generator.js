@@ -10,21 +10,16 @@ function generate( context ) {
 
   return new Promise(function(resolve, reject) {
     var args = [
+          '--depth=.',
           context.nameGYP
         ];  
 
     if (context.gcc) {
-      args = args.concat( [
-        '--depth=.',
-        '--include=' + getPlankGYPI( 'cpp11-gcc.gypi' ),
-        '--format=make'
-      ]);
+      args.push( '--include=' + includePath( 'cpp11-gcc.gypi' ) );
+      args.push( '--format=make' ); 
     }
     else {
-      args = args.concat( [
-        '--depth=.',
-        '--include=' + getPlankGYPI( 'cpp11.gypi' )
-      ]);
+      args.push( '--include=' + includePath( 'cpp11.gypi' ) );
     }
     
     if (context.debug) {
@@ -38,26 +33,16 @@ function generate( context ) {
     }
     
     if (context.opengl) {
-      args.push( '--include=' + getPlankGYPI( 'opengl.gypi' ) );
+      args.push( '--include=' + includePath( 'opengl.gypi' ) );
     }
 
-    context.spawn( 
-      'gyp', 
-      args, 
-      context.tempDir
-    )
-    .on( 'exit', function( code ) {
-      if (code) 
-        reject(code) 
-      else
-        resolve(code);
-    })
+    context.spawn( 'gyp', args, context.tempDir, resolve, reject )
     .on( 'error', function(error) {
       console.log( error ); 
     });
   });
 
-  function getPlankGYPI(gypFile) {
+  function includePath(gypFile) {
     return path.join( __dirname, '../def', gypFile );
   }
 }
