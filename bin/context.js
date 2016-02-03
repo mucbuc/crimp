@@ -38,10 +38,16 @@ function Context(program, pathJSON) {
     this.ide = program.ide;
   }
   
+  this.xargs = [];
+  if (program.xargs) {
+    this.xargs = this.xargs.concat( program.xargs );
+  }    
+
   this.spawn = function(exec, args, cwd, resolve, reject) {
     if (typeof cwd === 'undefined') {
       cwd = '.';
     }
+
     return cp.spawn( 
       exec,
       args, 

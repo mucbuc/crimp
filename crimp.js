@@ -21,6 +21,7 @@ program
   .option( '-g, --gcc', 'use gcc compiler' )
   .option( '-e, --execute', 'execute product' )
   .option( '-i, --ide', 'open project in ide' )
+  .option( '-x, --xargs []', 'pass on arguments' )
   //.option( '-v, --verbose', 'output everything' )
   //.option( '-q, --sequence', 'run tests in sequence')
   .action( function() {
