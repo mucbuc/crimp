@@ -37,10 +37,8 @@ function Context(program, pathJSON) {
   if (program.ide) {
     this.ide = program.ide;
   }
-
   
-  
-  this.spawn = function(exec, args, cwd) {
+  this.spawn = function(exec, args, cwd, resolve, reject) {
     if (typeof cwd === 'undefined') {
       cwd = '.';
     }
@@ -50,7 +48,13 @@ function Context(program, pathJSON) {
       { 
         stdio: stdoutMode,
         cwd: path.join( this.testDir, cwd ) 
-      });
+      })
+    .on( 'exit', function(code) {
+      if (code)
+        reject(code);
+      else
+        resolve();
+    });
   };
 }
 

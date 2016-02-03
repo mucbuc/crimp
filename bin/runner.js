@@ -17,16 +17,7 @@ function run(context) {
 
     execPath = join( execPath, context.targetName );
 
-    context.spawn( 
-      execPath,
-      [], 
-      context.tempDir )
-    .on( 'exit', function(code) {
-      if (code)
-        reject();
-      else
-        resolve();
-    });
+    context.spawn( execPath, [], context.tempDir, resolve, reject );
   });
 
 }
