@@ -148,7 +148,7 @@ function buildProject( context, cb ) {
       return new Promise( function(resolve, reject) {
         if (product.hasOwnProperty('data')) {
           
-          var cppDir = path.join(context.tempDir, 'src', 'data');
+          var cppDir = path.join(dirGYP, 'src', 'data');
 
           makePathIfNone( cppDir, function() {
             traverse( product.data, function(entry, next) {

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <src/data/content.json.h>
+#include <tmp/src/data/content.json.h>
 
 int main()
 {
