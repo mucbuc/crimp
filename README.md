@@ -53,7 +53,7 @@ crimp test.json
 ```
 
 ### references
-http://www.rioki.org/2013/02/07/experimenting-with-gyp.html
+http://www.rioki.org/2013/02/07/experimenting-with-gyp.html   
 https://github.com/springmeyer/hello-gyp
 
 
