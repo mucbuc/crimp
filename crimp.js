@@ -36,22 +36,22 @@ program
     program.sequence = true;
     
     Printer.begin( 'total', 'test run' );
-    process.on( 'exit', function() {
+    process.on( 'exit', () => {
       Printer.finishGreen( 'total' );
       console.log( 'assertions passed: ', assertCount ); 
     });
     
-    traverse( args, function( arg, next) {
+    traverse( args, ( arg, next) => {
       var pathJson = arg 
         , dirname = path.dirname( pathJson );
 
-      fs.readFile( pathJson, function(err, data) {
+      fs.readFile( pathJson, (err, data) => {
         var tests; 
         if (err) throw err;
         // this readFile and JSON.parse seems wasteful and redundant
         tests = JSON.parse( data.toString() ).tests;
         if (typeof tests !== 'undefined') {
-          traverse( tests, function( pathJSON, next ) { 
+          traverse( tests, ( pathJSON, next ) => { 
             crimpIt( path.join( dirname, pathJSON ), makeAccumulator(next) );
           } );
         }
@@ -77,7 +77,7 @@ function crimpIt(pathJSON, cb) {
   var context = new Context( program, pathJSON ); 
 
   if (program.clean) {
-    fs.rmrf( path.join( context.testDir, context.tempDir ), function(err) {
+    fs.rmrf( path.join( context.testDir, context.tempDir ), (err) => {
       if (err) throw err;
       buildProject( context, cb );
     });
