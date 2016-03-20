@@ -43,7 +43,7 @@ function Context(program, pathJSON) {
     this.xargs = this.xargs.concat( program.xargs );
   }    
 
-  this.spawn = function(exec, args, cwd, resolve, reject) {
+  this.spawn = (exec, args, cwd, resolve, reject) => {
     if (typeof cwd === 'undefined') {
       cwd = '.';
     }
@@ -55,7 +55,7 @@ function Context(program, pathJSON) {
         stdio: stdoutMode,
         cwd: path.join( this.testDir, cwd ) 
       })
-    .on( 'exit', function(code) {
+    .on( 'exit', (code) => {
       if (code)
         reject(code);
       else
