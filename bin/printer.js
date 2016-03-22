@@ -6,7 +6,7 @@ var Printer = {
 
 	cursor: cursor, 
 
-	begin: function( msg1, msg2 ) {
+	begin: ( msg1, msg2 ) => {
 		cursor.green();
 		process.stdout.write( msg1 + ': ' );
 		cursor.reset();
@@ -14,19 +14,19 @@ var Printer = {
 		console.time( msg1 );
 	}, 
 
-	finishGreen: function( msg1 ) {
+	finishGreen: ( msg1 ) => {
 		cursor.green();
 		console.timeEnd( msg1 );
 		cursor.reset();
 	}, 
 
-	finishRed: function( msg1 ) {
+	finishRed: ( msg1 ) => {
 		cursor.red();
 		console.timeEnd( msg1 );
 		cursor.reset();
 	}, 
 
-	printError: function( msg ) {
+	printError: ( msg ) => {
 		cursor.red(); 
 		console.log( msg ); 
 		cursor.reset();

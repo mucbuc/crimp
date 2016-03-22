@@ -8,7 +8,7 @@ function generate( context ) {
   assert( context.hasOwnProperty( 'pathGYP' ) );
   assert( context.hasOwnProperty( 'tempDir' ) );
 
-  return new Promise(function(resolve, reject) {
+  return new Promise( (resolve, reject) => {
     var args = [
           '--depth=.',
           context.nameGYP
@@ -37,7 +37,7 @@ function generate( context ) {
     }
 
     context.spawn( 'gyp', args, context.tempDir, resolve, reject )
-    .on( 'error', function(error) {
+    .on( 'error', (error) => {
       console.log( error ); 
     });
   });

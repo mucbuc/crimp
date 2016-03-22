@@ -17,14 +17,14 @@ function define(pathJSON, pathBase, objReader) {
       }
     , imported = [];
 
-  fs.readFile( path.join( __dirname, '../lib/asserter/def.json' ), function(err, data) {
+  fs.readFile( path.join( __dirname, '../lib/asserter/def.json' ), (err, data) => {
     if (err) throw err;
     product.sources = product.sources.concat(JSON.parse(data.toString()).sources);
   });
 
   if (typeof objReader === 'undefined') {
-    objReader = function(filePath, cb) {
-      fs.readFile(filePath, function(err, data) {
+    objReader =  (filePath, cb) => {
+      fs.readFile(filePath, (err, data) => {
         if (err) throw err;
         cb( JSON.parse( data.toString() ) );
       });
@@ -35,8 +35,8 @@ function define(pathJSON, pathBase, objReader) {
 
   function processDependencies(fileJSON, pathBase) {
     
-    return new Promise( function(resolve, reject) {
-      objReader( path.join(pathBase, fileJSON), function(content) {
+    return new Promise( (resolve, reject) => {
+      objReader( path.join(pathBase, fileJSON), (content) => {
         
         assert( typeof content === 'object' );
         
@@ -45,9 +45,9 @@ function define(pathJSON, pathBase, objReader) {
           product.opengl = true;
         }
         
-        handleImports( function() {
-          handleSources( function() {
-            handleData( function() {
+        handleImports( () => {
+          handleSources( () => {
+            handleData( () => {
               resolve(product); 
             } ); 
           });
@@ -56,7 +56,7 @@ function define(pathJSON, pathBase, objReader) {
         function handleData(cb) {
           if ( content.hasOwnProperty('data')) {
             product.data = [];
-            traverse( content.data, function(dataPath, next) {
+            traverse( content.data, (dataPath, next) => {
               var absPath = path.join( 
                     path.dirname(fileJSON), 
                     dataPath 
@@ -76,7 +76,7 @@ function define(pathJSON, pathBase, objReader) {
           
           if (  content.hasOwnProperty('import')
             &&  content.import.length) {
-            traverse( content.import, function( item, next ) {
+            traverse( content.import, ( item, next ) => {
               if (imported.indexOf(item) == -1) {
                 imported.push(item);
                 processDependencies( item, pathBase )
@@ -97,7 +97,7 @@ function define(pathJSON, pathBase, objReader) {
 
         function handleSources(cb) {
           if (content.hasOwnProperty('sources')) {
-            traverse( content.sources, function(source, next) {
+            traverse( content.sources, (source, next) => {
               product.sources.push( path.join( '..', path.dirname(fileJSON), source ) );
               next();
             })

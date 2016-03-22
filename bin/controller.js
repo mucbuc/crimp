@@ -23,7 +23,7 @@ function buildProject( context, cb ) {
   Printer.begin( 'define', absPath );
 
   define( context.pathJSON, context.testDir )
-  .then( function(product) {
+  .then( (product) => {
     
     var dirGYP = path.join(context.testDir, context.tempDir)
       , resultPath = path.join( dirGYP, 'result.json' );
@@ -37,20 +37,20 @@ function buildProject( context, cb ) {
     Printer.begin( 'copy files', dirGYP );
 
     copyFiles( dirGYP )
-    .then( function() {
+    .then( () => {
       
       Printer.finishGreen( 'copy files' );
 
       translateData()
-      .then( function() {
+      .then( () => {
         generateProject()
-        .then( function() {
+        .then( () => {
           if (context.execute) {
-            fs.unlink( resultPath, function() {
+            fs.unlink( resultPath, () => {
               executeTarget()
-              .then( function() {
+              .then( () => {
                 Printer.finishGreen( 'unit' );
-                readResults().then( function(results) {
+                readResults().then( (results) => {
                   cb(results.passed);
                 })
                 .catch(cb);
@@ -67,14 +67,14 @@ function buildProject( context, cb ) {
     });
 
     function copyFiles(tmpPath) {
-      return new Promise(function(resolve, reject) {
+      return new Promise( (resolve, reject) => {
         var source = path.join( __dirname, '..', 'lib', 'asserter', 'src' )
           , dest = path.join( tmpPath, 'src' );
 
         fs.copyRecursive( 
           source, 
           dest,
-          function(error) {
+          (error) => {
             //if (error) throw error;
             resolve();
           }
@@ -83,8 +83,8 @@ function buildProject( context, cb ) {
     }
 
     function readResults(cb) {
-      return new Promise(function(resolve, reject) {
-        fs.readFile( resultPath, function(err, data) {
+      return new Promise( (resolve, reject) => {
+        fs.readFile( resultPath, (err, data) => {
           var obj = {};
           if (err) {
             reject(err);
@@ -103,22 +103,22 @@ function buildProject( context, cb ) {
     }
 
     function generateProject() {
-      return new Promise(function(resolve, reject) {
+      return new Promise( (resolve, reject) => {
 
-        makePathIfNone( dirGYP, function() {
+        makePathIfNone( dirGYP, () => {
 
           context.nameGYP = context.targetName + ".gyp";
           context.pathGYP = path.join( dirGYP, context.nameGYP );
-          writeGYP( product, context.pathGYP, function(error) {
+          writeGYP( product, context.pathGYP, (error) => {
             if (error) throw error;
             
             Printer.begin( 'generate', context.pathGYP );
             generate( context )
-            .then( function() {
+            .then( () => {
               Printer.finishGreen( 'generate' );
               resolve(); 
             })
-            .catch(function(error) {
+            .catch( (error) => {
               Printer.finishRed( 'generate' );
               console.log(error);
               reject(); 
@@ -129,15 +129,15 @@ function buildProject( context, cb ) {
     }
 
     function executeTarget() {
-      return new Promise(function(resolve,reject) {
+      return new Promise( (resolve,reject) => {
         Printer.begin( 'execute', context.targetName );
 
         run(context)
-        .then( function() {
+        .then( () => {
           Printer.finishGreen( 'execute' ); 
           resolve();
         })
-        .catch( function() {
+        .catch( () => {
           Printer.finishRed( 'execute' );
           reject();
         });
@@ -145,13 +145,13 @@ function buildProject( context, cb ) {
     }
 
     function translateData() {
-      return new Promise( function(resolve, reject) {
+      return new Promise( (resolve, reject) => {
         if (product.hasOwnProperty('data')) {
           
           var cppDir = path.join(dirGYP, 'src', 'data');
 
-          makePathIfNone( cppDir, function() {
-            traverse( product.data, function(entry, next) {
+          makePathIfNone( cppDir, () => {
+            traverse( product.data, (entry, next) => {
               var fileName = path.basename(path.basename(entry)) + '.h'
                 , pathOut = path.join( cppDir, fileName );
 
@@ -164,7 +164,7 @@ function buildProject( context, cb ) {
               entry = path.join( context.testDir, entry);
 
               Printer.begin( 'translate', entry ); 
-              translate( entry, pathOut, function() {
+              translate( entry, pathOut, () => {
                 Printer.finishGreen( 'translate' ); 
                 next(); 
               });
@@ -180,7 +180,7 @@ function buildProject( context, cb ) {
     }
 
   })
-  .catch( function(error) {
+  .catch( (error) => {
     Printer.finishRed( 'define' );
   });
 }
@@ -202,7 +202,7 @@ function writeGYP(product, pathGYP, cb) {
 }
 
 function makePathIfNone( path, cb ) {
-  fs.exists(path, function(exists) {
+  fs.exists(path, (exists) => {
     if (exists) 
       cb();
     else 

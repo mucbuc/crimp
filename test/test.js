@@ -11,7 +11,7 @@ var assert = require( 'assert' )
 
 process.chdir( thisPath );
 
-test( 'data include', function(t) {
+test( 'data include', (t) => {
   
   var controller = new Expector(t);
   
@@ -20,7 +20,7 @@ test( 'data include', function(t) {
   crimp([ '-d', 'test-data.json' ], controller );
 }); 
 
-test( 'test build', function(t) {
+test( 'test build', (t) => {
   var controller = new Expector(t); 
 
   controller
@@ -30,7 +30,7 @@ test( 'test build', function(t) {
   crimp([ 'test.json' ], controller );
 });
 
-test( 'test gcc build', function(t) {
+test( 'test gcc build', (t) => {
   var controller = new Expector(t);
 
   controller
@@ -39,7 +39,7 @@ test( 'test gcc build', function(t) {
   crimp([ '-g', 'test.json' ], controller );
 });
 
-test( 'release gcc build', function(t) {
+test( 'release gcc build', (t) => {
   
   var controller = new Expector(t);
 
@@ -49,7 +49,7 @@ test( 'release gcc build', function(t) {
   crimp([ '-g', '-r', '-e', 'test.json' ], controller );
 });
 
-test( 'debug gcc build', function(t) {
+test( 'debug gcc build', (t) => {
   var controller = new Expector(t);
   
   controller
@@ -59,7 +59,7 @@ test( 'debug gcc build', function(t) {
   crimp([ '-g', '-d', '-e', 'test.json' ], controller );
 });
 
-test( 'release build', function(t) {
+test( 'release build', (t) => {
   var controller = new Expector(t);
 
   controller
@@ -69,7 +69,7 @@ test( 'release build', function(t) {
   crimp([ '-r', '-e', 'test.json' ], controller );
 });
 
-test( 'debug build', function(t) {
+test( 'debug build', (t) => {
   var controller = new Expector(t);
 
   controller
@@ -84,7 +84,7 @@ function crimp(args, controller, cb) {
   .fork( path.join( __dirname, '..', 'crimp.js'), 
           args, 
           { silent: true } )
-  .on( 'exit', function(code) {
+  .on( 'exit', (code) => {
     
     if (typeof cb !== 'undefined') {
       cb();
@@ -92,7 +92,7 @@ function crimp(args, controller, cb) {
     controller.emit( code );
     controller.check(); 
   });
-  child.stdout.on( 'data', function(data) {
+  child.stdout.on( 'data', (data) => {
     controller.emit( data ); 
   });
 

@@ -2,7 +2,7 @@ var Promise = require( 'promise' )
   , join = require( 'path' ).join;
 
 function run(context) {
-  return new Promise( function( resolve, reject) {
+  return new Promise( ( resolve, reject) => {
 
     var execPath = context.gcc ? 'out' : 'build';
     if (context.release) {

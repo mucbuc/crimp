@@ -5,12 +5,12 @@ var assert = require( 'assert' )
   , define = require( '../../bin/definer' )
   , Expector = require( 'expector' ).Expector;
 
-test( 'data prep', function(t) {
+test( 'data prep', (t) => {
   
   var controller = new Expector(t)
   controller.expect( "data/content.json" );
 
-  define( './test-data.json', '.', function(path, cb) {
+  define( './test-data.json', '.', (path, cb) => {
     cb( { 
       "sources": [
         "src/main-data.cpp"
@@ -20,15 +20,15 @@ test( 'data prep', function(t) {
       ]
     } );
   } )
-  .then( function(gyp) {
+  .then( (gyp) => {
     controller.emit( gyp.data ).check(); 
   })
-  .catch( function(err) {
+  .catch( (err) => {
     throw err;
   });
 });
 
-test( 'define recursion', function(t) {
+test( 'define recursion', (t) => {
   
   var controller = new Expector(t)
     , expected = [
@@ -38,12 +38,12 @@ test( 'define recursion', function(t) {
     ];
 
   define( './test-import.json', '.', mapFile )
-  .then( function(gyp) {
+  .then( (gyp) => {
     t.assert( gyp.hasOwnProperty( 'sources' ) );
     t.deepEqual( gyp.sources, expected ); 
     t.end();
   } )
-  .catch( function(error) { 
+  .catch( (error) => { 
   
     console.log( error ); 
   });
@@ -66,18 +66,18 @@ test( 'define recursion', function(t) {
   }
 });
 
-test( 'test definer', function(t) {
+test( 'test definer', (t) => {
   
   var controller = new Expector(t);
 
   controller.expect( '["../src/main.cpp"]' );
-  define( './test.json', '.', function(path, cb) {
+  define( './test.json', '.', (path, cb) => {
     if (path == "lib/crimp/def.json")
       cb( {} );
     else 
     cb( { "sources": [ "src/main.cpp" ] } );
   } )
-  .then( function(product) {
+  .then( (product) => {
     t.assert( product.hasOwnProperty('sources') );
     
     console.log( JSON.stringify(product.sources) ); 
