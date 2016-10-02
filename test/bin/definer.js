@@ -39,6 +39,7 @@ test( 'define recursion', (t) => {
 
   define( './test-import.json', '.', mapFile )
   .then( (gyp) => {
+    t.assert( gyp.hasOwnProperty( 'sources' ) );
     t.deepEqual( gyp.sources, expected ); 
     t.end();
   } )
@@ -93,5 +94,25 @@ test( 'test pass thru', (t) => {
     t.assert( product.hasOwnProperty('rand_prop') );
     controller.emit( product.rand_prop ).check();
   });
+});
+
+test( 'test property merge', (t) => {
+  var controller = new Expector(t);
+  
+  controller.expect( 'c' );
+
+  define( './base.json', '.', (path, cb) => {
+    if (path == 'a.json')
+      cb( { a: 'b' } );
+    if (path == 'b.json')
+      cb( { a: 'c' } );
+    if (path == 'base.json')
+      cb( { import: [ 'a.json', 'b.json' ] } );
+  })
+  .then( (product) => {
+    t.assert( product.hasOwnProperty( 'a' ) ); 
+    controller.emit( product.a ).check();
+  });
+
 });
 
