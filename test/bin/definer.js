@@ -39,12 +39,10 @@ test( 'define recursion', (t) => {
 
   define( './test-import.json', '.', mapFile )
   .then( (gyp) => {
-    t.assert( gyp.hasOwnProperty( 'sources' ) );
     t.deepEqual( gyp.sources, expected ); 
     t.end();
   } )
   .catch( (error) => { 
-  
     console.log( error ); 
   });
 
@@ -84,3 +82,16 @@ test( 'test definer', (t) => {
     controller.emit( JSON.stringify(product.sources) ).check();
   });
 });
+
+test( 'test pass thru', (t) => {
+  var controller = new Expector(t);
+  controller.expect( 'rand_val' );
+  define( './rand_prop.json', '.', (path, cb) => {
+    cb( { "rand_prop": "rand_val" } );
+  })
+  .then( (product) => {
+    t.assert( product.hasOwnProperty('rand_prop') );
+    controller.emit( product.rand_prop ).check();
+  });
+});
+

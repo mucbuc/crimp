@@ -39,78 +39,73 @@ function define(pathJSON, pathBase, objReader) {
       objReader( path.join(pathBase, fileJSON), (content) => {
         
         assert( typeof content === 'object' );
-        
+
         if (    content.hasOwnProperty('opengl') 
             &&  content.opengl) {
           product.opengl = true;
         }
         
-        handleImports( () => {
-          handleSources( () => {
-            handleData( () => {
-              resolve(product); 
-            } ); 
-          });
-        });
-
-        function handleData(cb) {
-          if ( content.hasOwnProperty('data')) {
-            product.data = [];
-            traverse( content.data, (dataPath, next) => {
-              var absPath = path.join( 
-                    path.dirname(fileJSON), 
-                    dataPath 
-                  );
-              product.data.push( absPath );
-              next();
-            })
-            .then( cb )
-            .catch(cb); 
+        traverse( content, (prop, next)=>{
+          
+          if (prop.hasOwnProperty('import')) {
+            handleImports( prop.import, next);
+          }
+          else if (prop.hasOwnProperty('data')) {
+            handleData( prop.data, next);
+          }
+          else if (prop.hasOwnProperty('sources')) {
+            handleSources( prop.sources, next );
           }
           else {
-            cb();
+            Object.assign( product, prop );
+            next();
           }
+        })
+        .then( ()=>{
+          resolve(product);
+        } );
+        
+        function handleData(data, cb) {
+          product.data = [];
+          traverse( data, (dataPath, next) => {
+            var absPath = path.join( 
+                  path.dirname(fileJSON), 
+                  dataPath 
+                );
+            product.data.push( absPath );
+            next();
+          })
+          .then( cb )
+          .catch(cb); 
         }
         
-        function handleImports(cb) {
-          
-          if (  content.hasOwnProperty('import')
-            &&  content.import.length) {
-            traverse( content.import, ( item, next ) => {
-              if (imported.indexOf(item) == -1) {
-                imported.push(item);
-                processDependencies( item, pathBase )
-                .then( next )
-                .catch( reject );
-              }
-              else {
-                next();
-              }
-            })
-            .then( cb )
-            .catch( cb );
-          }
-          else {
-            cb(); 
-          }
+        function handleImports(imports, cb) {
+          traverse( imports, ( item, next ) => {
+            if (imported.indexOf(item) == -1) {
+              imported.push(item);
+              processDependencies( item, pathBase )
+              .then( next )
+              .catch( reject );
+            }
+            else {
+              next();
+            }
+          })
+          .then( cb )
+          .catch( cb );
         }
 
-        function handleSources(cb) {
-          if (content.hasOwnProperty('sources')) {
-            traverse( content.sources, (source, next) => {
-              product.sources.push( path.join( '..', path.dirname(fileJSON), source ) );
-              next();
-            })
-            .then( cb )
-            .catch( cb ); 
-          }
-          else {
-            cb();
-          }
+        function handleSources(sources, cb) {
+          traverse( sources, (source, next) => {
+            product.sources.push( path.join( '..', path.dirname(fileJSON), source ) );
+            next();
+          })
+          .then( cb )
+          .catch( cb ); 
         }
 
       });
-    } );
+    });
   }
 }
 
