@@ -48,37 +48,42 @@ function define(pathJSON, pathBase, objReader) {
         if (content.hasOwnProperty('import')) {
           handleImports( content.import, () => {
             handleSources( () => {
-              handleData( () => {
-                resolve(product); 
-              } ); 
+              if ( content.hasOwnProperty('data')) {
+                handleData( content.data, () => {
+                  resolve(product); 
+                } ); 
+              }
+              else {
+                resolve(product);
+              }
             });
           });
         }
         else {
           handleSources( () => {
-            handleData( () => {
-              resolve(product); 
-            } ); 
+            if ( content.hasOwnProperty('data')) {
+              handleData( content.data, () => {
+                resolve(product); 
+              } );
+            }
+            else {
+              resolve(product);
+            } 
           });
         }
 
-        function handleData(cb) {
-          if ( content.hasOwnProperty('data')) {
-            product.data = [];
-            traverse( content.data, (dataPath, next) => {
-              var absPath = path.join( 
-                    path.dirname(fileJSON), 
-                    dataPath 
-                  );
-              product.data.push( absPath );
-              next();
-            })
-            .then( cb )
-            .catch(cb); 
-          }
-          else {
-            cb();
-          }
+        function handleData(data, cb) {
+          product.data = [];
+          traverse( data, (dataPath, next) => {
+            var absPath = path.join( 
+                  path.dirname(fileJSON), 
+                  dataPath 
+                );
+            product.data.push( absPath );
+            next();
+          })
+          .then( cb )
+          .catch(cb); 
         }
         
         function handleImports(imports, cb) {
