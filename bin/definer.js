@@ -45,13 +45,22 @@ function define(pathJSON, pathBase, objReader) {
           product.opengl = true;
         }
         
-        handleImports( () => {
+        if (content.hasOwnProperty('import')) {
+          handleImports( content.import, () => {
+            handleSources( () => {
+              handleData( () => {
+                resolve(product); 
+              } ); 
+            });
+          });
+        }
+        else {
           handleSources( () => {
             handleData( () => {
               resolve(product); 
             } ); 
           });
-        });
+        }
 
         function handleData(cb) {
           if ( content.hasOwnProperty('data')) {
@@ -72,27 +81,20 @@ function define(pathJSON, pathBase, objReader) {
           }
         }
         
-        function handleImports(cb) {
-          
-          if (  content.hasOwnProperty('import')
-            &&  content.import.length) {
-            traverse( content.import, ( item, next ) => {
-              if (imported.indexOf(item) == -1) {
-                imported.push(item);
-                processDependencies( item, pathBase )
-                .then( next )
-                .catch( reject );
-              }
-              else {
-                next();
-              }
-            })
-            .then( cb )
-            .catch( cb );
-          }
-          else {
-            cb(); 
-          }
+        function handleImports(imports, cb) {
+          traverse( imports, ( item, next ) => {
+            if (imported.indexOf(item) == -1) {
+              imported.push(item);
+              processDependencies( item, pathBase )
+              .then( next )
+              .catch( reject );
+            }
+            else {
+              next();
+            }
+          })
+          .then( cb )
+          .catch( cb );
         }
 
         function handleSources(cb) {

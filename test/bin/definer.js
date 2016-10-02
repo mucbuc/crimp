@@ -39,12 +39,10 @@ test( 'define recursion', (t) => {
 
   define( './test-import.json', '.', mapFile )
   .then( (gyp) => {
-    t.assert( gyp.hasOwnProperty( 'sources' ) );
     t.deepEqual( gyp.sources, expected ); 
     t.end();
   } )
   .catch( (error) => { 
-  
     console.log( error ); 
   });
 
