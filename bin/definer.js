@@ -39,39 +39,32 @@ function define(pathJSON, pathBase, objReader) {
       objReader( path.join(pathBase, fileJSON), (content) => {
         
         assert( typeof content === 'object' );
-        
+
         if (    content.hasOwnProperty('opengl') 
             &&  content.opengl) {
           product.opengl = true;
         }
         
-        if (content.hasOwnProperty('import')) {
-          handleImports( content.import, () => {
-            handleSources( () => {
-              if ( content.hasOwnProperty('data')) {
-                handleData( content.data, () => {
-                  resolve(product); 
-                } ); 
-              }
-              else {
-                resolve(product);
-              }
-            });
-          });
-        }
-        else {
-          handleSources( () => {
-            if ( content.hasOwnProperty('data')) {
-              handleData( content.data, () => {
-                resolve(product); 
-              } );
-            }
-            else {
-              resolve(product);
-            } 
-          });
-        }
-
+        traverse( content, (prop, next)=>{
+          
+          if (prop.hasOwnProperty('import')) {
+            handleImports( prop.import, next);
+          }
+          else if (prop.hasOwnProperty('data')) {
+            handleData( prop.data, next);
+          }
+          else if (prop.hasOwnProperty('sources')) {
+            handleSources( prop.sources, next );
+          }
+          else {
+            Object.assign( product, prop );
+            next();
+          }
+        })
+        .then( ()=>{
+          resolve(product);
+        } );
+        
         function handleData(data, cb) {
           product.data = [];
           traverse( data, (dataPath, next) => {
@@ -102,22 +95,17 @@ function define(pathJSON, pathBase, objReader) {
           .catch( cb );
         }
 
-        function handleSources(cb) {
-          if (content.hasOwnProperty('sources')) {
-            traverse( content.sources, (source, next) => {
-              product.sources.push( path.join( '..', path.dirname(fileJSON), source ) );
-              next();
-            })
-            .then( cb )
-            .catch( cb ); 
-          }
-          else {
-            cb();
-          }
+        function handleSources(sources, cb) {
+          traverse( sources, (source, next) => {
+            product.sources.push( path.join( '..', path.dirname(fileJSON), source ) );
+            next();
+          })
+          .then( cb )
+          .catch( cb ); 
         }
 
       });
-    } );
+    });
   }
 }
 
