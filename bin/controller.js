@@ -1,5 +1,5 @@
 var assert = require( 'assert' )
-  , define = require( '../bin/definer' )
+  , define = require( 'gyp-def' )
   , generate = require( '../bin/generator' )
   , path = require( 'path' )
   , Printer = require( './printer' )
@@ -10,6 +10,7 @@ var assert = require( 'assert' )
   , fs = require( 'fs.extra' );
 
 assert( typeof translate !== 'undefined' ); 
+assert( typeof define !== 'undefined' );
 
 function buildProject( context, cb ) {
 
@@ -21,7 +22,7 @@ function buildProject( context, cb ) {
   Printer.begin( 'unit', absPath ); 
   Printer.begin( 'define', absPath );
 
-  define( context.pathJSON, context.testDir )
+  define( [ path.join(context.testDir, context.pathJSON) ] )
   .then( (product) => {
     
     var dirGYP = path.join(context.testDir, context.tempDir)
