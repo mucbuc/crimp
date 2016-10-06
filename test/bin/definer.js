@@ -44,7 +44,6 @@ test( 'define recursion', (t) => {
     t.end();
   } )
   .catch( (error) => { 
-  
     console.log( error ); 
   });
 
@@ -84,3 +83,36 @@ test( 'test definer', (t) => {
     controller.emit( JSON.stringify(product.sources) ).check();
   });
 });
+
+test( 'test pass thru', (t) => {
+  var controller = new Expector(t);
+  controller.expect( 'rand_val' );
+  define( './rand_prop.json', '.', (path, cb) => {
+    cb( { "rand_prop": "rand_val" } );
+  })
+  .then( (product) => {
+    t.assert( product.hasOwnProperty('rand_prop') );
+    controller.emit( product.rand_prop ).check();
+  });
+});
+
+test( 'test property merge', (t) => {
+  var controller = new Expector(t);
+  
+  controller.expect( 'c' );
+
+  define( './base.json', '.', (path, cb) => {
+    if (path == 'a.json')
+      cb( { a: 'b' } );
+    if (path == 'b.json')
+      cb( { a: 'c' } );
+    if (path == 'base.json')
+      cb( { import: [ 'a.json', 'b.json' ] } );
+  })
+  .then( (product) => {
+    t.assert( product.hasOwnProperty( 'a' ) ); 
+    controller.emit( product.a ).check();
+  });
+
+});
+
