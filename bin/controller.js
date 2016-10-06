@@ -22,7 +22,10 @@ function buildProject( context, cb ) {
   Printer.begin( 'unit', absPath ); 
   Printer.begin( 'define', absPath );
 
-  define( [ path.join(context.testDir, context.pathJSON) ] )
+  define( [ 
+      path.join(context.testDir, context.pathJSON), 
+      path.join(__dirname, '../lib/asserter/def.json')
+  ] )
   .then( (product) => {
     
     var dirGYP = path.join(context.testDir, context.tempDir)
