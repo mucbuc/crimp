@@ -25,7 +25,10 @@ function buildProject( context, cb ) {
 
   process.chdir( dirGYP );
 
-  define( [ path.join(context.testDir, context.pathJSON) ] )
+  define( [ 
+      path.join(context.testDir, context.pathJSON), 
+      path.join(__dirname, '../lib/asserter/def.json')
+  ] )
   .then( (product) => {
 
     var resultPath = path.join( dirGYP, 'result.json' );
