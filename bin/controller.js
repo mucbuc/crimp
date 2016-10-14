@@ -7,7 +7,6 @@ var assert = require( 'assert' )
   , translate = require( '../bin/translator' )
   , Promise = require( 'promise' )
   , traverse = require( 'traverjs' )
-  , successCounter = 0
   , fs = require( 'fs.extra' );
 
 assert( typeof translate !== 'undefined' ); 
