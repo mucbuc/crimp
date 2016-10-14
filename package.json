@@ -21,7 +21,8 @@
     "jsoncpp": "*",
     "promise": "*",
     "tape": "*",
-    "traverjs": "*"
+    "traverjs": "*",
+    "gyp-import": "*"
   },
   "bin": "./crimp.js",
   "preferGlobal": "true",

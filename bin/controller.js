@@ -1,5 +1,5 @@
 var assert = require( 'assert' )
-  , define = require( '../bin/definer' )
+  , define = require( 'gyp-import' )
   , generate = require( '../bin/generator' )
   , path = require( 'path' )
   , Printer = require( './printer' )
@@ -10,10 +10,12 @@ var assert = require( 'assert' )
   , fs = require( 'fs.extra' );
 
 assert( typeof translate !== 'undefined' ); 
+assert( typeof define !== 'undefined' );
 
 function buildProject( context, cb ) {
 
-  var absPath;
+  var absPath
+    , dirGYP = path.join(context.testDir, context.tempDir);
 
   assert( context.hasOwnProperty('pathJSON') );
 
@@ -21,11 +23,15 @@ function buildProject( context, cb ) {
   Printer.begin( 'unit', absPath ); 
   Printer.begin( 'define', absPath );
 
-  define( context.pathJSON, context.testDir )
+  process.chdir( dirGYP );
+
+  define( [ 
+      path.join(context.testDir, context.pathJSON), 
+      path.join(__dirname, '../lib/asserter/def.json')
+  ] )
   .then( (product) => {
-    
-    var dirGYP = path.join(context.testDir, context.tempDir)
-      , resultPath = path.join( dirGYP, 'result.json' );
+
+    var resultPath = path.join( dirGYP, 'result.json' );
 
     Printer.finishGreen( 'define' ); 
 
@@ -93,7 +99,7 @@ function buildProject( context, cb ) {
               resolve( JSON.parse( data.toString() ) );
             }
             catch(err) {
-              console.log( err );
+              console.error( err );
               reject(err);
             }
           }
@@ -119,7 +125,7 @@ function buildProject( context, cb ) {
             })
             .catch( (error) => {
               Printer.finishRed( 'generate' );
-              console.log(error);
+              console.error(error);
               reject(); 
             });
           });
@@ -150,17 +156,18 @@ function buildProject( context, cb ) {
           var cppDir = path.join(dirGYP, 'src', 'data');
 
           makePathIfNone( cppDir, () => {
+
             traverse( product.data, (entry, next) => {
               var fileName = path.basename(path.basename(entry)) + '.h'
                 , pathOut = path.join( cppDir, fileName );
 
               product.sources.push( path.join( 
-                  '..',
                   cppDir,
                   fileName
                 )
               );
-              entry = path.join( context.testDir, entry);
+
+              entry = path.join( dirGYP, entry);
 
               Printer.begin( 'translate', entry ); 
               translate( entry, pathOut, () => {
