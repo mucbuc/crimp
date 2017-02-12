@@ -1,7 +1,4 @@
 {
 	"import": "../lib/asserter/def.json",
-	"sources": 
-	[ 
-		"src/main.cpp"
-	]
+	"sources": [ "src/main.cpp" ]
 }
