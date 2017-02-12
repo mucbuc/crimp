@@ -109,7 +109,7 @@ function buildProject( context, cb ) {
 
         makePathIfNone( dirGYP, () => {
 
-          context.nameGYP = context.targetName + ".gyp";
+          context.nameGYP = context.targetName + ".gypi";
           context.pathGYP = path.join( dirGYP, context.nameGYP );
           writeGYP( product, context.pathGYP, (error) => {
             if (error) throw error;
