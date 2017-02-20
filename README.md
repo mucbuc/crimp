@@ -1,5 +1,5 @@
 #crimp
-nodejs build tool for C++ based on [gyp](https://chromium.googlesource.com/external/gyp/+/master/docs/UserDocumentation.md)
+nodejs build tool for C++ based on [gyp](https://gyp.gsrc.io/index.md)
 
 
 #install
