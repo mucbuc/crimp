@@ -1,5 +1,5 @@
 var assert = require( 'assert' )
-  , define = require( 'gyp-import' )
+  , define = require( '../node_modules/cstar/api' ).makeGYP
   , generate = require( '../bin/generator' )
   , path = require( 'path' )
   , Printer = require( './printer' )
@@ -25,10 +25,7 @@ function buildProject( context, cb ) {
 
   process.chdir( dirGYP );
 
-  define( [ 
-      path.join(context.testDir, context.pathJSON), 
-      path.join(__dirname, '../lib/asserter/def.json')
-  ] )
+  define( path.join(context.testDir, context.pathJSON) )
   .then( (product) => {
 
     var resultPath = path.join( dirGYP, 'result.json' );
@@ -112,7 +109,7 @@ function buildProject( context, cb ) {
 
         makePathIfNone( dirGYP, () => {
 
-          context.nameGYP = context.targetName + ".gyp";
+          context.nameGYP = context.targetName + ".gypi";
           context.pathGYP = path.join( dirGYP, context.nameGYP );
           writeGYP( product, context.pathGYP, (error) => {
             if (error) throw error;
@@ -187,22 +184,17 @@ function buildProject( context, cb ) {
 
   })
   .catch( (error) => {
+    
+    console.log( 'error', error );
+    
     Printer.finishRed( 'define' );
   });
 }
 
 function writeGYP(product, pathGYP, cb) {
-  var gyp = {
-        target_defaults: {
-          target_name: 'test',
-          type: 'executable',
-          sources: product.sources,
-          include_dirs: [ '../' ]
-        }
-      };
   fs.writeFile( 
       pathGYP, 
-      JSON.stringify( gyp, null, 2 ),
+      product,
       cb
   );
 }

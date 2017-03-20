@@ -11,7 +11,7 @@ function generate( context ) {
   return new Promise( (resolve, reject) => {
     var args = [
           '--depth=.',
-          context.nameGYP
+          'host.gyp'//context.nameGYP
         ];  
 
     if (context.gcc) {

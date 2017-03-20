@@ -6,7 +6,6 @@ var assert = require( 'assert' )
   , Expector = require( 'expector' ).Expector
   , test = require( 'tape' )
   , thisPath = path.dirname(__filename)
-  , buildProject = require( '../bin/controller.js' )
   , fs = require( 'fs' );
 
 process.chdir( thisPath );
@@ -20,7 +19,7 @@ test( 'data include', (t) => {
   crimp([ '-d', 'test-data.json' ], controller );
 }); 
 
-test( 'test build', (t) => {
+test.only( 'test build', (t) => {
   var controller = new Expector(t); 
 
   controller
@@ -83,7 +82,7 @@ function crimp(args, controller, cb) {
   var child = cp
   .fork( path.join( __dirname, '..', 'crimp.js'), 
           args, 
-          { silent: true } )
+          { silent: false } )
   .on( 'exit', (code) => {
     
     if (typeof cb !== 'undefined') {
@@ -92,9 +91,9 @@ function crimp(args, controller, cb) {
     controller.emit( code );
     controller.check(); 
   });
-  child.stdout.on( 'data', (data) => {
-    controller.emit( data ); 
-  });
+  // child.stdout.on( 'data', (data) => {
+  //   controller.emit( data ); 
+  // });
 
   return child;
 }
