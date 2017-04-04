@@ -64,8 +64,17 @@ function buildProject( context, cb ) {
             Printer.finishGreen( 'unit' );
             cb();
           } 
+        })
+        .catch( (err) => {
+          process.exit( 1 );
         });
+      })
+      .catch( (err) => {
+        throw err;
       });
+    })
+    .catch( (err) => {
+      throw err;
     });
 
     function copyFiles(tmpPath) {
@@ -122,8 +131,7 @@ function buildProject( context, cb ) {
             })
             .catch( (error) => {
               Printer.finishRed( 'generate' );
-              console.error(error);
-              reject(); 
+              reject(error); 
             });
           });
         });
@@ -181,13 +189,13 @@ function buildProject( context, cb ) {
         }
       });
     }
-
   })
   .catch( (error) => {
     
     console.log( 'error', error );
     
     Printer.finishRed( 'define' );
+    process.exit( 1 );
   });
 }
 

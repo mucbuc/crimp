@@ -56,10 +56,18 @@ function Context(program, pathJSON) {
         cwd: path.join( this.testDir, cwd ) 
       })
     .on( 'exit', (code) => {
+      
       if (code)
         reject(code);
       else
         resolve();
+    })
+    .on( 'error', (err) => {
+      
+      console.log( 'close' ); 
+      
+
+      reject( err );
     });
   };
 }
