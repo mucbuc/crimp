@@ -4,18 +4,15 @@ var assert = require( 'assert' )
   , path = require( 'path' )
   , Printer = require( './printer' )
   , run = require( '../bin/runner' )
-  , translate = require( '../bin/translator' )
-  , Promise = require( 'promise' )
   , traverse = require( 'traverjs' )
   , fs = require( 'fs.extra' );
 
-assert( typeof translate !== 'undefined' ); 
 assert( typeof define !== 'undefined' );
 
 function buildProject( context, cb ) {
 
   var absPath
-    , dirGYP = path.join(context.testDir, context.tempDir);
+    , dirGYP = context.testDir;
 
   assert( context.hasOwnProperty('pathJSON') );
 
@@ -25,93 +22,21 @@ function buildProject( context, cb ) {
 
   process.chdir( dirGYP );
 
-  define( path.join(context.testDir, context.pathJSON) )
+  console.log( 'context.pathJSON', context.pathJSON );
+
+  define( context.pathJSON )
   .then( (product) => {
 
-    var resultPath = path.join( dirGYP, 'result.json' );
-
     Printer.finishGreen( 'define' ); 
-
-    if (product.hasOwnProperty('opengl')) {
-      context.opengl = true;
-    }
     
-    Printer.begin( 'copy files', dirGYP );
-
-    copyFiles( dirGYP )
+    generateProject()
     .then( () => {
-      
-      Printer.finishGreen( 'copy files' );
-
-      translateData()
-      .then( () => {
-        generateProject()
-        .then( () => {
-          if (context.execute) {
-            fs.unlink( resultPath, () => {
-              executeTarget()
-              .then( () => {
-                Printer.finishGreen( 'unit' );
-                readResults().then( (results) => {
-                  cb(results.passed);
-                })
-                .catch(cb);
-              })
-              .catch(cb);
-            } );
-          }
-          else {
-            Printer.finishGreen( 'unit' );
-            cb();
-          } 
-        })
-        .catch( (err) => {
-          process.exit( 1 );
-        });
-      })
-      .catch( (err) => {
-        throw err;
-      });
+      Printer.finishGreen( 'unit' );
+      cb();
     })
     .catch( (err) => {
-      throw err;
+      process.exit( 1 );
     });
-
-    function copyFiles(tmpPath) {
-      return new Promise( (resolve, reject) => {
-        var source = path.join( __dirname, '..', 'lib', 'asserter', 'src' )
-          , dest = path.join( tmpPath, 'src' );
-
-        fs.copyRecursive( 
-          source, 
-          dest,
-          (error) => {
-            //if (error) throw error;
-            resolve();
-          }
-        ); 
-      });
-    }
-
-    function readResults(cb) {
-      return new Promise( (resolve, reject) => {
-        fs.readFile( resultPath, (err, data) => {
-          var obj = {};
-          if (err) {
-            reject(err);
-          }
-          else {
-            try {
-              resolve( JSON.parse( data.toString() ) );
-            }
-            catch(err) {
-              console.error( err );
-              reject(err);
-            }
-          }
-        });
-      }); 
-    }
 
     function generateProject() {
       return new Promise( (resolve, reject) => {
@@ -151,42 +76,6 @@ function buildProject( context, cb ) {
           Printer.finishRed( 'execute' );
           reject();
         });
-      });
-    }
-
-    function translateData() {
-      return new Promise( (resolve, reject) => {
-        if (product.hasOwnProperty('data')) {
-          
-          var cppDir = path.join(dirGYP, 'src', 'data');
-
-          makePathIfNone( cppDir, () => {
-
-            traverse( product.data, (entry, next) => {
-              var fileName = path.basename(path.basename(entry)) + '.h'
-                , pathOut = path.join( cppDir, fileName );
-
-              product.sources.push( path.join( 
-                  cppDir,
-                  fileName
-                )
-              );
-
-              entry = path.join( dirGYP, entry);
-
-              Printer.begin( 'translate', entry ); 
-              translate( entry, pathOut, () => {
-                Printer.finishGreen( 'translate' ); 
-                next(); 
-              });
-            })
-            .then( resolve )
-            .catch( reject );
-          });
-        }
-        else {
-          resolve();
-        }
       });
     }
   })

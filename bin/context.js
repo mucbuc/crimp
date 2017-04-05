@@ -11,33 +11,10 @@ function Context(program, pathJSON) {
   this.tempDir = 'tmp';
   this.targetName = 'test';
   
-  if (program.release) {
-    this.release = true;
-  }
-  else if (program.debug) {
-    this.debug = true;
-  } 
-  else {
-    this.test = true;
-    this.execute = true;
-  }
-
   if (program.output) {
     this.tempDir = program.output;
   }
 
-  if (program.gcc) {
-    this.gcc = true;
-  }
-
-  if (program.execute) {
-    this.execute = true;
-  }
-
-  if (program.ide) {
-    this.ide = program.ide;
-  }
-  
   this.xargs = [];
   if (program.xargs) {
     this.xargs = this.xargs.concat( program.xargs );

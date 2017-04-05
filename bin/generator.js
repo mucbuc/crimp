@@ -1,6 +1,5 @@
 var assert = require( 'assert' )
-  , path = require( 'path' )
-  , Promise = require( 'promise' );
+  , path = require( 'path' );
 
 function generate( context ) {
 
@@ -13,38 +12,15 @@ function generate( context ) {
           '--depth=.',
           'host.gyp'//context.nameGYP
         ];  
+   
+    console.log( 'cprocess.cwd()', process.cwd() );
 
-    if (context.gcc) {
-      args.push( '--include=' + includePath( 'cpp11-gcc.gypi' ) );
-      args.push( '--format=make' ); 
-    }
-    else {
-      args.push( '--include=' + includePath( 'cpp11.gypi' ) );
-    }
-    
-    if (context.debug) {
-      args.push( '--build=Debug' );  
-    }
-    else if (context.release) {
-      args.push( '--build=Release' );
-    }
-    else {
-      args.push( '--build=Test' );
-    }
-    
-    if (context.opengl) {
-      args.push( '--include=' + includePath( 'opengl.gypi' ) );
-    }
-
-    context.spawn( 'gyp', args, context.tempDir, resolve, reject )
+    context
+    .spawn( 'gyp', args, '.', resolve, reject )
     .on( 'error', (error) => {
       console.log( error ); 
     });
   });
-
-  function includePath(gypFile) {
-    return path.join( __dirname, '../def', gypFile );
-  }
 }
 
 module.exports = generate;

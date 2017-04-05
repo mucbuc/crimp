@@ -18,8 +18,6 @@
     "date-time-string": "*",
     "expector": "*",
     "fs.extra": "*",
-    "jsoncpp": "*",
-    "promise": "*",
     "tape": "*",
     "traverjs": "*",
     "gyp-import": "*"
