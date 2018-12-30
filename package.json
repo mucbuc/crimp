@@ -26,5 +26,8 @@
   },
   "bin": "./crimp.js",
   "preferGlobal": "true",
-  "keywords": [ "c++ build system", "gyp wrapper" ]
+  "keywords": [
+    "c++ build system",
+    "gyp wrapper"
+  ]
 }

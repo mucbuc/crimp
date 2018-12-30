@@ -11,7 +11,7 @@ var assert = require( 'assert' )
 
 process.chdir( thisPath );
 
-test( 'data include', (t) => {
+test.only( 'data include', (t) => {
   
   var controller = new Expector(t);
   

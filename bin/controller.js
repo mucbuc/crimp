@@ -23,6 +23,7 @@ function buildProject( context, cb ) {
   Printer.begin( 'unit', absPath ); 
   Printer.begin( 'define', absPath );
 
+  fs.mkdirRecursiveSync( dirGYP );
   process.chdir( dirGYP );
 
   define( [ 
