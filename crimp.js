@@ -23,7 +23,7 @@ program
   .option( '-e, --execute', 'execute product' )
   .option( '-i, --ide', 'open project in ide' )
   .option( '-x, --xargs []', 'pass on arguments' )
-  //.option( '-v, --verbose', 'output everything' )
+  .option( '-v, --verbose', 'output some info' )
   //.option( '-q, --sequence', 'run tests in sequence')
   .action( function() {
 

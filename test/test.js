@@ -11,8 +11,8 @@ var assert = require( 'assert' )
 
 process.chdir( thisPath );
 
-test.only( 'data include', (t) => {
-  
+test( 'data include', (t) => {
+ 
   var controller = new Expector(t);
   
   controller.expect( 0 );
@@ -20,7 +20,7 @@ test.only( 'data include', (t) => {
   crimp([ '-d', 'test-data.json' ], controller );
 }); 
 
-test( 'test build', (t) => {
+test.skip( 'test build', (t) => {
   var controller = new Expector(t); 
 
   controller
@@ -59,7 +59,7 @@ test( 'debug gcc build', (t) => {
   crimp([ '-g', '-d', '-e', 'test.json' ], controller );
 });
 
-test( 'release build', (t) => {
+test.skip( 'release build', (t) => {
   var controller = new Expector(t);
 
   controller
@@ -69,7 +69,7 @@ test( 'release build', (t) => {
   crimp([ '-r', '-e', 'test.json' ], controller );
 });
 
-test( 'debug build', (t) => {
+test.skip( 'debug build', (t) => {
   var controller = new Expector(t);
 
   controller
@@ -93,7 +93,7 @@ function crimp(args, controller, cb) {
     controller.check(); 
   });
   child.stdout.on( 'data', (data) => {
-    controller.emit( data ); 
+    controller.emit( data.toString() ); 
   });
 
   return child;
